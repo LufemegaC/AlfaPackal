@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "uYu/K48cMrh9ooZw59kBHNwifxPsNb0SYgNHevftpGzOV4Gpupbmsh70Hn7DRDF7TZX4vT8H3He+8rdQHvCBzw==",
+  "dgSpecHash": "EwhMGUU6WYVK88AdD/4gtBkdaEiROV+nrJN4ejvAOYehml55o64JUhOR8gDHdIgVja4dnkBwGF98aWOyupbgzQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Desktop\\source\\repos\\AlfaPackal\\AlfaPackalApi\\AlfaPackalApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Desktop\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\Desktop\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

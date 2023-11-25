@@ -4,9 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AlfaPackalApi.Modelos
 {
-    public class Serie
+    public class Serie : IAuditable
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SerieID { get; set; }
         //Estudio
         [Required, ForeignKey("Estudio")]
@@ -21,5 +22,7 @@ namespace AlfaPackalApi.Modelos
         public int SeriesNumber { get; set; }
         // Imagenes de la serie
         public virtual ICollection<Imagen> Imagenes { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public DateTime FechaActualizacion { get; set; }
     }
 }

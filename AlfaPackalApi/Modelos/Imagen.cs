@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AlfaPackalApi.Modelos
 {
-    public class Imagen
+    public class Imagen : IAuditable
     {
         // PK de la imagen
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ImagenID { get; set; }
 
         [Required]
@@ -23,7 +24,8 @@ namespace AlfaPackalApi.Modelos
         // Direccion URL de la imagen
         [Required]
         public string ImageLocation { get; set; } //Ubicación de la imagen (por ejemplo, la URL de la imagen en Azure)
-
+        public DateTime FechaCreacion { get; set; }
+        public DateTime FechaActualizacion { get; set; }
 
     }
 }
