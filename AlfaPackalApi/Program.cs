@@ -19,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(Option =>
  });
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddScoped<IEstudioRespositorio, EstudioRepositorio>();
+builder.Services.AddScoped<IEstudioRepositorio, EstudioRepositorio>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

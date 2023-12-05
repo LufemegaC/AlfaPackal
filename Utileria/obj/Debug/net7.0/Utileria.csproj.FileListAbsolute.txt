@@ -1,0 +1,12 @@
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\bin\Debug\net7.0\Utileria.deps.json
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\bin\Debug\net7.0\Utileria.dll
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\bin\Debug\net7.0\Utileria.pdb
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.csproj.AssemblyReference.cache
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.AssemblyInfoInputs.cache
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.AssemblyInfo.cs
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.csproj.CoreCompileInputs.cache
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.dll
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\refint\Utileria.dll
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\Utileria.pdb
+C:\Users\Desktop\source\repos\AlfaPackal\Utileria\obj\Debug\net7.0\ref\Utileria.dll

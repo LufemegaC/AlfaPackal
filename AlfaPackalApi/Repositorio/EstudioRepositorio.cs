@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AlfaPackalApi.Repositorio
 {
-    public class EstudioRepositorio : Repositorio<Estudio>, IEstudioRespositorio
+    public class EstudioRepositorio : Repositorio<Estudio>, IEstudioRepositorio
     {
         private readonly ApplicationDbContext _db;
         public EstudioRepositorio(ApplicationDbContext db) : base(db)
@@ -23,6 +23,9 @@ namespace AlfaPackalApi.Repositorio
         {
             return await _db.Estudios.AnyAsync(e => e.StudyInstanceUID == studyInstanceUID);
         }
-
+        public async Task<Estudio> GetStudyByInstanceUID(string studyInstanceUID)
+        {
+            return await _db.Estudios.FirstOrDefaultAsync(e => e.StudyInstanceUID == studyInstanceUID);
+        }
     }
 }

@@ -10,8 +10,8 @@ namespace AlfaPackalApi.Modelos
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SerieID { get; set; }
         //Estudio
-        [Required, ForeignKey("Estudio")]
-        public int EstudioID { get; set; }
+        public int? EstudioID { get; set; }
+        [ForeignKey("EstudioID")]
         public virtual Estudio Estudio { get; set; }
         // Descripcion
         public string SeriesDescription { get; set; }

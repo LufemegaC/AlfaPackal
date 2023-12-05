@@ -80,3 +80,9 @@ C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\obj\Debug\net7.0\AlfaPack
 C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\obj\Debug\net7.0\ref\AlfaPackalApi.dll
 C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\AutoMapper.dll
 C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\Utileria.dll
+C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\Utileria.pdb
+C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\CommunityToolkit.HighPerformance.dll
+C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\fo-dicom.core.dll
+C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\fo-dicom.json.dll
+C:\Users\Desktop\source\repos\AlfaPackal\AlfaPackalApi\bin\Debug\net7.0\Microsoft.Bcl.HashCode.dll

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.RegularExpressions;
+using static Utileria.DicomUtilities;
 
 namespace AlfaPackalApi.Controllers
 {
@@ -16,11 +18,11 @@ namespace AlfaPackalApi.Controllers
     {
         private readonly ILogger<EstudioController> _logger;
         // private readonly ApplicationDbContext _db; Antes de implementar "Patron de Repositorio" 
-        private readonly IEstudioRespositorio _estudioRepo;
+        private readonly IEstudioRepositorio _estudioRepo;
         private readonly IMapper _mapper;
         protected APIResponse _response;
 
-        public EstudioController(ILogger<EstudioController> logger, IEstudioRespositorio estudioRepo, IMapper mapper)
+        public EstudioController(ILogger<EstudioController> logger, IEstudioRepositorio estudioRepo, IMapper mapper)
         {
             _logger = logger;
             _estudioRepo = estudioRepo;
@@ -50,34 +52,74 @@ namespace AlfaPackalApi.Controllers
             //return Ok(await _db.Estudios.ToListAsync());
         }
 
-        [HttpGet("estudioId:int", Name = "GetEstudio")]
+        [HttpGet("{id:int}", Name = "GetEstudioByInstanceUID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetEstudio(int estudioId)
+        public async Task<ActionResult<APIResponse>> GetEstudioByInstanceUID(string studyInstanceUID)
         {
+            // ExisteStudyInstanceUID
+            // StudyInstanceUID
             try
             {
-                //Validacion del Id
-                if (estudioId <= 0)
+                //Si el formate de la instancia UID no es valido
+                if (!IsValidDicomUid(studyInstanceUID))
                 {
-                    _logger.LogError("Error al traer estudio con Id " + estudioId);
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsExitoso = false;
                     return BadRequest(_response);
-                }
-                //var estudio = await _db.Estudios.FirstOrDefaultAsync(v => v.Id == id);
-                var estudio = await _estudioRepo.Obtener(v => v.EstudioID == estudioId);
-                if (estudio == null)
+                } 
+                // Localizo registro en el modelo
+                var estudio = await _estudioRepo.GetStudyByInstanceUID(studyInstanceUID);
+                if (estudio == null) // Si el registro no fue encontrado
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsExitoso = false;
                     return NotFound(_response);
                 }
-                _response.Resultado = _mapper.Map<EstudioDto>(estudio);
+                _response.Resultado = _mapper.Map<EstudioDto>(estudio); //Mapeo de informacion 
                 _response.StatusCode = HttpStatusCode.OK;
                 //return Ok(estudio);
-                return Ok(_mapper.Map<EstudioDto>(estudio));
+                return Ok(_mapper.Map<EstudioDto>(estudio)); //Retorna al modelo mapeado
+            }
+            catch (Exception ex)
+            {
+                _response.IsExitoso = false;
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
+            }
+            return _response;
+        }
+
+        [HttpGet("{id:int}", Name = "GetEstudio")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<APIResponse>> GetEstudioID(int id)
+        {
+
+            // ExisteStudyInstanceUID
+            // StudyInstanceUID
+            try
+            {
+                // Validacion del Id
+                if (id <= 0)
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+                // Localizo registro en el modelo
+                var estudio = await _estudioRepo.ObtenerPorID(v => v.EstudioID == id);
+                if (estudio == null) // Si el registro no fue encontrado
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsExitoso = false;
+                    return NotFound(_response);
+                }
+                _response.Resultado = _mapper.Map<EstudioDto>(estudio); //Mapeo de informacion 
+                _response.StatusCode = HttpStatusCode.OK; 
+                //return Ok(estudio);
+                return Ok(_mapper.Map<EstudioDto>(estudio)); //Retorna al modelo mapeado
             }
             catch (Exception ex)
             {
@@ -95,11 +137,11 @@ namespace AlfaPackalApi.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                if (!ModelState.IsValid) //Modelo no valido
                 {
                     return BadRequest(ModelState);
                 }
-                if (CreateDto == null)
+                if (CreateDto == null) //Modelo nulo
                 {
                     return BadRequest(CreateDto);
                 }
@@ -114,9 +156,11 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest("La fecha del estudio no puede ser una fecha futura.");
                 }
                 Estudio modelo = _mapper.Map<Estudio>(CreateDto); //Mapea y deposita la informacion de CreateDto a modelo
-                await _estudioRepo.Crear(modelo);
+                await _estudioRepo.Crear(modelo); //Impacto en BDs
+                //Prepara resupuesta
                 _response.Resultado = modelo;
                 _response.StatusCode = HttpStatusCode.Created;
+                //Rotona metodo Get con entidad registrada
                 return CreatedAtRoute("GetEstudio", new { EstudioID = modelo.EstudioID }, _response);
             }
             catch (Exception ex)
@@ -127,28 +171,30 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
-        [HttpDelete("{estudioId:int}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteEstudio(int estudioId)
+        public async Task<IActionResult> DeleteEstudio(int id)
         {
             try
             {
-                if (estudioId <= 0)
+                // Valido Id
+                if (id <= 0)
                 {
                     _response.IsExitoso = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var estudio = await _estudioRepo.Obtener(v => v.EstudioID == estudioId);
-                if (estudio == null)
+                // Identificar registro a eliminar
+                var estudio = await _estudioRepo.ObtenerPorID(v => v.EstudioID == id);
+                if (estudio == null) //No encontrado
                 {
                     _response.IsExitoso = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
-                await _estudioRepo.Remover(estudio);
+                await _estudioRepo.Remover(estudio); //Impacta BDs
                 _response.StatusCode = HttpStatusCode.NoContent;
                 return Ok(_response);
                 //return NoContent();
@@ -162,56 +208,72 @@ namespace AlfaPackalApi.Controllers
         }
 
         /// ** UPDATE
-        [HttpPut("{estudioId:int}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateEstudio(int estudioId, [FromBody] EstudioUpdateDto UpdateDto)
+        public async Task<IActionResult> UpdateEstudio(int id, [FromBody] EstudioUpdateDto UpdateDto)
         {
-            if (UpdateDto == null || estudioId != UpdateDto.EstudioID)
+            try
+            {
+                // Entidad nulla o con ID distinto
+                if (UpdateDto == null || id != UpdateDto.EstudioID)
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+                // Identificacion de Estudio
+                var estudioExistente = await _estudioRepo.ObtenerPorID(x => x.EstudioID == id);
+                //No encnotrado
+                if (estudioExistente == null)
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+                Estudio modelo = _mapper.Map<Estudio>(UpdateDto);
+                await _estudioRepo.Actualizar(modelo);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
+            }
+            catch(Exception ex)
             {
                 _response.IsExitoso = false;
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                return BadRequest(_response);
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
             }
-
-            var estudioExistente = await _estudioRepo.Obtener(x => x.EstudioID == estudioId);
-            if (estudioExistente == null)
-            {
-                _response.IsExitoso = false;
-                _response.StatusCode = HttpStatusCode.NotFound;
-                return NotFound(_response);
-            }
-
-            Estudio modelo = _mapper.Map<Estudio>(UpdateDto);
-            await _estudioRepo.Actualizar(modelo);
-            _response.StatusCode = HttpStatusCode.NoContent;
             return Ok(_response);
         }
 
-        [HttpPatch("{estudioId:int}")]
+
+        [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdatePartialEstudio(int estudioId, JsonPatchDocument<EstudioUpdateDto> patchDto)
+        public async Task<IActionResult> UpdatePartialEstudio(int id, JsonPatchDocument<EstudioUpdateDto> patchDto)
         {
-            if (patchDto == null || estudioId == 0)
+            // Contenido de Json Nullo o sin ID
+            if (patchDto == null || id == 0)
             {
                 return BadRequest();
             }
-            var estudioExistente = await _estudioRepo.Obtener(x => x.EstudioID == estudioId, tracked: false);
+            // Indetificacion de estudio a modificar
+            var estudioExistente = await _estudioRepo.ObtenerPorID(x => x.EstudioID == id, tracked: false);
             if (estudioExistente == null)
             {
                 return NotFound("Estudio no encontrado.");
             }
+            // Mapeo a dto de estudio existente
             EstudioUpdateDto estudioDto = _mapper.Map<EstudioUpdateDto>(estudioExistente);
-            patchDto.ApplyTo(estudioDto, ModelState);
+            patchDto.ApplyTo(estudioDto, ModelState); // Modificacion a con Dto
+            // Valido entidad modificada
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            // Mapeamos del Dto al modelo
             Estudio modelo = _mapper.Map<Estudio>(estudioDto);
-            await _estudioRepo.Actualizar(modelo);
+            await _estudioRepo.Actualizar(modelo); // Impacamos en BDs
             _response.StatusCode = HttpStatusCode.NoContent;
             return Ok(_response);
         }

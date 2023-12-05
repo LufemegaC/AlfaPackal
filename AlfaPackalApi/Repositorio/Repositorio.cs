@@ -25,7 +25,7 @@ namespace AlfaPackalApi.Repositorio
             await _db.SaveChangesAsync();
         }
 
-        public async Task<T> Obtener(Expression<Func<T, bool>> filtro = null, bool tracked = true)
+        public async Task<T> ObtenerPorID(Expression<Func<T, bool>> filtro = null, bool tracked = true)
         {
             IQueryable<T> query = DbSet;
             if (!tracked)

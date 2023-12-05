@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Utileria.Listados;
 
 namespace AlfaPackalApi.Modelos
 {
@@ -20,7 +21,7 @@ namespace AlfaPackalApi.Modelos
         public DateTime FechaNacimiento { get; set; }
         // Genero/Sexo
         [Required, MaxLength(1)]
-        public string Genero { get; set; }
+        public Genero Genero { get; set; }
         public virtual ICollection<Estudio> Estudios { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaActualizacion { get; set; }

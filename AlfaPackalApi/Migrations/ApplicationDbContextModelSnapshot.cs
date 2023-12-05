@@ -40,6 +40,12 @@ namespace AlfaPackalApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime>("FechaActualizacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -80,13 +86,18 @@ namespace AlfaPackalApi.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("ListaID")
+                    b.Property<DateTime>("FechaActualizacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ListaID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Modality")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Modality")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
 
                     b.Property<int?>("PacienteID")
                         .IsRequired()
@@ -105,11 +116,17 @@ namespace AlfaPackalApi.Migrations
 
                     b.HasKey("EstudioID");
 
+                    b.HasIndex("AccessionNumber")
+                        .HasDatabaseName("IX_Estudios_AccessionNumber");
+
                     b.HasIndex("DoctorID");
 
                     b.HasIndex("ListaID");
 
                     b.HasIndex("PacienteID");
+
+                    b.HasIndex("StudyDate")
+                        .HasDatabaseName("IX_Estudios_StudyDate");
 
                     b.ToTable("Estudios");
                 });
@@ -121,6 +138,12 @@ namespace AlfaPackalApi.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImagenID"));
+
+                    b.Property<DateTime>("FechaActualizacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ImageDescription")
                         .IsRequired()
@@ -143,6 +166,12 @@ namespace AlfaPackalApi.Migrations
 
                     b.HasKey("ImagenID");
 
+                    b.HasIndex("ImageNumber")
+                        .HasDatabaseName("IX_Imagen_ImageNumber");
+
+                    b.HasIndex("SOPInstanceUID")
+                        .HasDatabaseName("IX_Imagen_SOPInstanceUID");
+
                     b.HasIndex("SerieID");
 
                     b.ToTable("Imagenes");
@@ -160,6 +189,12 @@ namespace AlfaPackalApi.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("FechaActualizacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaHora")
                         .HasColumnType("datetime2");
@@ -182,13 +217,18 @@ namespace AlfaPackalApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime>("FechaActualizacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaNacimiento")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Genero")
-                        .IsRequired()
+                    b.Property<int>("Genero")
                         .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("int");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -196,6 +236,9 @@ namespace AlfaPackalApi.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("PacienteID");
+
+                    b.HasIndex("Nombre")
+                        .HasDatabaseName("IX_Paciente_Nombre");
 
                     b.ToTable("Pacientes");
                 });
@@ -208,8 +251,15 @@ namespace AlfaPackalApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SerieID"));
 
-                    b.Property<int>("EstudioID")
+                    b.Property<int?>("EstudioID")
+                        .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaActualizacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SeriesDescription")
                         .IsRequired()
@@ -227,6 +277,12 @@ namespace AlfaPackalApi.Migrations
 
                     b.HasIndex("EstudioID");
 
+                    b.HasIndex("SeriesInstanceUID")
+                        .HasDatabaseName("IX_Serie_SeriesInstanceUID");
+
+                    b.HasIndex("SeriesNumber")
+                        .HasDatabaseName("IX_Serie_SeriesNumber");
+
                     b.ToTable("Series");
                 });
 
@@ -240,9 +296,7 @@ namespace AlfaPackalApi.Migrations
 
                     b.HasOne("AlfaPackalApi.Modelos.ListaDeTrabajo", "ListaDeTrabajo")
                         .WithMany("Estudios")
-                        .HasForeignKey("ListaID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ListaID");
 
                     b.HasOne("AlfaPackalApi.Modelos.Paciente", "Paciente")
                         .WithMany("Estudios")

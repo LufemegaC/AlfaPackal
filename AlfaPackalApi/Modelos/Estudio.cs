@@ -2,21 +2,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using static Utileria.Listados;
 
 namespace AlfaPackalApi.Modelos
 {
-    public enum Modalidad
-    {
-        CT, // Tomografía Computarizada
-        MR, // Resonancia Magnética
-        US, // Ultrasonido
-        XR, // Radiografía
-        NM, // Medicina Nuclear
-        DX, // Radiografía Digital
-        MG, // Mamografía
-        IO, // Imagen Intraoral
-        OT  // Otro
-    }
     public class Estudio : IAuditable
     {
         //Llave primaria
@@ -24,21 +13,19 @@ namespace AlfaPackalApi.Modelos
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EstudioID { get; set; }
         //Paciente
-        [Required, ForeignKey("Paciente")]
         public int? PacienteID { get; set; }
+        [ForeignKey("PacienteID")]
         public virtual Paciente Paciente { get; set; }
-
         //Doctor
-        [Required, ForeignKey("Doctor")]
         public int? DoctorID { get; set; }
+        [ForeignKey("DoctorID")]
         public virtual Doctor Doctor { get; set; }
         //Lista de trabajo
-        [Required, ForeignKey("ListaDeTrabajo")]
-        public int ListaID { get; set; }
+        public int? ListaID { get; set; }
+        [ForeignKey("ListaID")]
         public virtual ListaDeTrabajo ListaDeTrabajo { get; set; }
-
         //Modalidad
-        [Required]
+        [Required, MaxLength(2)]
         public Modalidad Modality { get; set; }
         // Descripcion
         [Required]

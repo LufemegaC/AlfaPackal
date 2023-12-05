@@ -13,8 +13,8 @@ namespace AlfaPackalApi.Modelos
         [Required]
         public string ImageDescription { get; set; } //Descripción de la imagen
         // Serie
-        [Required, ForeignKey("Serie")]
         public int SerieID { get; set; }
+        [Required, ForeignKey("SerieID")]
         public virtual Serie Serie { get; set; }
         // UID
         [Required, MaxLength(64)]

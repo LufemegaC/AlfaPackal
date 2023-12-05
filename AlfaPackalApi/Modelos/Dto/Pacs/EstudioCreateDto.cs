@@ -1,26 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using static Utileria.Listados;
 
 namespace AlfaPackalApi.Modelos.Dto.Pacs
 {
     public class EstudioCreateDto
     {
         //Paciente
-        [Required, ForeignKey("Paciente")]
         public int? PacienteID { get; set; }
-        public virtual Paciente Paciente { get; set; }
-
         //Doctor
-        [Required, ForeignKey("Doctor")]
         public int? DoctorID { get; set; }
-        public virtual Doctor Doctor { get; set; }
-        // Lista de Trabajo
-        [Required, ForeignKey("ListaDeTrabajo")]
-        public int ListaID { get; set; }
-        public virtual ListaDeTrabajo ListaDeTrabajo { get; set; }
+        //Lista de trabajo
+        public int? ListaID { get; set; }
         //Modalidad
-        [Required, MaxLength(50)]
-        public string Modality { get; set; }
+        [Required, MaxLength(2)]
+        public Modalidad Modality { get; set; }
         // Descripcion
         [Required]
         public string DescripcionEstudio { get; set; }
@@ -35,7 +29,5 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
         public string StudyInstanceUID { get; set; }
         [Required, MaxLength(16)]
         public string AccessionNumber { get; set; }
-        public virtual ICollection<Serie> Series { get; set; }
-
     }
 }
