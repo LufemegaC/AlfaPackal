@@ -18,7 +18,7 @@
         public enum Genero
         {
             M, // Masculino
-            F, // Femenino
+            F // Femenino
         }
     }
 }

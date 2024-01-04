@@ -52,25 +52,24 @@ namespace AlfaPackalApi.Controllers
             //return Ok(await _db.Estudios.ToListAsync());
         }
 
-        [HttpGet("{id:int}", Name = "GetEstudioByInstanceUID")]
+        [HttpGet("{instanceUID}", Name = "GetStudyByInstanceUID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetEstudioByInstanceUID(string studyInstanceUID)
+        public async Task<ActionResult<APIResponse>> GetStudyByInstanceUID(string instanceUID)
         {
-            // ExisteStudyInstanceUID
-            // StudyInstanceUID
+        /*Obtiene estudio por instancia UID*/   
             try
             {
                 //Si el formate de la instancia UID no es valido
-                if (!IsValidDicomUid(studyInstanceUID))
+                if (!IsValidDicomUid(instanceUID))
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsExitoso = false;
                     return BadRequest(_response);
                 } 
                 // Localizo registro en el modelo
-                var estudio = await _estudioRepo.GetStudyByInstanceUID(studyInstanceUID);
+                var estudio = await _estudioRepo.GetStudyByInstanceUID(instanceUID);
                 if (estudio == null) // Si el registro no fue encontrado
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -90,19 +89,16 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
-        [HttpGet("{id:int}", Name = "GetEstudio")]
+        [HttpGet("{id:int}", Name = "GetEstudioByID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetEstudioID(int id)
+        public async Task<ActionResult<APIResponse>> GetEstudioByID(int id)
         {
-
-            // ExisteStudyInstanceUID
-            // StudyInstanceUID
+            /* Obtiene estudio por ID ( Control interno ) */
             try
             {
-                // Validacion del Id
-                if (id <= 0)
+                if (id <= 0)  // Validacion del Id
                 {
                     _response.IsExitoso = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -137,11 +133,12 @@ namespace AlfaPackalApi.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) //Modelo no valido
+                //Validaciones 
+                if (!ModelState.IsValid) // Validacion informacion del modelo
                 {
                     return BadRequest(ModelState);
                 }
-                if (CreateDto == null) //Modelo nulo
+                if (CreateDto == null) // Valido que no sea nulo
                 {
                     return BadRequest(CreateDto);
                 }
@@ -149,6 +146,10 @@ namespace AlfaPackalApi.Controllers
                 if (await _estudioRepo.ExisteStudyInstanceUID(CreateDto.StudyInstanceUID))
                 {
                     return BadRequest("Ya existe un estudio con el mismo StudyInstanceUID.");
+                }
+                if(!IsValidDicomUid(CreateDto.StudyInstanceUID))
+                {
+                    return BadRequest("El formato de la instancia UID no es valido.");
                 }
                 // Validación de StudyDate
                 if (CreateDto.StudyDate.Date > DateTime.Today)
@@ -161,7 +162,7 @@ namespace AlfaPackalApi.Controllers
                 _response.Resultado = modelo;
                 _response.StatusCode = HttpStatusCode.Created;
                 //Rotona metodo Get con entidad registrada
-                return CreatedAtRoute("GetEstudio", new { EstudioID = modelo.EstudioID }, _response);
+                return CreatedAtRoute("GetEstudioByID", new { StudyInstanceUID = modelo.StudyInstanceUID }, _response);
             }
             catch (Exception ex)
             {
@@ -171,7 +172,7 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}", Name = "DeleteEstudio")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

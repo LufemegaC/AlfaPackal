@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1Qaz4FYqJdBLs0h9xO4irkCmJ5ENbGuglkku9XOf7B0Kq3BxVlwBc7BWwwCoDCr3Juvzx3VWT1xdfHKyiiQPqg==",
+  "dgSpecHash": "w0Uyrh0gNQMDR3NYfrbB4UgGcM+2ofe0xR6i3vBVA4TKSZz9N+VhYzaV8gY988fIMek1hJ+b3aK4Jbo0okpfOQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\source\\repos\\AlfaPackal\\AlfaPackalApi\\AlfaPackalApi.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\source\\repos\\AlfaPackal\\AlfaPackalApi\\Api_PACsServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
@@ -12,6 +12,7 @@
     "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom\\5.1.1\\fo-dicom.5.1.1.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom.json\\5.1.0\\fo-dicom.json.5.1.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\7.0.14\\microsoft.aspnetcore.jsonpatch.7.0.14.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\7.0.14\\microsoft.aspnetcore.mvc.newtonsoftjson.7.0.14.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.0\\microsoft.aspnetcore.openapi.7.0.0.nupkg.sha512",
@@ -65,6 +66,7 @@
     "C:\\Users\\Desktop\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\system.formats.asn1\\5.0.0\\system.formats.asn1.5.0.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.24.0\\system.identitymodel.tokens.jwt.6.24.0.nupkg.sha512",
+    "C:\\Users\\Desktop\\.nuget\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",

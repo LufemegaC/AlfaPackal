@@ -3,10 +3,10 @@ using AlfaPackalApi.Modelos.Dto;
 using AlfaPackalApi.Modelos.Dto.Pacs;
 using AlfaPackalApi.Repositorio.IRepositorio;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Utileria.DicomUtilities;
 
 namespace AlfaPackalApi.Controllers
 {
@@ -80,6 +80,41 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
+        [HttpGet("{instanceUID}", Name = "GetImageByIdInstanceUID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<APIResponse>> GetImageByIdInstanceUID(string instanceUID)
+        {
+            try
+            {
+                //Si el formate de la instancia UID no es valido
+                if (!IsValidDicomUid(instanceUID))
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsExitoso = false;
+                    return BadRequest(_response);
+                }
+                // Localizo registro en el modelo
+                var imagen = await _imagenRepo.GetImageByInstanceUID(instanceUID);
+                if (imagen == null) // Si el registro no fue encontrado
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsExitoso = false;
+                    return NotFound(_response);
+                }
+                _response.Resultado = _mapper.Map<ImagenDto>(imagen);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_mapper.Map<ImagenDto>(imagen));
+            }
+            catch (Exception ex)
+            {
+                _response.IsExitoso = false;
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
+            }
+            return _response;
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,6 +124,10 @@ namespace AlfaPackalApi.Controllers
             try
             {
                 if (!ModelState.IsValid || CreateDto == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                if(!IsValidDicomUid(CreateDto.SOPInstanceUID))
                 {
                     return BadRequest(ModelState);
                 }

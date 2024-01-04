@@ -15,7 +15,7 @@ namespace Utileria
         private static readonly Regex DicomUidRegex = new Regex(@"^\d+(\.\d+)+$");
 
         // Método para validar UIDs DICOM
-        public static bool IsValidDicomUid(string uid)
+        public static  bool IsValidDicomUid(string uid)
         {
             return !string.IsNullOrWhiteSpace(uid) && uid.Length <= 64 && DicomUidRegex.IsMatch(uid);
         }

@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="fo-dicom" Version="5.1.1" />
+	<PackageReference Include="CommunityToolkit.HighPerformance" version="8.2.0" />
+	<PackageReference Include="fo-dicom.Codecs" version="5.11.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.14" />
+	<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" version="6.0.0" />
+	<PackageReference Include="Microsoft.Bcl.HashCode" version="1.1.1" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection" version="6.0.1" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Logging" version="6.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" version="6.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Options" version="6.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Primitives" version="6.0.0" />
+	<PackageReference Include="Microsoft.NETCore.Platforms" version="1.1.0" />
+	<PackageReference Include="NETStandard.Library" version="2.0.3" />
+	<PackageReference Include="System.Buffers" version="4.5.1" />
+	<PackageReference Include="System.ComponentModel.Composition" version="8.0.0" />
+	<PackageReference Include="System.Diagnostics.DiagnosticSource" version="6.0.0" />
+	<PackageReference Include="System.Memory" version="4.5.5" />
+	<PackageReference Include="System.Numerics.Vectors" version="4.5.0" />
+	<PackageReference Include="System.Runtime.CompilerServices.Unsafe" version="6.0.0" />
+	<PackageReference Include="System.Text.Encoding.CodePages" version="6.0.0" />
+	<PackageReference Include="System.Text.Encodings.Web" version="6.0.0" />
+	<PackageReference Include="System.Text.Json" version="6.0.7" />
+	<PackageReference Include="System.Threading.Channels" version="6.0.0" />
+	<PackageReference Include="System.Threading.Tasks.Extensions" version="4.5.4" />
+	<PackageReference Include="System.ValueTuple" version="4.5.0" /> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Utileria\Utileria.csproj" />
+  </ItemGroup>
+
+</Project>

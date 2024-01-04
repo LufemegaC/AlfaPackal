@@ -105,6 +105,42 @@ namespace AlfaPackalApi.Controllers
             }
             return _response;
         }
+   
+        // DELETE: api/Paciente/5
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeletePaciente(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PacienteID == id);
+                if (paciente == null)
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+
+                await _pacienteRepo.Remover(paciente);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsExitoso = false;
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
+            }
+            return BadRequest(_response);
+        }
 
         // PUT: api/Paciente/5
         [HttpPut("{id:int}")]
@@ -143,42 +179,11 @@ namespace AlfaPackalApi.Controllers
             return BadRequest(_response);
         }
 
-        // DELETE: api/Paciente/5
-        [HttpDelete("{id:int}")]
+
+        [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeletePaciente(int id)
-        {
-            try
-            {
-                if (id <= 0)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
-
-                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PacienteID == id);
-                if (paciente == null)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response);
-                }
-
-                await _pacienteRepo.Remover(paciente);
-                _response.StatusCode = HttpStatusCode.NoContent;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsExitoso = false;
-                _response.ErrorsMessages = new List<string> { ex.ToString() };
-            }
-            return BadRequest(_response);
-        }
-
         public async Task<IActionResult> UpdatePartialPaciente(int id, JsonPatchDocument<PacienteUpdateDto> patchDto)
         {
             try

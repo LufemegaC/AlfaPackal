@@ -3,10 +3,12 @@ using AlfaPackalApi.Modelos.Dto;
 using AlfaPackalApi.Modelos;
 using AlfaPackalApi.Repositorio.IRepositorio;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Azure;
+using static Utileria.DicomUtilities;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AlfaPackalApi.Controllers
 {
@@ -47,11 +49,11 @@ namespace AlfaPackalApi.Controllers
         }
 
         // GET: api/Serie/5
-        [HttpGet("{id:int}", Name = "GetSerie")]
+        [HttpGet("{id:int}", Name = "GetSerieById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetSerie(int id)
+        public async Task<ActionResult<APIResponse>> GetSerieById(int id)
         {
             try
             {
@@ -81,6 +83,40 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
+        // GET: api/Serie/5
+        [HttpGet("{instanceUID}", Name = "GetSerieByIstanceUID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<APIResponse>> GetSerieByIstanceUID(string instanceUID)
+        {
+            try
+            {
+                if (!IsValidDicomUid(instanceUID))
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                var serie = await _serieRepo.GetSerieByInstanceUID(instanceUID);
+                if (serie == null)
+                {
+                    _response.IsExitoso = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+                _response.Resultado = _mapper.Map<SerieDto>(serie);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsExitoso = false;
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
+            }
+            return _response;
+        }
         // POST: api/Serie
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -92,6 +128,15 @@ namespace AlfaPackalApi.Controllers
                 if (!ModelState.IsValid || createDto == null)
                 {
                     return BadRequest(ModelState);
+                }
+                if (!IsValidDicomUid(createDto.SeriesInstanceUID))
+                {
+                    return BadRequest("El formato de la instancia UID no es valido.");
+                }
+                // Validación específica para StudyInstanceUID
+                if (await _serieRepo.ExisteSeriesInstanceUID(createDto.SeriesInstanceUID))
+                {
+                    return BadRequest("Ya existe un estudio con el mismo StudyInstanceUID.");
                 }
                 var serie = _mapper.Map<Serie>(createDto);
                 await _serieRepo.Crear(serie);

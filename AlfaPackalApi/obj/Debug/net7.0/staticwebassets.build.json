@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "vDEy4ZCxz5fBFHETtUOEOu1fzPkLuiAhpd5j2y9RK7M=",
-  "Source": "AlfaPackalApi",
-  "BasePath": "_content/AlfaPackalApi",
+  "Hash": "GRtZ09hODrcXuUFT5EiMWm4MW6aXkkR7WyEfAu/yeFU=",
+  "Source": "Api_PACsServer",
+  "BasePath": "_content/Api_PACsServer",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

@@ -1,0 +1,52 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model InterfazBasica_DCStore.Models.ViewModels.DicomServerVM
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="border p-3 mt-4">
+                <h2 class="text-primary">Servidor</h2>
+                <hr />
+            </div>
+            @* <div asp-validation-summary="All"></div>*@
+            @*<div class="mb-3 form-label mt-4">
+                <label for="aet">AE Title:</label>
+                <input type="text" id="aet" name="aet" class="form-control" placeholder="Nombre de Entidad">
+                <span class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-label mt-4">
+                <label for="port">Puerto:</label>
+                <input type="text" id="port" name="port" class="form-control" placeholder="Puerto">
+                <span class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label for="ServerCallingAe" class="form-label mt-4">AE Title:</label>
+                <input asp-for="CallingAe" type="text" id="ServerAET" class="form-control" value="CallingAe" readonly />
+            </div>
+            <div class="form-group">
+                <label for="ServerPort" class="form-label mt-4">Puerto:</label>
+                <input asp-for="Port" type="text" id="ServerPort" class="form-control" value="Port" readonly />
+            </div>
+            <div class="form-group">
+                <label for="ServerHost" class="form-label mt-4">Host:</label>
+                <input asp-for="Host" type="text" id="ServerHost" class="form-control" value="Host" readonly />
+            </div>
+            <div class="d-flex justify-content-evenly mt-3">
+                <button asp-controller="Gateway" asp-action="StartServer" class="btn btn-primary mb-3 " style="width:150px">Inicio</button>
+                <a asp-controller="Gateway" asp-action="StopDICOMServer" class="btn btn-secondary mb-3" style="width:150px">
+                    Cerrar
+                </a>
+            </div>
+            @*<div class="form-group">
+                <label for="ServerEstatus" class="form-label mt-4">Estatus:</label>
+                <input asp-for="Server.Estatus" type="text" id="ServerEstatus" class="form-control" value="@Model.Server.Estatus" readonly />
+            </div>*@
+        </div>
+        <div class="col-12 col-md-4">
+            <button asp-controller="Server" asp-action="Index" class="btn btn-primary mb-3 " style="width:150px">Terminar Prueba</button>
+        </div>
+    </div>
+</form>

@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="fo-dicom" Version="5.1.1" />
     <PackageReference Include="fo-dicom.json" Version="5.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 
 </Project>
