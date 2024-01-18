@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using static Utileria.Listados;
+using System.Diagnostics;
 
 namespace AlfaPackalApi.Modelos
 {
@@ -11,38 +12,42 @@ namespace AlfaPackalApi.Modelos
         //Llave primaria
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int EstudioID { get; set; }
-        //Paciente
-        public int? PacienteID { get; set; }
-        [ForeignKey("PacienteID")]
-        public virtual Paciente Paciente { get; set; }
-        //Doctor
-        public int? DoctorID { get; set; }
-        [ForeignKey("DoctorID")]
-        public virtual Doctor Doctor { get; set; }
-        //Lista de trabajo
-        public int? ListaID { get; set; }
-        [ForeignKey("ListaID")]
-        public virtual ListaDeTrabajo ListaDeTrabajo { get; set; }
-        //Modalidad
-        [Required, MaxLength(2)]
-        public Modalidad Modality { get; set; }
-        // Descripcion
+        // ID Interno de estudio
+        public int PACS_EstudioID { get; set; } 
+        // ID de estudio Dicom/Metadato
         [Required]
-        public string DescripcionEstudio { get; set; }
+        public string StudyInstanceUID { get; set; }
+        // ID interno de paciente 
+        public int? PACS_PatientID { get; set; }
+        [ForeignKey("PACS_PatientID")]
+        public virtual Paciente Paciente { get; set; }
+        public string? StudyComments { get; set; }
+        // Modalidad de estudio Dicom/Metadato
+        [Required]
+        public string? Modality { get; set; }
+        // Descripcion del estudio DICOM/Metadatos
+        public string? StudyDescription { get; set; }
+        // Fecha en que realizó el estudio DICOM/Metadatos
         [Required]
         public DateTime StudyDate { get; set; }
-        [Required]
-        public int TiempoEstudio { get; set; }
-
-        [Required, MaxLength(100)]
-        public string BodyPartExamined { get; set; }
-        [Required, MaxLength(64)]
-        public string StudyInstanceUID { get; set; }
-        [Required, MaxLength(16)]
+        // Parte del cuerpo examinada DICOM/Metadatos
+        public string? BodyPartExamined { get; set; }
+        // Numero de accesso DICOM/Metadato
+        [Required, MaxLength(64)]  
         public string AccessionNumber { get; set; }
+        // Nombre de institucion que realiza el estudio DICOM/Metadatos
+        public string? InstitutionName { get; set; }
+        // Informacion de participantes en el estudio
+        public string? PerformingPhysicianName { get; set; } //Medico
+        public string? OperatorName { get; set; }//Operador
+        //Parametros tecnicos
+        public string? ExposureTime { get; set; } //Tiempo de exposicion 
+        public string? KVP { get; set; }
+        // Numero de Frames/Imagenes
+        public int? NumberOfFrames { get; set; }
+        // Comentarios de imagen
         public virtual ICollection<Serie> Series { get; set; }
-        //public virtual ICollection<ListaDeTrabajo> ListaDeTrabajos { get; set; }
+        // Datos de bitacora
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaActualizacion { get; set; }
     }

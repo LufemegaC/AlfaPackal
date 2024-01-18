@@ -27,8 +27,8 @@
                 <!-- Botones de Control -->
                 <div class="col-md-6">
                     <div class="form-group">
-                        <button type="button" asp-action="Connect" class="btn btn-success mb-3">Conectar</button>
-                        <button type="button" asp-action="Disconnect" class="btn btn-warning mb-3">Desconectar</button>
+                        <button type="submit" asp-action="Connect" class="btn btn-success mb-3">Conectar</button>
+                        <button type="submit" asp-action="Disconnect" class="btn btn-warning mb-3">Desconectar</button>
                         <button asp-action="Exit" class="btn btn-danger mb-3">Salir</button>
                     </div>
                 </div>
@@ -42,7 +42,8 @@
                         <input type="file" asp-for="DicomFile" class="form-control" id="dicomFile">
                     </div>
                     <div class="form-group">
-                        <button type="submit" asp-action="SendDicomFile" class="btn btn-primary">Enviar Archivo</button>
+                        <button type="submit" asp-action="SendDicomFile" class="btn btn-primary" id="sendButton" disabled>Enviar Archivo</button>
+                        @*<button type="submit" asp-action="SendDicomFile" class="btn btn-primary">Enviar Archivo</button>*@
                     </div>
                 </div>
             </div>

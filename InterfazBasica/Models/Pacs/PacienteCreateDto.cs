@@ -6,18 +6,20 @@ namespace InterfazBasica.Models.Pacs
 {
     public class PacienteCreateDto
     {
-        // Nombre del paciente
-        [Required, MaxLength(100)]
-        public string Nombre { get; set; }
-        // Apellido del paciente
-        [Required, MaxLength(100)]
-        public string Apellido { get; set; }
-        // Fecha de Nacimiento
+        // ID del paciente DICOM/Metadato
         [Required]
-        public DateTime FechaNacimiento { get; set; }
-        // Genero/Sexo
-        [Required, MaxLength(1)]
-        public Genero Genero { get; set; }
-        public DateTime FechaCreacion { get; set; }
+        public int PatientID { get; set; }
+        // Nombre del paciente/Metadato
+        // Composicion FirstName+MiddleName+LastName+Prefix+Suffix
+        [Required, MaxLength(100)]
+        public string? PatientName { get; set; }
+        // Edad del paciente DICOM/Metadato
+        public string? PatientAge { get; set; }
+        // Sexo del paciente DICOM/Metadato
+        public string? PatientSex { get; set; }
+        // Peso del paciente DICOM/Metadato
+        public string? PatientWeight { get; set; }
+        // Fecha de nacimiento
+        public DateTime PatientBirthDate { get; set; }
     }
 }

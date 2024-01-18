@@ -1,12 +1,23 @@
-﻿using FellowOakDicom;
+﻿using AutoMapper;
+using FellowOakDicom;
 using FellowOakDicom.Network;
+using InterfazBasica.Models.Pacs;
+using InterfazBasica.Service;
+using InterfazBasica.Service.IService;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Utileria;
+using static Utileria.Listados;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
     public class CStoreSCP : DicomService, IDicomServiceProvider, IDicomCStoreProvider, IDicomCEchoProvider
     {
+        private IEstudioService _estudioService;
+        private readonly IMapper _mapper;
+
+        private DicomFile dicomFile;
+
         private static readonly DicomTransferSyntax[] _acceptedTransferSyntaxes = new DicomTransferSyntax[]
             {
                DicomTransferSyntax.ExplicitVRLittleEndian,
@@ -34,9 +45,11 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         };
 
 
-        public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies)
+        public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies, IEstudioService estudioService, IMapper mapper)
             : base(stream, fallbackEncoding, log, dependencies)
         {
+            _estudioService = estudioService;
+            _mapper = mapper;
         }
 
 
@@ -86,8 +99,14 @@ namespace InterfazBasica_DCStore.Service.DicomServices
 
         public async Task<DicomCStoreResponse> OnCStoreRequestAsync(DicomCStoreRequest request)
         {
+            //Estudio
             var studyUid = request.Dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID).Trim();
             var instUid = request.SOPInstanceUID.UID;
+            //Paciente info
+            PacienteCreateDto pacienteDto = _mapper.Map<PacienteCreateDto>(request.Dataset);
+            //Estudio info
+            EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
+
 
             var path = Path.GetFullPath(DS.RutaAlmacen);
             path = Path.Combine(path, studyUid);

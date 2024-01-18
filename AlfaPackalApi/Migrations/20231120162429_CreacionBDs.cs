@@ -45,7 +45,7 @@ namespace AlfaPackalApi.Migrations
                 name: "Pacientes",
                 columns: table => new
                 {
-                    PacienteID = table.Column<int>(type: "int", nullable: false)
+                    PatientID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -54,7 +54,7 @@ namespace AlfaPackalApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pacientes", x => x.PacienteID);
+                    table.PrimaryKey("PK_Pacientes", x => x.PatientID);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +63,7 @@ namespace AlfaPackalApi.Migrations
                 {
                     EstudioID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PacienteID = table.Column<int>(type: "int", nullable: false),
+                    PatientID = table.Column<int>(type: "int", nullable: false),
                     DoctorID = table.Column<int>(type: "int", nullable: false),
                     Modality = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DescripcionEstudio = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -91,9 +91,9 @@ namespace AlfaPackalApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Estudios_Pacientes_PacienteID",
-                        column: x => x.PacienteID,
+                        column: x => x.PatientID,
                         principalTable: "Pacientes",
-                        principalColumn: "PacienteID",
+                        principalColumn: "PatientID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -155,7 +155,7 @@ namespace AlfaPackalApi.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Estudios_PacienteID",
                 table: "Estudios",
-                column: "PacienteID");
+                column: "PatientID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Imagenes_SerieID",

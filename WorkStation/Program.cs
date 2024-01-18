@@ -10,11 +10,11 @@ builder.Services.AddControllersWithViews();
 // Registrar MiDicomClient como la implementación de IDicomClient
 builder.Services.AddScoped<IDicomClient>(provider =>
     DicomClientFactory.Create(
-               GetLocalIPAddress(),
-               GetServerPort(0),
-               false,
-               "SCU",
-               "STORESCP"
+               GetLocalIPAddress(), // Direccion IP
+               GetServerPort(0), // Puerto
+               false,// useTIs ( Seguridad adicional )
+               "SCU", //CallingAe
+               "STORESCP" //CalledAe
            )
 );
 

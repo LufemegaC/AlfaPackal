@@ -61,7 +61,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
 
-                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PacienteID == id);
+                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PatientID == id);
                 if (paciente == null)
                 {
                     _response.IsExitoso = false;
@@ -96,7 +96,7 @@ namespace AlfaPackalApi.Controllers
                 await _pacienteRepo.Crear(paciente);
                 _response.Resultado = paciente;
                 _response.StatusCode = HttpStatusCode.Created;
-                return CreatedAtRoute("GetPaciente", new { id = paciente.PacienteID }, _response);
+                return CreatedAtRoute("GetPaciente", new { id = paciente.PatientID }, _response);
             }
             catch (Exception ex)
             {
@@ -122,7 +122,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
 
-                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PacienteID == id);
+                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PatientID == id);
                 if (paciente == null)
                 {
                     _response.IsExitoso = false;
@@ -142,42 +142,43 @@ namespace AlfaPackalApi.Controllers
             return BadRequest(_response);
         }
 
+        // 18/01/24.-Luis Felipe MG: Codigo comentado en esta version demo
         // PUT: api/Paciente/5
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacienteUpdateDto updateDto)
-        {
-            try
-            {
-                if (updateDto == null || id != updateDto.PacienteID)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
+        //[HttpPut("{id:int}")]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacienteUpdateDto updateDto)
+        //{
+        //    try
+        //    {
+        //        if (updateDto == null || id != updateDto.PACS_PatientID)
+        //        {
+        //            _response.IsExitoso = false;
+        //            _response.StatusCode = HttpStatusCode.BadRequest;
+        //            return BadRequest(_response);
+        //        }
 
-                var pacienteExistente = await _pacienteRepo.ObtenerPorID(x => x.PacienteID == id);
-                if (pacienteExistente == null)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response);
-                }
+        //        var pacienteExistente = await _pacienteRepo.ObtenerPorID(x => x.PatientID == id);
+        //        if (pacienteExistente == null)
+        //        {
+        //            _response.IsExitoso = false;
+        //            _response.StatusCode = HttpStatusCode.NotFound;
+        //            return NotFound(_response);
+        //        }
 
-                _mapper.Map(updateDto, pacienteExistente);
-                await _pacienteRepo.Actualizar(pacienteExistente);
-                _response.StatusCode = HttpStatusCode.NoContent;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsExitoso = false;
-                _response.ErrorsMessages = new List<string> { ex.ToString() };
-            }
-            return BadRequest(_response);
-        }
+        //        _mapper.Map(updateDto, pacienteExistente);
+        //        await _pacienteRepo.Actualizar(pacienteExistente);
+        //        _response.StatusCode = HttpStatusCode.NoContent;
+        //        return Ok(_response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _response.IsExitoso = false;
+        //        _response.ErrorsMessages = new List<string> { ex.ToString() };
+        //    }
+        //    return BadRequest(_response);
+        //}
 
 
         [HttpPatch("{id:int}")]
@@ -193,7 +194,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest();
                 }
 
-                var pacienteExistente = await _pacienteRepo.ObtenerPorID(x => x.PacienteID == id, tracked: false);
+                var pacienteExistente = await _pacienteRepo.ObtenerPorID(x => x.PatientID == id, tracked: false);
                 if (pacienteExistente == null)
                 {
                     return NotFound("Paciente no encontrado.");

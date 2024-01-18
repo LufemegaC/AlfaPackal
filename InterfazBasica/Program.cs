@@ -1,5 +1,7 @@
 using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
+using InterfazBasica.Service;
+using InterfazBasica.Service.IService;
 using InterfazBasica_DCStore;
 using InterfazBasica_DCStore.Service.DicomServices;
 using static Utileria.GeneralFunctions;
@@ -8,11 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IDicomServer>(storeSCP =>
-    DicomServerFactory.Create<CStoreSCP>(GetServerPort(0))
-    );
-
-builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddAutoMapper(typeof(MappingConfig)); //Configuracion de mapeo
+builder.Services.AddHttpClient<IEstudioService, EstudioService>(); // Cliente Http de estudio
+builder.Services.AddScoped<IEstudioService, EstudioService>(); // Inyeccion de dependencia para estudio
+builder.Services.AddSingleton<IDicomServer>(dicomServer =>DicomServerFactory.Create<CStoreSCP>(GetServerPort(0))); // Configuracion de servidor DICOM
 
 var app = builder.Build();
 

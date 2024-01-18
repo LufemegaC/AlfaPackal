@@ -6,21 +6,31 @@ namespace InterfazBasica.Models.Pacs
 {
     public class PacienteUpdateDto
     {
-        // ID del paciente
-        [Key]
-        public int PacienteID { get; set; }
-        // Nombre del paciente
-        [Required, MaxLength(100)]
-        public string Nombre { get; set; }
-        // Apellido del paciente
-        [Required, MaxLength(100)]
-        public string Apellido { get; set; }
-        // Fecha de Nacimiento
-        [Required]
-        public DateTime FechaNacimiento { get; set; }
-        // Genero/Sexo
-        [Required, MaxLength(1)]
-        public Genero Genero { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        // 16/01/2024 Luis Felipe MG.- Comento toda la clase por que el UPDATE
+        // no estará presente en esta version
+
+        //public int PACS_PatientID { get; set; }
+        //// ID del paciente DICOM/Metadato
+        //public int PatientID { get; set; }
+        //// Nombre del paciente/Metadato
+        //[Required, MaxLength(100)]
+        //public string? PatientName { get; set; }
+        ////Nombre descompuesto
+        ////public int FirstName { get; set; }
+        ////public int LastName { get; set; }
+        ////public int MiddleName { get; set; }
+        ////public int Prefix { get; set; } //( Sr, Mrts
+        ////public int Suffix { get; set; }
+        //// Edad del paciente DICOM/Metadato
+        //public string? PatientAge { get; set; }
+        //// Sexo del paciente DICOM/Metadato
+        //public string? PatientSex { get; set; }
+        //// Peso del paciente DICOM/Metadato
+        //public string? PatientWeight { get; set; }
+        //// Fecha de nacimiento
+        //public DateTime PatientBirthDate { get; set; }
+        //public virtual ICollection<Estudio> Estudios { get; set; }
+        //public DateTime FechaCreacion { get; set; }
+        //public DateTime FechaActualizacion { get; set; }
     }
 }

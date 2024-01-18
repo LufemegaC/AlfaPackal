@@ -5,17 +5,16 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 {
     public class ImagenCreateDto
     {
-        [Required]
-        public string ImageDescription { get; set; } //Descripción de la imagen
-        // Serie
-        public int SerieID { get; set; }
         // UID
         [Required, MaxLength(64)]
         public string SOPInstanceUID { get; set; }
         // Numero de la imagen dentro de la serie
+        public string ImageComments { get; set; } //Descripción de la imagen
+        // Union con entidad Serie
+        public int PACS_SerieID { get; set; } 
+		[Required]
         public int ImageNumber { get; set; }
         // Direccion URL de la imagen
-        [Required]
-        public string ImageLocation { get; set; }
+        public string? ImageLocation { get; set; } //Ubicación de la imagen (por ejemplo, la URL de la imagen en Azure)
     }
 }

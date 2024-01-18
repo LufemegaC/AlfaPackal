@@ -91,7 +91,7 @@ namespace AlfaPackalApi.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("PacienteID")
+                    b.Property<int?>("PatientID")
                         .IsRequired()
                         .HasColumnType("int");
 
@@ -112,7 +112,7 @@ namespace AlfaPackalApi.Migrations
 
                     b.HasIndex("ListaID");
 
-                    b.HasIndex("PacienteID");
+                    b.HasIndex("PatientID");
 
                     b.ToTable("Estudios");
                 });
@@ -174,11 +174,11 @@ namespace AlfaPackalApi.Migrations
 
             modelBuilder.Entity("AlfaPackalApi.Modelos.Paciente", b =>
                 {
-                    b.Property<int>("PacienteID")
+                    b.Property<int>("PatientID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PacienteID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientID"));
 
                     b.Property<string>("Apellido")
                         .IsRequired()
@@ -198,7 +198,7 @@ namespace AlfaPackalApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("PacienteID");
+                    b.HasKey("PatientID");
 
                     b.ToTable("Pacientes");
                 });
@@ -249,7 +249,7 @@ namespace AlfaPackalApi.Migrations
 
                     b.HasOne("AlfaPackalApi.Modelos.Paciente", "Paciente")
                         .WithMany("Estudios")
-                        .HasForeignKey("PacienteID")
+                        .HasForeignKey("PatientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

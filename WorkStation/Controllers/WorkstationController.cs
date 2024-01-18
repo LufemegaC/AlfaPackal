@@ -49,6 +49,10 @@ namespace WorkStation.Controllers
                     ViewBag.Message = $"Error: {ex.Message}";
                 }
             }
+            else
+            {
+                ViewBag.Message = "Debe seleccionar un archivo DICOM";
+            }
             return View("Index");
         }
 

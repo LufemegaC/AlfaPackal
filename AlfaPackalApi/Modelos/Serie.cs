@@ -6,12 +6,12 @@ namespace AlfaPackalApi.Modelos
 {
     public class Serie : IAuditable
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int SerieID { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PACS_SerieID { get; set; }
         //Estudio
-        public int? EstudioID { get; set; }
-        [ForeignKey("EstudioID")]
+        [Required]
+        public int PACS_EstudioID { get; set; }
+        [ForeignKey("PACS_EstudioID")]
         public virtual Estudio Estudio { get; set; }
         // Descripcion
         public string SeriesDescription { get; set; }

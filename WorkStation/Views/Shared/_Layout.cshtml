@@ -47,6 +47,20 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @*Validacion de carga de archivo DICOM*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var fileInput = document.getElementById('dicomFile');
+            var sendButton = document.getElementById('sendButton');
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    sendButton.disabled = false;
+                } else {
+                    sendButton.disabled = true;
+                }
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

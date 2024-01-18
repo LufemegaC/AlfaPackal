@@ -64,7 +64,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
 
-                var serie = await _serieRepo.ObtenerPorID(v => v.SerieID == id);
+                var serie = await _serieRepo.ObtenerPorID(v => v.PACS_SerieID == id);
                 if (serie == null)
                 {
                     _response.IsExitoso = false;
@@ -142,7 +142,7 @@ namespace AlfaPackalApi.Controllers
                 await _serieRepo.Crear(serie);
                 _response.Resultado = serie;
                 _response.StatusCode = HttpStatusCode.Created;
-                return CreatedAtRoute("GetSerie", new { id = serie.SerieID }, _response);
+                return CreatedAtRoute("GetSerie", new { id = serie.PACS_SerieID }, _response);
             }
             catch (Exception ex)
             {
@@ -152,42 +152,43 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
+        // 18/01/24.-Luis Felipe MG: Codigo comentado en esta version demo
         // PUT: api/Serie/5
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateSerie(int id, [FromBody] SerieUpdateDto updateDto)
-        {
-            try
-            {
-                if (updateDto == null || id != updateDto.SerieID)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
+        //[HttpPut("{id:int}")]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> UpdateSerie(int id, [FromBody] SerieUpdateDto updateDto)
+        //{
+        //    try
+        //    {
+        //        if (updateDto == null || id != updateDto.PACS_SerieID)
+        //        {
+        //            _response.IsExitoso = false;
+        //            _response.StatusCode = HttpStatusCode.BadRequest;
+        //            return BadRequest(_response);
+        //        }
 
-                var serieExistente = await _serieRepo.ObtenerPorID(x => x.SerieID == id);
-                if (serieExistente == null)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response);
-                }
+        //        var serieExistente = await _serieRepo.ObtenerPorID(x => x.PACS_SerieID == id);
+        //        if (serieExistente == null)
+        //        {
+        //            _response.IsExitoso = false;
+        //            _response.StatusCode = HttpStatusCode.NotFound;
+        //            return NotFound(_response);
+        //        }
 
-                _mapper.Map(updateDto, serieExistente);
-                await _serieRepo.Actualizar(serieExistente);
-                _response.StatusCode = HttpStatusCode.NoContent;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsExitoso = false;
-                _response.ErrorsMessages = new List<string> { ex.ToString() };
-            }
-            return BadRequest(_response);
-        }
+        //        _mapper.Map(updateDto, serieExistente);
+        //        await _serieRepo.Actualizar(serieExistente);
+        //        _response.StatusCode = HttpStatusCode.NoContent;
+        //        return Ok(_response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _response.IsExitoso = false;
+        //        _response.ErrorsMessages = new List<string> { ex.ToString() };
+        //    }
+        //    return BadRequest(_response);
+        //}
 
         // DELETE: api/Serie/5
         [HttpDelete("{id:int}")]
@@ -205,7 +206,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
 
-                var serie = await _serieRepo.ObtenerPorID(v => v.SerieID == id);
+                var serie = await _serieRepo.ObtenerPorID(v => v.PACS_SerieID == id);
                 if (serie == null)
                 {
                     _response.IsExitoso = false;
@@ -239,7 +240,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest();
                 }
 
-                var serieExistente = await _serieRepo.ObtenerPorID(x => x.SerieID == id, tracked: false);
+                var serieExistente = await _serieRepo.ObtenerPorID(x => x.PACS_SerieID == id, tracked: false);
                 if (serieExistente == null)
                 {
                     return NotFound("Serie no encontrada.");

@@ -21,7 +21,8 @@ namespace AlfaPackalApi.Repositorio
         }
         public async Task<bool> ExisteNombre(string nombre)
         {
-            return await _db.Pacientes.AnyAsync(e => e.Nombre == nombre);
+            //return await _db.Pacientes.AnyAsync(e => e.PatientName == nombre);
+            return await _db.Pacientes.AnyAsync(e => e.PatientName.ToLower().Contains(nombre.ToLower()));
         }
 
     }

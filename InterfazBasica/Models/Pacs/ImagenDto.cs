@@ -5,21 +5,14 @@ namespace InterfazBasica.Models.Pacs
 {
     public class ImagenDto
     {
-        // PK de la imagen
-        [Key]
-        public int ImagenID { get; set; }
-
-        [Required]
-        public string ImageDescription { get; set; } //Descripción de la imagen
-        // Serie
-        public int SerieID { get; set; }
-        // UID
-        [Required, MaxLength(64)]
+        [Display(Name = "ID de imagen")]
+		[Required]
         public string SOPInstanceUID { get; set; }
         // Numero de la imagen dentro de la serie
+        [Required, MaxLength(64),Display(Name = "Numero de imagen")]
         public int ImageNumber { get; set; }
-        // Direccion URL de la imagen
-        [Required]
-        public string ImageLocation { get; set; }
+        [Display(Name = "Comentario de imagen")]
+        public string ImageComments { get; set; } //Descripción de la imagen
+
     }
 }

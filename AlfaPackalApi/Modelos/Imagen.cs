@@ -6,20 +6,18 @@ namespace AlfaPackalApi.Modelos
     public class Imagen : IAuditable
     {
         // PK de la imagen
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ImagenID { get; set; }
-
-        [Required]
-        public string ImageDescription { get; set; } //Descripción de la imagen
-        // Serie
-        public int SerieID { get; set; }
-        [Required, ForeignKey("SerieID")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PACS_ImagenID { get; set; }
+        public string ImageComments { get; set; } //Descripción de la imagen
+        // Union con entidad Serie
+        public int PACS_SerieID { get; set; }
+        [Required, ForeignKey("PACS_SerieID")]
         public virtual Serie Serie { get; set; }
         // UID
         [Required, MaxLength(64)]
         public string SOPInstanceUID { get; set; }
         // Numero de la imagen dentro de la serie
+		[Required]
         public int ImageNumber { get; set; }
         // Direccion URL de la imagen
         [Required]

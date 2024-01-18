@@ -6,28 +6,34 @@ namespace InterfazBasica.Models.Pacs
 {
     public class EstudioCreateDto
     {
-        //Paciente
-        public int? PacienteID { get; set; }
-        //Doctor
-        public int? DoctorID { get; set; }
-        //Lista de trabajo
-        public int? ListaID { get; set; }
-        //Modalidad
-        [Required, MaxLength(2)]
-        public Modalidad Modality { get; set; }
-        // Descripcion
+        // ID de estudio Dicom/Metadato
         [Required]
-        public string DescripcionEstudio { get; set; }
+        public string StudyInstanceUID { get; set; }
+        // ID interno de paciente 
+        public int? PACS_PatientID { get; set; }
+        public string? StudyComments { get; set; }
+        // Modalidad de estudio Dicom/Metadato
+        [Required]
+        public string? Modality { get; set; }
+        // Descripcion del estudio DICOM/Metadatos
+        public string? StudyDescription { get; set; }
+        // Fecha en que realizó el estudio DICOM/Metadatos
         [Required]
         public DateTime StudyDate { get; set; }
-        [Required]
-        public int TiempoEstudio { get; set; }
-
-        [Required, MaxLength(100)]
-        public string BodyPartExamined { get; set; }
+        // Parte del cuerpo examinada DICOM/Metadatos
+        public string? BodyPartExamined { get; set; }
+        // Numero de accesso DICOM/Metadato
         [Required, MaxLength(64)]
-        public string StudyInstanceUID { get; set; }
-        [Required, MaxLength(16)]
         public string AccessionNumber { get; set; }
+        // Nombre de institucion que realiza el estudio DICOM/Metadatos
+        public string? InstitutionName { get; set; }
+        // Informacion de participantes en el estudio
+        public string? PerformingPhysicianName { get; set; } //Medico
+        public string? OperatorName { get; set; }//Operador
+        //Parametros tecnicos
+        public string? ExposureTime { get; set; } //Tiempo de exposicion 
+        public string? KVP { get; set; }
+        // Numero de Frames/Imagenes
+        public int? NumberOfFrames { get; set; }
     }
 }

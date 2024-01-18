@@ -14,13 +14,14 @@ namespace InterfazBasica.Service
             _httpClient = httpClient;
             _villaUrl = configuration.GetValue<string>("ServicesUrls:API_URL");
         }
+        //
         public Task<T> Actualizar<T>(EstudioUpdateDto dto)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.PUT,
                 Datos = dto,
-                Url = _villaUrl + "/api/estudio/" + dto.EstudioID
+                Url = _villaUrl + "/api/estudio/"
             });
         }
 

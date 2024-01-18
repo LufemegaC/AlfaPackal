@@ -5,16 +5,14 @@ namespace InterfazBasica.Models.Pacs
 {
     public class SerieDto
     {
-        [Key]
-        public int SerieID { get; set; }
-        //Estudio
-        public int? EstudioID { get; set; }
-        // Descripcion
-        public string SeriesDescription { get; set; }
-        // Identificador
-        [Required, MaxLength(64)]
+        [Required, MaxLength(64), Display(Name = "Id de Instancia")]
         public string SeriesInstanceUID { get; set; }
         // Numero de serie en el estudio
-        public int SeriesNumber { get; set; }
+        [Display(Name = "Id del Paciente")]
+        // Descripcion
+        public string? SeriesDescription { get; set; }
+        [Display(Name = "Numero de Serie")]
+        // Identificador de serie
+        public int? SeriesNumber { get; set; }
     }
 }

@@ -105,7 +105,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
                 // Localizo registro en el modelo
-                var estudio = await _estudioRepo.ObtenerPorID(v => v.EstudioID == id);
+                var estudio = await _estudioRepo.ObtenerPorID(v => v.PACS_EstudioID == id);
                 if (estudio == null) // Si el registro no fue encontrado
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -188,7 +188,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
                 // Identificar registro a eliminar
-                var estudio = await _estudioRepo.ObtenerPorID(v => v.EstudioID == id);
+                var estudio = await _estudioRepo.ObtenerPorID(v => v.PACS_EstudioID == id);
                 if (estudio == null) //No encontrado
                 {
                     _response.IsExitoso = false;
@@ -208,43 +208,45 @@ namespace AlfaPackalApi.Controllers
             return BadRequest(_response);
         }
 
+        // 18/01/24.-Luis Felipe MG: Codigo comentado en esta version demo
         /// ** UPDATE
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateEstudio(int id, [FromBody] EstudioUpdateDto UpdateDto)
-        {
-            try
-            {
-                // Entidad nulla o con ID distinto
-                if (UpdateDto == null || id != UpdateDto.EstudioID)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
-                // Identificacion de Estudio
-                var estudioExistente = await _estudioRepo.ObtenerPorID(x => x.EstudioID == id);
-                //No encnotrado
-                if (estudioExistente == null)
-                {
-                    _response.IsExitoso = false;
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response);
-                }
-                Estudio modelo = _mapper.Map<Estudio>(UpdateDto);
-                await _estudioRepo.Actualizar(modelo);
-                _response.StatusCode = HttpStatusCode.NoContent;
-                return Ok(_response);
-            }
-            catch(Exception ex)
-            {
-                _response.IsExitoso = false;
-                _response.ErrorsMessages = new List<string> { ex.ToString() };
-            }
-            return Ok(_response);
-        }
+        //[HttpPut("{id:int}")]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> UpdateEstudio(int id, [FromBody] EstudioUpdateDto UpdateDto)
+        //{
+
+        //    try
+        //    {
+        //        // Entidad nulla o con ID distinto
+        //        if (UpdateDto == null || id != UpdateDto.PACS_EstudioID)
+        //        {
+        //            _response.IsExitoso = false;
+        //            _response.StatusCode = HttpStatusCode.BadRequest;
+        //            return BadRequest(_response);
+        //        }
+        //        // Identificacion de Estudio
+        //        var estudioExistente = await _estudioRepo.ObtenerPorID(x => x.PACS_EstudioID == id);
+        //        //No encnotrado
+        //        if (estudioExistente == null)
+        //        {
+        //            _response.IsExitoso = false;
+        //            _response.StatusCode = HttpStatusCode.NotFound;
+        //            return NotFound(_response);
+        //        }
+        //        Estudio modelo = _mapper.Map<Estudio>(UpdateDto);
+        //        await _estudioRepo.Actualizar(modelo);
+        //        _response.StatusCode = HttpStatusCode.NoContent;
+        //        return Ok(_response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _response.IsExitoso = false;
+        //        _response.ErrorsMessages = new List<string> { ex.ToString() };
+        //    }
+        //    return Ok(_response);
+        //}
 
 
         [HttpPatch("{id:int}")]
@@ -259,7 +261,7 @@ namespace AlfaPackalApi.Controllers
                 return BadRequest();
             }
             // Indetificacion de estudio a modificar
-            var estudioExistente = await _estudioRepo.ObtenerPorID(x => x.EstudioID == id, tracked: false);
+            var estudioExistente = await _estudioRepo.ObtenerPorID(x => x.PACS_EstudioID == id, tracked: false);
             if (estudioExistente == null)
             {
                 return NotFound("Estudio no encontrado.");
