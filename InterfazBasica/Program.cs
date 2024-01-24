@@ -13,7 +13,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(MappingConfig)); //Configuracion de mapeo
 builder.Services.AddHttpClient<IEstudioService, EstudioService>(); // Cliente Http de estudio
 builder.Services.AddScoped<IEstudioService, EstudioService>(); // Inyeccion de dependencia para estudio
-builder.Services.AddSingleton<IDicomServer>(dicomServer =>DicomServerFactory.Create<CStoreSCP>(GetServerPort(0))); // Configuracion de servidor DICOM
+
+// 19/01/2024 Luis Felipe MG .- Retiro inyeccion de dependencia
+//builder.Services.AddSingleton<IDicomServer>(dicomServer =>DicomServerFactory.Create<CStoreSCP>(GetServerPort(0))); // Configuracion de servidor DICOM
+
 
 var app = builder.Build();
 

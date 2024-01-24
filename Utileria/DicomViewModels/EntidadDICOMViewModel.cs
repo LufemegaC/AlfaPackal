@@ -11,7 +11,7 @@ namespace Utileria.DicomViewModels
     {
         public string Host { get; set; } // Ip
         public int Port { get; set; } // Puerto
-        public string ?CallingAe { get; set; } // AETitle Client
+        public string? Aet { get; set; } // Aetitle
         public TipoEntidad Tipo { get; set; }
         public enum TipoEntidad
         {

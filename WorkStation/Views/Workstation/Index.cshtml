@@ -1,6 +1,6 @@
 ﻿@model WorkStation.Models.ViewModels.DicomClienteVM
 
-<form method="post" asp-controller="Workstation">
+<form method="post" asp-controller="Workstation" enctype="multipart/form-data">
     <!-- Tarjeta de Cliente DICOM -->
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
@@ -12,7 +12,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="CallingAe" class="form-label">AE Title:</label>
-                        <input asp-for="CallingAe" type="text" id="CallingAe" class="form-control" value="@Model.CallingAe" readonly />
+                        <input asp-for="Aet" type="text" id="CallingAe" class="form-control" value="@Model.Aet" readonly />
                     </div>
                     <div class="form-group">
                         <label for="Port" class="form-label">Puerto:</label>
@@ -42,7 +42,7 @@
                         <input type="file" asp-for="DicomFile" class="form-control" id="dicomFile">
                     </div>
                     <div class="form-group">
-                        <button type="submit" asp-action="SendDicomFile" class="btn btn-primary" id="sendButton" disabled>Enviar Archivo</button>
+                        <button type="submit" asp-action="SendDicomFile" class="btn btn-primary" id="sendButton">Enviar Archivo</button>
                         @*<button type="submit" asp-action="SendDicomFile" class="btn btn-primary">Enviar Archivo</button>*@
                     </div>
                 </div>

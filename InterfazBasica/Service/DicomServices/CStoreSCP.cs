@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FellowOakDicom;
 using FellowOakDicom.Network;
+using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
 using InterfazBasica.Service;
 using InterfazBasica.Service.IService;
@@ -52,7 +53,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             _mapper = mapper;
         }
 
-
+                    
         public Task OnReceiveAssociationRequestAsync(DicomAssociation association)
         {
             if (association.CalledAE != "STORESCP")
@@ -96,31 +97,75 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             /* nothing to do here */
         }
 
+        /*
+         * [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CrearVilla(VillaCreateDto modelo)
+        {
+            if(ModelState.IsValid)
+            {
+                var response = await _villaService.Crear<APIResponse>(modelo);
+                if(response != null && response.IsExitoso)
+                {
+                    return RedirectToAction(nameof(IndexVilla));
+                }
+            }
+            return View(modelo);
+        }
+         * */
 
         public async Task<DicomCStoreResponse> OnCStoreRequestAsync(DicomCStoreRequest request)
         {
-            //Estudio
-            var studyUid = request.Dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID).Trim();
-            var instUid = request.SOPInstanceUID.UID;
-            //Paciente info
-            PacienteCreateDto pacienteDto = _mapper.Map<PacienteCreateDto>(request.Dataset);
-            //Estudio info
-            EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
-
-
-            var path = Path.GetFullPath(DS.RutaAlmacen);
-            path = Path.Combine(path, studyUid);
-
-            if (!Directory.Exists(path))
+            // Extraer UID de estudio e instancia
+            try
             {
-                Directory.CreateDirectory(path);
+                var studyUid = request.Dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID).Trim();
+                var instUid = request.SOPInstanceUID.UID;
+                var seriesUid = request.Dataset.GetSingleValue<string>(DicomTag.SeriesInstanceUID).Trim();
+
+                EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
+                var response = await _estudioService.Crear<APIResponse>(estudioDto);
+                if (response != null && response.IsExitoso)
+                { 
+                    // Insetar Series
+                }
+                var path = Path.Combine(Path.GetFullPath(DS.RutaAlmacen), studyUid, seriesUid);
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                path = Path.Combine(path, instUid + ".dcm");
+
+                await request.File.SaveAsync(path);
+
+                return new DicomCStoreResponse(request, DicomStatus.Success);
             }
+            catch (Exception ex)
+            {
+                return new DicomCStoreResponse(request, DicomStatus.Warning);
+            }
+            
 
-            path = Path.Combine(path, instUid) + ".dcm";
 
-            await request.File.SaveAsync(path);
+            //// Mapear y guardar la información del estudio
+            //EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
+            //response = await _estudioService.Crear<APIResponse>(estudioDto);
+            //if (response != null && response.IsExitoso)
+            //{
+            //    var idEstudioPacs = 
+            //    // Mapear y guardar la información de la serie
+            //    SerieCreateDto serieDto = _mapper.Map<SerieCreateDto>(request.Dataset);
+            //    serieDto.PACS_EstudioID = _estudioService.Obtener(studyUid); // Suponiendo que tienes una forma de obtener el ID del estudio
+            //    await GuardarSerie(serieDto);
 
-            return new DicomCStoreResponse(request, DicomStatus.Success);
+            //}
+
+            //// Mapear y guardar la información de la imagen
+            //ImagenCreateDto imagenDto = _mapper.Map<ImagenCreateDto>(request.Dataset);
+            //imagenDto.PACS_SerieID = ObtenerSerieIDDesdeUID(seriesUid); // Suponiendo que tienes una forma de obtener el ID de la serie
+            //await GuardarImagen(imagenDto, path); // Guarda la imagen y su ubicación
+
+            // Guardar el archivo físico de la imagen
+            
         }
 
 

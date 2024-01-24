@@ -11,30 +11,33 @@ namespace WorkStation.Controllers
     {
         [BindProperty]
         private IDicomClient _client { get; set; }
+        private DicomClienteVM _viewModelClient { get; set; }
         public WorkstationController(IDicomClient client)
         {
             _client = client;
+            _viewModelClient = new DicomClienteVM
+            {
+                Host = _client.Host,
+                Port = _client.Port, // Puerto
+                Aet = _client.CallingAe, // AETitle Client
+                CalledAe = _client.CalledAe
+            };
         }
 
         public IActionResult Index()
         {
-            var viewModelClient = new DicomClienteVM
-            {
-                Host = _client.Host,
-                Port = _client.Port, // Puerto
-                CallingAe = _client.CallingAe, // AETitle Client
-                CalledAe = _client.CalledAe
-            };
-            return View(viewModelClient);
+            return View(_viewModelClient);
         }
 
-        [HttpPost]
+        [HttpPost] 
         public async Task<IActionResult> SendDicomFile(IFormFile dicomFile)
         {
             if (dicomFile != null && dicomFile.Length > 0)
             {
                 try
                 {
+                    _client.NegotiateAsyncOps();
+                    await _client.AddRequestAsync(new DicomCEchoRequest());
                     using (var stream = dicomFile.OpenReadStream())
                     {
                         var dicomImage = DicomFile.Open(stream);
@@ -53,7 +56,7 @@ namespace WorkStation.Controllers
             {
                 ViewBag.Message = "Debe seleccionar un archivo DICOM";
             }
-            return View("Index");
+            return View("Index", _viewModelClient);
         }
 
         public async Task<IActionResult> Connect()
@@ -76,7 +79,7 @@ namespace WorkStation.Controllers
             {
                 ViewBag.Message = $"Error al conectar: {ex.Message}";
             }
-            return View("Index");
+            return View("Index", _viewModelClient);
         }
 
         public async Task<IActionResult> Disconnect()
