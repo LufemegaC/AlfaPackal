@@ -1,0 +1,48 @@
+﻿@model IEnumerable<InterfazBasica.Models.Pacs.EstudioDto>
+
+@{
+    ViewData["Title"] = "IndexDemo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Lista de Estudios</h1>
+        </div>
+        <div class="col text-end pt-1">
+            <a asp-controller="Demo" asp-action="CrearEstudio" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i>Detalles de estudio</a>
+        </div>
+
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>StudyInstanceUID</th>
+                <th>Modality</th>
+                <th>StudyDescription</th>
+                <th>StudyDate</th>
+                <th>AccessionNumber</th>
+                <th>OperatorName</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.StudyInstanceUID</td>
+                    <td>@item.Modality</td>
+                    <td>@item.StudyDescription</td>
+                    <td>@item.StudyDate</td>
+                    <td>@item.AccessionNumber</td>
+                    <td>@item.OperatorName</td>
+@*                    <td>
+                        <a asp-controller="Demo" asp-action="Actualizar Estudio" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-controller="Demo" asp-action="Remover Estudio" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                    </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

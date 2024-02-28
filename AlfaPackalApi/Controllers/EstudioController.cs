@@ -152,7 +152,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest("El formato de la instancia UID no es valido.");
                 }
                 // Validación de StudyDate
-                if (CreateDto.StudyDate.Date > DateTime.Today)
+                if (CreateDto.StudyDate > DateTime.Today)
                 {
                     return BadRequest("La fecha del estudio no puede ser una fecha futura.");
                 }

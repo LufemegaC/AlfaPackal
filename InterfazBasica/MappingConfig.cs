@@ -45,7 +45,7 @@ namespace InterfazBasica_DCStore
             var dataset = new DicomDataset();
 
             dataset.AddOrUpdate(DicomTag.StudyInstanceUID, src.StudyInstanceUID);
-            dataset.AddOrUpdate(DicomTag.PatientID, src.PACS_PatientID?.ToString());
+            //dataset.AddOrUpdate(DicomTag.PatientID, src.PatientID);
             //dataset.AddOrUpdate(DicomTag.StudyComments, src.StudyComments); //Retired
             dataset.AddOrUpdate(DicomTag.Modality, src.Modality);
             dataset.AddOrUpdate(DicomTag.StudyDescription, src.StudyDescription);

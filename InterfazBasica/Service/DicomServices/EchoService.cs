@@ -6,12 +6,13 @@ using System.Text;
 using Utileria;
 using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
+using InterfazBasica_DCStore.Service.DicomServers;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
     public class EchoService : DicomService, IDicomServiceProvider, IDicomCEchoProvider //, IDicomCStoreProvider
     {
-        private IEstudioService _estudioService;
+        //private IEstudioService _estudioService;
         //private readonly IMapper _mapper;
         private string _CallingAE { get; set; }
         private string _CalledAE { get; set; }
@@ -45,14 +46,27 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                 DicomTransferSyntax.ExplicitVRBigEndian,
                 DicomTransferSyntax.ImplicitVRLittleEndian
         };
-
-        public EchoService(INetworkStream stream, Encoding fallbackEncoding, Microsoft.Extensions.Logging.ILogger log, DicomServiceDependencies dependencies, /*IMapper mapper*/ IEstudioService estudioService)
+        /* Constructor:
+         INetworkStream: Facilita la lectura y escritura de datos en la red.
+         Encoding: Define la codificación de caracteres a utilizar para interpretar los bytes de los mensajes DICOM.
+         ILogger: Registrar información, advertencias y errores.
+         DicomServiceDependencies: Dependencias opcionales para servicios DICOM.
+         */
+        public EchoService(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies)
                 : base(stream, fallbackEncoding, log, dependencies)
         {
             /* initialization per association can be done here */
             //_mapper = mapper;
-            _estudioService = estudioService;
+            //_estudioService = estudioService;
         }
+
+        //public EchoService(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies, IEstudioService estudioService, IMapper mapper)
+        //: base(stream, fallbackEncoding, log, dependencies)
+        //{
+        //    _estudioService = estudioService;
+        //    _mapper = mapper;
+        //}
+
         public Task<DicomCEchoResponse> OnCEchoRequestAsync(DicomCEchoRequest request)
         {
             return Task.FromResult(new DicomCEchoResponse(request, DicomStatus.Success));

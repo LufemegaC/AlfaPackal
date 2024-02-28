@@ -16,7 +16,7 @@ namespace AlfaPackalApi.Modelos
 
         [MaxLength(20)]
         public string Estado { get; set; }
-        public DateTime FechaCreacion { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

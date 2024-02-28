@@ -21,7 +21,7 @@ namespace AlfaPackalApi.Modelos
         public string Especialidad { get; set; }
 
         public virtual ICollection<Estudio> Estudios { get; set; }
-        public DateTime FechaCreacion { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

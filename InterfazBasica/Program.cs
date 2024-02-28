@@ -14,6 +14,15 @@ builder.Services.AddAutoMapper(typeof(MappingConfig)); //Configuracion de mapeo
 builder.Services.AddHttpClient<IEstudioService, EstudioService>(); // Cliente Http de estudio
 builder.Services.AddScoped<IEstudioService, EstudioService>(); // Inyeccion de dependencia para estudio
 
+
+//builder.Services.AddTransient<IEstudioService, EstudioService>();
+//builder.Services.AddTransient<EchoService>(provider =>
+//{
+//    var servicio = new EchoService(/* parámetros necesarios */);
+//    servicio.EstudioService = provider.GetService<IEstudioService>();
+//    return servicio;
+//});
+
 // 19/01/2024 Luis Felipe MG .- Retiro inyeccion de dependencia
 //builder.Services.AddSingleton<IDicomServer>(dicomServer =>DicomServerFactory.Create<CStoreSCP>(GetServerPort(0))); // Configuracion de servidor DICOM
 

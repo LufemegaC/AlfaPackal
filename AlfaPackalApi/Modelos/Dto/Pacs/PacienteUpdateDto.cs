@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using static Utileria.Listados;
+using static Utileria.DicomValues;
 
 namespace AlfaPackalApi.Modelos.Dto.Pacs
 {

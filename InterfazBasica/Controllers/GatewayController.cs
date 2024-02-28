@@ -3,7 +3,7 @@ using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
 using InterfazBasica.Service.IService;
 using InterfazBasica_DCStore.Models.ViewModels;
-using InterfazBasica_DCStore.Service.DicomServices;
+using InterfazBasica_DCStore.Service.DicomServers;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.NetworkInformation;
@@ -105,10 +105,10 @@ namespace InterfazBasica_DCStore.Controllers
                 //   new DicomServiceOptions(), // Opciones de servicio
                 //   null // Estado de usuario adicional
                 //);
-                ServerCStore.Start(1112,"STORESCP");
+                ServerCStore.Start(11112, "STORESCP");
                 _dicomServerVM.IsListening = ServerCStore.IsRunning;
                 _dicomServerVM.Estatus = ServerCStore.IsRunning ? "Escuchando" : "Desactivado";
-                _dicomServerVM.Port = 1112;
+                _dicomServerVM.Port = 11112;
                 _dicomServerVM.Host = "0.0.0.0";
                 return View("Index", _dicomServerVM);
             }

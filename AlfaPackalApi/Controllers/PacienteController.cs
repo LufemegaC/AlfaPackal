@@ -61,7 +61,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
 
-                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PatientID == id);
+                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PACS_PatientID == id);
                 if (paciente == null)
                 {
                     _response.IsExitoso = false;
@@ -122,7 +122,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
 
-                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PatientID == id);
+                var paciente = await _pacienteRepo.ObtenerPorID(v => v.PACS_PatientID == id);
                 if (paciente == null)
                 {
                     _response.IsExitoso = false;
@@ -194,7 +194,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest();
                 }
 
-                var pacienteExistente = await _pacienteRepo.ObtenerPorID(x => x.PatientID == id, tracked: false);
+                var pacienteExistente = await _pacienteRepo.ObtenerPorID(x => x.PACS_PatientID == id, tracked: false);
                 if (pacienteExistente == null)
                 {
                     return NotFound("Paciente no encontrado.");

@@ -1,21 +1,42 @@
 ﻿using AutoMapper;
 using FellowOakDicom;
+using FellowOakDicom.Imaging;
 using FellowOakDicom.Network;
 using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
 using InterfazBasica.Service;
 using InterfazBasica.Service.IService;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Utileria;
-using static Utileria.Listados;
+using static Utileria.DicomValues;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
     public class CStoreSCP : DicomService, IDicomServiceProvider, IDicomCStoreProvider, IDicomCEchoProvider
     {
-        private IEstudioService _estudioService;
-        private readonly IMapper _mapper;
+        // 25/01/24 Luis Felipe MG.-Dependencias
+        //private IEstudioService _estudioService;
+        //private readonly IMapper _mapper;
+
+
+        // 14/02/24 Luis Felipe MG.-Evento
+        // Definición del delegado para el evento
+        /* Estructura del Delegado
+        public : Modificador
+        delegate: delegate
+        void: tipo de retorno
+        StudyReceivedEventHandler: nombre
+        DicomCStoreRequest: parametro de entrada
+
+        */
+        public delegate void StudyReceivedEventHandler(DicomCStoreRequest request);
+
+        public event EventHandler<DicomFile> DicomFileReceived;
+        // Evento que se dispara al recibir un estudio
+        public event StudyReceivedEventHandler StudyReceived;
+
 
         private DicomFile dicomFile;
 
@@ -45,12 +66,17 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                DicomTransferSyntax.ImplicitVRLittleEndian
         };
 
+        //public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies,IEstudioService estudioService, IMapper mapper)
+        //    : base(stream, fallbackEncoding, log, dependencies)
+        //{
+        //    _estudioService = estudioService;
+        //    _mapper = mapper;
+        //}
 
-        public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies, IEstudioService estudioService, IMapper mapper)
+
+        public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies)
             : base(stream, fallbackEncoding, log, dependencies)
         {
-            _estudioService = estudioService;
-            _mapper = mapper;
         }
 
                     
@@ -117,18 +143,44 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         public async Task<DicomCStoreResponse> OnCStoreRequestAsync(DicomCStoreRequest request)
         {
             // Extraer UID de estudio e instancia
+
             try
             {
+                // UIDs
                 var studyUid = request.Dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID).Trim();
                 var instUid = request.SOPInstanceUID.UID;
                 var seriesUid = request.Dataset.GetSingleValue<string>(DicomTag.SeriesInstanceUID).Trim();
+                var sopClassUID = request.Dataset.GetSingleValue<string>(DicomTag.SOPClassUID);
 
-                EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
-                var response = await _estudioService.Crear<APIResponse>(estudioDto);
-                if (response != null && response.IsExitoso)
-                { 
-                    // Insetar Series
+                //Creacion de archivo DICOM
+                DicomDataset dataset = request.Dataset;
+                DicomFile dicomFile = new DicomFile(dataset);
+                StudyReceived?.Invoke(request);
+
+
+
+
+                if (request.Dataset.Contains(DicomTag.PixelData))
+                {
+                    //var pixelData = request.Dataset.GetDicomItem<DicomPixelData>(DicomTag.PixelData);
+                    var pixelData = DicomPixelData.Create(request.Dataset);
+                    // Aquí puedes trabajar con pixelData, por ejemplo, acceder a los frames de la imagen
+                    for (int i = 0; i < pixelData.NumberOfFrames; i++)
+                    {
+                        var frame = pixelData.GetFrame(i);
+                        byte[] pixelBytes = frame.Data;
+                        // Hacer algo con los bytes de píxeles
+                    }
                 }
+                //Detonacion de eventos
+                
+                // Aqui Ixchel
+                //EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
+                //var response = await _estudioService.Crear<APIResponse>(estudioDto);
+                //if (response != null && response.IsExitoso)
+                //{ 
+                //    // Insetar Series
+                //}
                 var path = Path.Combine(Path.GetFullPath(DS.RutaAlmacen), studyUid, seriesUid);
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);

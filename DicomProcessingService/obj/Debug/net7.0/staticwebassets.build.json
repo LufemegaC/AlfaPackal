@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "2EF6LWgigjdqBiPPikquz8A6pth1DKK+Ta+2EEJByXA=",
+  "Source": "DicomProcessingService",
+  "BasePath": "_content/DicomProcessingService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

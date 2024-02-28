@@ -16,6 +16,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Desktop\source\repos\AlfaPackal\InterfazBasica
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/Desktop/source/repos/AlfaPackal/InterfazBasica/Views/Demo/IndexDemo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVtb1xJbmRleERlbW8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Desktop/source/repos/AlfaPackal/InterfazBasica/Views/Gateway/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2F0ZXdheVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

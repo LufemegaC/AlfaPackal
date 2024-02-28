@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		Notas_Ixchel.cs = Notas_Ixchel.cs
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DicomProcessingService", "DicomProcessingService\DicomProcessingService.csproj", "{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18} = {7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +84,14 @@ Global
 		{FF30EDD6-6D4F-4F37-9B04-54ED4BA3A372}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF30EDD6-6D4F-4F37-9B04-54ED4BA3A372}.Release|x86.ActiveCfg = Release|Any CPU
 		{FF30EDD6-6D4F-4F37-9B04-54ED4BA3A372}.Release|x86.Build.0 = Release|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Debug|x86.Build.0 = Debug|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Release|x86.ActiveCfg = Release|Any CPU
+		{14A2C301-C5A1-4CD0-8F5A-1610CD8EC6EB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

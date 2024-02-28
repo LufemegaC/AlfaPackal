@@ -1,5 +1,5 @@
 ﻿using Utileria.DicomViewModels;
-using static Utileria.Listados;
+using static Utileria.DicomValues;
 
 namespace InterfazBasica_DCStore.Models.ViewModels
 {

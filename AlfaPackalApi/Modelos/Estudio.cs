@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
-using static Utileria.Listados;
+using static Utileria.DicomValues;
 using System.Diagnostics;
 
 namespace AlfaPackalApi.Modelos
@@ -48,7 +48,7 @@ namespace AlfaPackalApi.Modelos
         // Comentarios de imagen
         public virtual ICollection<Serie> Series { get; set; }
         // Datos de bitacora
-        public DateTime FechaCreacion { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

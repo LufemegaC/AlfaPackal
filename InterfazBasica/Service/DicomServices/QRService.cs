@@ -1,6 +1,8 @@
-﻿using FellowOakDicom;
+﻿using AutoMapper;
+using FellowOakDicom;
 using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
+using InterfazBasica_DCStore.Service.DicomServers;
 using System.Text;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
@@ -8,6 +10,10 @@ namespace InterfazBasica_DCStore.Service.DicomServices
     public class QRService : DicomService, IDicomServiceProvider, IDicomCFindProvider, IDicomCEchoProvider, IDicomCMoveProvider, IDicomCGetProvider, IDicomCStoreProvider
     {
         //private  
+
+        // DEPENDENCIAS QUE QUIERO AGREGAR
+        //private IEstudioService _estudioService;
+        //private readonly IMapper _mapper;
 
         // Sintaxis de transferencia DICOM soportados por el servidor ( Datos generales )
         private static readonly DicomTransferSyntax[] _acceptedTransferSyntaxes = new DicomTransferSyntax[]
@@ -44,13 +50,24 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         // Nombre de la entidad de aplicacion que fue llamada
         public string CalledAE { get; protected set; }
 
-        //Constructor
+        //**********************//
+        //Constructor ORIGINAL
         public QRService(INetworkStream stream, Encoding fallbackEncoding, Microsoft.Extensions.Logging.ILogger log, DicomServiceDependencies dependencies)
                 : base(stream, fallbackEncoding, log, dependencies)
         {
             /* initialization per association can be done here */
 
         }
+
+        ////Constructor MODIFICADO con inyeccion de dependencias, deja de funcionar el servidor
+        //public QRService(INetworkStream stream, Encoding fallbackEncoding, Microsoft.Extensions.Logging.ILogger log, DicomServiceDependencies dependencies, IEstudioService estudioService, IMapper mapper)
+        //        : base(stream, fallbackEncoding, log, dependencies)
+        //{
+        //    _estudioService = estudioService;
+        //    _mapper = mapper;
+        //}
+        //**********************//
+
 
         // Maneja las solicitudes de verificación DICOM C-ECHO
         public Task<DicomCEchoResponse> OnCEchoRequestAsync(DicomCEchoRequest request)

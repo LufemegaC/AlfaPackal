@@ -93,11 +93,12 @@ namespace AlfaPackalApi.Datos
 
                 if (entrada.State == EntityState.Added)
                 {
-                    entidad.FechaCreacion = DateTime.Now;
+                    entidad.CreationDate = DateTime.Now;
                 }
 
-                entidad.FechaActualizacion = DateTime.Now;
+                entidad.UpdateDate = DateTime.Now;
             }
+
 
             return base.SaveChanges();
         }
