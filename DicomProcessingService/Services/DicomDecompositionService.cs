@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DicomProcessingService.Dtos;
 using DicomProcessingService.Services.Interfaces;
 using FellowOakDicom;
 using FellowOakDicom.Imaging;
@@ -115,5 +116,24 @@ namespace DicomProcessingService.Services
             // Añadir o actualizar otros datos del paciente según sea necesario
         }
 
+        public EstudioCreateDto DecomposeDicomToEstudio(DicomFile dicomFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PacienteCreateDto DecomposeDicomToPaciente(DicomFile dicomFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ImagenCreateDto DecomposeDicomToImagen(DicomFile dicomFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SerieCreateDto DecomposeDicomToSerie(DicomFile dicomFile)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

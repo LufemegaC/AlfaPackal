@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using FellowOakDicom;
 using InterfazBasica.Models.Pacs;
+using InterfazBasica_DCStore.Utilities;
+using System.Globalization;
+using static InterfazBasica_DCStore.Utilities.DicomUtilities;
+using static Utileria.DicomValues;
 
 namespace InterfazBasica_DCStore
 {
@@ -20,75 +24,124 @@ namespace InterfazBasica_DCStore
             CreateMap<ImagenDto, ImagenCreateDto>().ReverseMap();
             CreateMap<ImagenDto, ImagenUpdateDto>().ReverseMap();
 
-            //-- Mapeo de DICOM a entidades PACS
-            // Paciente
-            // Mapeo de PacienteCreateDto a DicomDataset
-            CreateMap<PacienteCreateDto, DicomDataset>()
-                .ForMember(dest => dest, opt => opt.MapFrom(src => MapToDicomDataset(src)));
-            // Estudio
-            CreateMap<EstudioCreateDto, DicomDataset>()
-                .ForMember(dest => dest, opt => opt.MapFrom(src => MapToDicomDataset(src)));
+            //** Mapeo de Diccionario de metadatos a entidades de creacion Dto
+            //Paciente
+            CreateMap<Dictionary<DicomTag, object>, PacienteCreateDto>()
+                .ConvertUsing(src => MapDictionaryToPacienteCreateDto(src));
+            //Estudio
+            CreateMap<Dictionary<DicomTag, object>, EstudioCreateDto>()
+                .ConvertUsing(src => MapDictionaryToEstudioCreateDto(src));
             //Serie
-            CreateMap<SerieCreateDto, DicomDataset>()
-                .ForMember(dest => dest, opt => opt.MapFrom(src => MapToDicomDataset(src)));
+            CreateMap<Dictionary<DicomTag, object>, SerieCreateDto>()
+                .ConvertUsing(src => MapDictionaryToSerieCreateDto(src));
             //Imagen
-            // Mapeo de ImagenCreateDto a DicomDataset
-            CreateMap<ImagenCreateDto, DicomDataset>()
-                .ForMember(dest => dest, opt => opt.MapFrom(src => MapToDicomDataset(src)));
+            CreateMap<Dictionary<DicomTag, object>, ImagenCreateDto>()
+                .ConvertUsing(src => MapDictionaryToImagenCreateDto(src));
 
 
         }
 
-        // 18/01/2024 Luis Felipe MG: Mapeo de clase EstudioCreate con Metadatos del DataSet
-        private static DicomDataset MapToDicomDataset(EstudioCreateDto src)
+        private static PacienteCreateDto MapDictionaryToPacienteCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
+        // Mapeo de Diccionario de metadatos a entidad de creacion de paciente.
         {
-            var dataset = new DicomDataset();
+            var pacienteDto = new PacienteCreateDto
+            {
+                // Generados por el sistema
+                GeneratedPatientID = PatientIDGenerator(),
+                //IssuerOfPatientID = DicomUtilities.IssuerOfPatientIDValue,
+                // Valores de metadatos
+                PatientID = dicomTagDictionary.TryGetValue(DicomTag.PatientID, out object patientIdValue) ? patientIdValue as string : string.Empty,
+                IssuerOfPatientID = dicomTagDictionary.TryGetValue(DicomTag.IssuerOfPatientID, out object issuerOfPatientIdValue) ? issuerOfPatientIdValue as string : string.Empty,
+                PatientName = dicomTagDictionary.TryGetValue(DicomTag.PatientName, out object patientNameValue) ? patientNameValue as string : string.Empty,
+                PatientAge = dicomTagDictionary.TryGetValue(DicomTag.PatientAge, out object patientAgeValue) ? patientAgeValue as string : string.Empty,
+                PatientSex = dicomTagDictionary.TryGetValue(DicomTag.PatientSex, out object patientSexValue) ? patientSexValue as string : string.Empty,
+                PatientWeight = dicomTagDictionary.TryGetValue(DicomTag.PatientWeight, out object patientWeightValue) ? patientWeightValue as string : string.Empty,
+                
+            };
 
-            dataset.AddOrUpdate(DicomTag.StudyInstanceUID, src.StudyInstanceUID);
-            //dataset.AddOrUpdate(DicomTag.PatientID, src.PatientID);
-            //dataset.AddOrUpdate(DicomTag.StudyComments, src.StudyComments); //Retired
-            dataset.AddOrUpdate(DicomTag.Modality, src.Modality);
-            dataset.AddOrUpdate(DicomTag.StudyDescription, src.StudyDescription);
-            dataset.AddOrUpdate(DicomTag.StudyDate, src.StudyDate);
-            dataset.AddOrUpdate(DicomTag.BodyPartExamined, src.BodyPartExamined);
-            dataset.AddOrUpdate(DicomTag.AccessionNumber, src.AccessionNumber);
-            dataset.AddOrUpdate(DicomTag.InstitutionName, src.InstitutionName);
-            dataset.AddOrUpdate(DicomTag.PerformingPhysicianName, src.PerformingPhysicianName);
-            dataset.AddOrUpdate(DicomTag.OperatorsName, src.OperatorName);
-            return dataset;
+            // Asumimos que la fecha de nacimiento viene en formato string y necesita ser convertida a DateTime
+            if (dicomTagDictionary.TryGetValue(DicomTag.PatientBirthDate, out object patientBirthDateValue) && DateTime.TryParseExact(patientBirthDateValue as string, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime patientBirthDate))
+            {
+                pacienteDto.PatientBirthDate = patientBirthDate;
+            }
+
+            return pacienteDto;
         }
-        private static DicomDataset MapToDicomDataset(SerieCreateDto src)
+
+        private static EstudioCreateDto MapDictionaryToEstudioCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
+        //Mapeo de Diccionario de metadatos a entidad de creacion de estudio.
         {
-            var dataset = new DicomDataset();
-            dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, src.SeriesInstanceUID);
-            dataset.AddOrUpdate(DicomTag.SeriesDescription, src.SeriesDescription);
-            dataset.AddOrUpdate(DicomTag.SeriesNumber, src.SeriesNumber.ToString());
+            var estudioDto = new EstudioCreateDto
+            {
+                StudyInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.StudyInstanceUID, out object studyInstanceUidValue) ? studyInstanceUidValue as string : string.Empty,
+                //PACS_PatientID = null, // Este valor parece que debe ser establecido de otra manera o mantenerse como nulo
+                Modality = dicomTagDictionary.TryGetValue(DicomTag.Modality, out object modalityValue) ? modalityValue as string : string.Empty,
+                StudyDescription = dicomTagDictionary.TryGetValue(DicomTag.StudyDescription, out object studyDescriptionValue) ? studyDescriptionValue as string : string.Empty,
+                AccessionNumber = dicomTagDictionary.TryGetValue(DicomTag.AccessionNumber, out object accessionNumberValue) ? accessionNumberValue as string : GenerateAccessionNumber(),
+                InstitutionName = dicomTagDictionary.TryGetValue(DicomTag.InstitutionName, out object institutionNameValue) ? institutionNameValue as string : string.Empty,
+                PerformingPhysicianName = dicomTagDictionary.TryGetValue(DicomTag.PerformingPhysicianName, out object performingPhysicianNameValue) ? performingPhysicianNameValue as string : string.Empty,
+                OperatorName = dicomTagDictionary.TryGetValue(DicomTag.OperatorsName, out object operatorNameValue) ? operatorNameValue as string : string.Empty,
+                ExposureTime = dicomTagDictionary.TryGetValue(DicomTag.ExposureTime, out object exposureTimeValue) ? exposureTimeValue as string : string.Empty,
+                KVP = dicomTagDictionary.TryGetValue(DicomTag.KVP, out object kvpValue) ? kvpValue as string : string.Empty,
+                NumberOfFrames = dicomTagDictionary.TryGetValue(DicomTag.NumberOfFrames, out object numberOfFramesValue) ? Convert.ToInt32(numberOfFramesValue) : (int?)null,
+                BodyPartExamined = dicomTagDictionary.TryGetValue(DicomTag.BodyPartExamined, out object bodyPartExaminedValue) ? bodyPartExaminedValue as string : string.Empty,
+            };
 
-            return dataset;
+            if (dicomTagDictionary.TryGetValue(DicomTag.StudyDate, out object studyDateValue) && DateTime.TryParseExact(studyDateValue as string, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime studyDate))
+            {
+                estudioDto.StudyDate = studyDate;
+            }
+
+            return estudioDto;
         }
 
-        private static DicomDataset MapToDicomDataset(PacienteCreateDto src)
+        private static SerieCreateDto MapDictionaryToSerieCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
         {
-            var dataset = new DicomDataset();
-            // Mapeo de las propiedades de PacienteCreateDto a los tags DICOM correspondientes
-            dataset.AddOrUpdate(DicomTag.PatientID, src.PatientID.ToString());
-            dataset.AddOrUpdate(DicomTag.PatientName, src.PatientName);
-            dataset.AddOrUpdate(DicomTag.PatientAge, src.PatientAge);
-            dataset.AddOrUpdate(DicomTag.PatientSex, src.PatientSex);
-            dataset.AddOrUpdate(DicomTag.PatientWeight, src.PatientWeight);
-            dataset.AddOrUpdate(DicomTag.PatientBirthDate, src.PatientBirthDate);
-            return dataset;
+            try
+            {
+                var serieDto = new SerieCreateDto
+                {
+                    StudyInstanceUID =  dicomTagDictionary.TryGetValue(DicomTag.StudyInstanceUID, out object estudioIdValue) ? estudioIdValue as string : string.Empty,
+                    SeriesDescription = dicomTagDictionary.TryGetValue(DicomTag.SeriesDescription, out object seriesDescriptionValue) ? seriesDescriptionValue as string : string.Empty,
+                    SeriesInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SeriesInstanceUID, out object seriesInstanceUIDValue) ? seriesInstanceUIDValue as string : string.Empty,
+                    SeriesNumber      = dicomTagDictionary.TryGetValue(DicomTag.SeriesNumber, out object seriesNumberValue) ? Convert.ToInt32(seriesNumberValue) : (int?)null,
+                    Modality          = dicomTagDictionary.TryGetValue(DicomTag.Modality, out object modalityValue) ? modalityValue as string : string.Empty,
+                    BodyPartExamined  = dicomTagDictionary.TryGetValue(DicomTag.BodyPartExamined, out object bodyPartExaminedValue) ? bodyPartExaminedValue as string : string.Empty,
+                    PatientPosition   = dicomTagDictionary.TryGetValue(DicomTag.PatientPosition, out object patientPositionValue) ? patientPositionValue as string : string.Empty,
+                };
+                // Serie date
+                if (dicomTagDictionary.TryGetValue(DicomTag.SeriesDate, out object seriesDateTimeValue) && DateTime.TryParse(seriesDateTimeValue as string, out DateTime seriesDateTime))
+                {
+                    serieDto.SeriesDateTime = seriesDateTime;
+                }
+                return serieDto;
+            }
+            catch (Exception ex)
+            {
+                var msj = Convert.ToString(ex.Message);
+                return null; 
+            }
+            
+            
         }
 
-        private static DicomDataset MapToDicomDataset(ImagenCreateDto src)
+        private static ImagenCreateDto MapDictionaryToImagenCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
         {
-            var dataset = new DicomDataset();
-            dataset.AddOrUpdate(DicomTag.SOPInstanceUID, src.SOPInstanceUID);
-            dataset.AddOrUpdate(DicomTag.ImageComments, src.ImageComments);
-            dataset.AddOrUpdate(DicomTag.InstanceNumber, src.ImageNumber.ToString());
-           
-            return dataset;
-        }
+            var imagenDto = new ImagenCreateDto
+            {
+                SOPInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SOPInstanceUID, out object sopInstanceUIDValue) ? sopInstanceUIDValue as string : string.Empty,
+                SeriesInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SeriesInstanceUID, out object seriesInstanceUID) ? seriesInstanceUID as string : string.Empty,
+                ImageNumber = dicomTagDictionary.TryGetValue(DicomTag.InstanceNumber, out object imageNumberValue) ? Convert.ToInt32(imageNumberValue) : 0,
+                ImageComments = dicomTagDictionary.TryGetValue(DicomTag.ImageComments, out object imageCommentsValue) ? imageCommentsValue as string : string.Empty,
+                //RETIRED ImageLocation = dicomTagDictionary.TryGetValue(DicomTag.ImageLocation, out object imageLocationValue) ? imageLocationValue as string : string.Empty,
+                //TransferSyntaxUID = dicomTagDictionary.TryGetValue(DicomTag.TransferSyntaxUID, out object transferSyntaxUIDValue) ? transferSyntaxUIDValue as string : string.Empty,
+                PhotometricInterpretation = dicomTagDictionary.TryGetValue(DicomTag.PhotometricInterpretation, out object photometricInterpretationValue) ? photometricInterpretationValue as string : string.Empty,
+                Rows = dicomTagDictionary.TryGetValue(DicomTag.Rows, out object rowsValue) ? Convert.ToInt32(rowsValue) : 0,
+                Columns = dicomTagDictionary.TryGetValue(DicomTag.Columns, out object columnsValue) ? Convert.ToInt32(columnsValue) : 0,
+                PixelSpacing = dicomTagDictionary.TryGetValue(DicomTag.PixelSpacing, out object pixelSpacingValue) ? pixelSpacingValue as string : string.Empty,
+            };
 
+            return imagenDto;
+        }
     }
 }

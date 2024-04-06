@@ -53,26 +53,12 @@ namespace DicomProcessingService.Services.DicomServer.DServices
          ILogger: Registrar información, advertencias y errores.
          DicomServiceDependencies: Dependencias opcionales para servicios DICOM.
          */
-        public EchoService(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies)
+        public EchoService(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies/*, IDicomOrchestrator dicomOrchestrator = null*/)
                 : base(stream, fallbackEncoding, log, dependencies)
         {
-            /* initialization per association can be done here */
-            //_dicomOrchestrator  = 
+             //Recepcion de servicios
+             _dicomOrchestrator = ServiceLocator.GetService<IDicomOrchestrator>(); ;
         }
-
-        //// Método de inicialización para inyectar dependencias
-        //public void Initialize()
-        //{
-        //    _dicomOrchestrator = Setup.ServiceProvider.GetRequiredService<IDicomOrchestrator>();
-        //}
-
-
-        //public EchoService(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies, IEstudioService estudioService, IMapper mapper)
-        //: base(stream, fallbackEncoding, log, dependencies)
-        //{
-        //    _estudioService = estudioService;
-        //    _mapper = mapper;
-        //}
 
         public Task<DicomCEchoResponse> OnCEchoRequestAsync(DicomCEchoRequest request)
         {

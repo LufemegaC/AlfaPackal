@@ -12,20 +12,20 @@ namespace AlfaPackalApi.Repositorio
         {
             _db = db;
         }
-        public async Task<Estudio> Actualizar(Estudio entidad)
+
+        public async Task<Estudio> GetByAccessionNumber(string accessionNumbers)
         {
-            //entidad.FechaActualizacion = DateTime.Now; 
-            _db.Estudios.Update(entidad);
-            await _db.SaveChangesAsync();
-            return entidad;
+            return await _db.Estudios.FirstOrDefaultAsync(e => e.AccessionNumber == accessionNumbers);
         }
-        public async Task<bool> ExisteStudyInstanceUID(string studyInstanceUID)
-        {
-            return await _db.Estudios.AnyAsync(e => e.StudyInstanceUID == studyInstanceUID);
-        }
-        public async Task<Estudio> GetStudyByInstanceUID(string studyInstanceUID)
+
+        public async Task <Estudio> GetByInstanceUID(string studyInstanceUID)
         {
             return await _db.Estudios.FirstOrDefaultAsync(e => e.StudyInstanceUID == studyInstanceUID);
+        }
+
+        public async Task<bool> ExistByInstanceUID(string studyInstanceUID)
+        {
+            return await _db.Estudios.AnyAsync(e => e.StudyInstanceUID == studyInstanceUID);
         }
     }
 }

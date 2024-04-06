@@ -5,7 +5,7 @@ namespace InterfazBasica.Models.Pacs
 {
     public class SerieDto
     {
-		[Display(Name = "Descripcion")]
+		
         // Descripcion
         public string SeriesDescription { get; set; }// Descripcion
         [Required, MaxLength(64), Display(Name = "Id de Instancia")]

@@ -19,16 +19,26 @@ builder.Services.AddHttpClient<IEstudioService, EstudioService>(); // Cliente Ht
 builder.Services.AddScoped<IEstudioService, EstudioService>(); // Inyeccion de dependencia para estudio
 builder.Services.AddScoped<IDicomValidationService, DicomValidationService>();
 builder.Services.AddScoped<IDicomDecompositionService, DicomDecompositionService>();
+// **** Service locator
+var services = new ServiceCollection();
+//servicios aquí
+services.AddSingleton<IDicomOrchestrator, DicomOrchestrator>(); 
+//Proveedor de servicios
+var serviceProvider = services.BuildServiceProvider();
+// Establece el proveedor de servicios en el ServiceLocator
+ServiceLocator.SetServiceProvider(serviceProvider);
+// **** 
 
-var dicomBuilder = WebApplication.CreateBuilder(args);
 
-// Configuración de fo-dicom
-var setupBuilder = new DicomSetupBuilder();
-setupBuilder.RegisterServices(
-    services => { services.AddSingleton<IDicomOrchestrator, DicomOrchestrator>(); 
-    });
-// Configura opciones específicas de DICOM.
-setupBuilder.SkipValidation().Build();
+//var dicomBuilder = WebApplication.CreateBuilder(args);
+
+//// Configuración de fo-dicom
+//var setupBuilder = new DicomSetupBuilder();
+//setupBuilder.RegisterServices(
+//    services => { services.AddSingleton<IDicomOrchestrator, DicomOrchestrator>(); 
+//    });
+//// Configura opciones específicas de DICOM.
+//setupBuilder.SkipValidation().Build();
 
 // Esto podría ser un método para desactivar la validación de los datos DICOM.
 // Construye la configuración y aplica las configuraciones.

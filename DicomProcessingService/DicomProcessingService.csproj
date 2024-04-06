@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Utileria\Utileria.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\DicomServer\DServices\" />
-  </ItemGroup>
-
 </Project>

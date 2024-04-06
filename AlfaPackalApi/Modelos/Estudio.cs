@@ -1,26 +1,33 @@
-﻿using static AlfaPackalApi.Modelos.ListaDeTrabajo;
+﻿
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using static Utileria.DicomValues;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace AlfaPackalApi.Modelos
 {
     public class Estudio : IAuditable
     {
         //Llave primaria
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         // ID Interno de estudio
         public int PACS_EstudioID { get; set; } 
         // ID de estudio Dicom/Metadato
         [Required]
         public string StudyInstanceUID { get; set; }
         // ID interno de paciente 
-        public int? PACS_PatientID { get; set; }
+        [Required]
+        public int PACS_PatientID { get; set; }
         [ForeignKey("PACS_PatientID")]
         public virtual Paciente Paciente { get; set; }
+        // ID (Metadato) de paciente 
+        [Required,StringLength(64)]
+        // ID patient de maetadatos
+        public string GeneratedPatientID { get; set; }
+        // Patiente ID generado por Servidor DICOM
+        // Comentarios de estudios
         public string? StudyComments { get; set; }
         // Modalidad de estudio Dicom/Metadato
         [Required]

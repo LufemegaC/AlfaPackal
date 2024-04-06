@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AlfaPackalApi.Migrations
+namespace Api_PACsServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,138 +22,127 @@ namespace AlfaPackalApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Doctor", b =>
-                {
-                    b.Property<int>("DoctorID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorID"));
-
-                    b.Property<string>("Apellido")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Especialidad")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("FechaActualizacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DoctorID");
-
-                    b.ToTable("Doctores");
-                });
-
             modelBuilder.Entity("AlfaPackalApi.Modelos.Estudio", b =>
                 {
-                    b.Property<int>("EstudioID")
+                    b.Property<int>("PACS_EstudioID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudioID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_EstudioID"));
 
                     b.Property<string>("AccessionNumber")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
-
-                    b.Property<string>("BodyPartExamined")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("DescripcionEstudio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DoctorID")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaActualizacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ListaID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Modality")
-                        .HasMaxLength(2)
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PatientID")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StudyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StudyInstanceUID")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("TiempoEstudio")
+                    b.Property<string>("BodyPartExamined")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExposureTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GeneratedPatientID")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("InstitutionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KVP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfFrames")
                         .HasColumnType("int");
 
-                    b.HasKey("EstudioID");
+                    b.Property<string>("OperatorName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PACS_PatientID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PerformingPhysicianName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StudyComments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StudyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StudyDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StudyInstanceUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PACS_EstudioID");
 
                     b.HasIndex("AccessionNumber")
                         .HasDatabaseName("IX_Estudios_AccessionNumber");
 
-                    b.HasIndex("DoctorID");
-
-                    b.HasIndex("ListaID");
-
-                    b.HasIndex("PatientID");
-
                     b.HasIndex("StudyDate")
                         .HasDatabaseName("IX_Estudios_StudyDate");
+
+                    b.HasIndex("PACS_PatientID", "AccessionNumber")
+                        .HasDatabaseName("IX_Estudio_PacienteID_AccessionNumber");
+
+                    b.HasIndex("PACS_PatientID", "GeneratedPatientID")
+                        .HasDatabaseName("IX_Estudio_PacienteID_GeneratedPatientID");
+
+                    b.HasIndex("PACS_PatientID", "PACS_EstudioID")
+                        .HasDatabaseName("IX_Estudio_PacienteID_EstudioID");
 
                     b.ToTable("Estudios");
                 });
 
             modelBuilder.Entity("AlfaPackalApi.Modelos.Imagen", b =>
                 {
-                    b.Property<int>("ImagenID")
+                    b.Property<int>("PACS_ImagenID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImagenID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_ImagenID"));
 
-                    b.Property<DateTime>("FechaActualizacion")
+                    b.Property<int>("Columns")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageDescription")
+                    b.Property<string>("ImageComments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageLocation")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ImageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PACS_SerieID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhotometricInterpretation")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("PixelSpacing")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rows")
                         .HasColumnType("int");
 
                     b.Property<string>("SOPInstanceUID")
@@ -161,104 +150,111 @@ namespace AlfaPackalApi.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("SerieID")
-                        .HasColumnType("int");
+                    b.Property<string>("SeriesInstanceUID")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("ImagenID");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("ImageNumber")
-                        .HasDatabaseName("IX_Imagen_ImageNumber");
+                    b.HasKey("PACS_ImagenID");
 
-                    b.HasIndex("SOPInstanceUID")
-                        .HasDatabaseName("IX_Imagen_SOPInstanceUID");
+                    b.HasIndex("PACS_SerieID", "ImageNumber")
+                        .HasDatabaseName("IX_Serie_SerieID_ImageNumber");
 
-                    b.HasIndex("SerieID");
+                    b.HasIndex("SOPInstanceUID", "ImageNumber")
+                        .HasDatabaseName("IX_Serie_SOPInstanceUID_ImageNumber");
 
                     b.ToTable("Imagenes");
                 });
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.ListaDeTrabajo", b =>
-                {
-                    b.Property<int>("ListaID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ListaID"));
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("FechaActualizacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ListaID");
-
-                    b.ToTable("ListasDeTrabajo");
-                });
-
             modelBuilder.Entity("AlfaPackalApi.Modelos.Paciente", b =>
                 {
-                    b.Property<int>("PatientID")
+                    b.Property<int>("PACS_PatientID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_PatientID"));
 
-                    b.Property<string>("Apellido")
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GeneratedPatientID")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime>("FechaActualizacion")
+                    b.Property<string>("IssuerOfPatientID")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("PatientAge")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<DateTime?>("PatientBirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("PatientID")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Genero")
+                    b.Property<string>("PatientSex")
                         .HasMaxLength(1)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(1)");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<string>("PatientWeight")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PatientID");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("Nombre")
-                        .HasDatabaseName("IX_Paciente_Nombre");
+                    b.HasKey("PACS_PatientID");
+
+                    b.HasIndex("GeneratedPatientID")
+                        .HasDatabaseName("IX_Paciente_GeneratedPatientID");
+
+                    b.HasIndex("PatientName")
+                        .HasDatabaseName("IX_Paciente_PatientName");
 
                     b.ToTable("Pacientes");
                 });
 
             modelBuilder.Entity("AlfaPackalApi.Modelos.Serie", b =>
                 {
-                    b.Property<int>("SerieID")
+                    b.Property<int>("PACS_SerieID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SerieID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_SerieID"));
 
-                    b.Property<int?>("EstudioID")
+                    b.Property<string>("BodyPartExamined")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
-                    b.Property<DateTime>("FechaActualizacion")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaCreacion")
+                    b.Property<string>("Modality")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<int?>("PACS_EstudioID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PatientPosition")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<DateTime?>("SeriesDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SeriesDescription")
@@ -270,43 +266,37 @@ namespace AlfaPackalApi.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("SeriesNumber")
+                    b.Property<int?>("SeriesNumber")
                         .HasColumnType("int");
 
-                    b.HasKey("SerieID");
+                    b.Property<string>("StudyInstanceUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("EstudioID");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PACS_SerieID");
 
                     b.HasIndex("SeriesInstanceUID")
                         .HasDatabaseName("IX_Serie_SeriesInstanceUID");
 
-                    b.HasIndex("SeriesNumber")
-                        .HasDatabaseName("IX_Serie_SeriesNumber");
+                    b.HasIndex("PACS_EstudioID", "SeriesNumber")
+                        .HasDatabaseName("IX_Serie_EstudioID_SeriesNumber");
+
+                    b.HasIndex("SeriesInstanceUID", "SeriesNumber")
+                        .HasDatabaseName("IX_Serie_SeriesInstanceUID_SeriesNumber");
 
                     b.ToTable("Series");
                 });
 
             modelBuilder.Entity("AlfaPackalApi.Modelos.Estudio", b =>
                 {
-                    b.HasOne("AlfaPackalApi.Modelos.Doctor", "Doctor")
-                        .WithMany("Estudios")
-                        .HasForeignKey("DoctorID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AlfaPackalApi.Modelos.ListaDeTrabajo", "ListaDeTrabajo")
-                        .WithMany("Estudios")
-                        .HasForeignKey("ListaID");
-
                     b.HasOne("AlfaPackalApi.Modelos.Paciente", "Paciente")
                         .WithMany("Estudios")
-                        .HasForeignKey("PatientID")
+                        .HasForeignKey("PACS_PatientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("ListaDeTrabajo");
 
                     b.Navigation("Paciente");
                 });
@@ -315,7 +305,7 @@ namespace AlfaPackalApi.Migrations
                 {
                     b.HasOne("AlfaPackalApi.Modelos.Serie", "Serie")
                         .WithMany("Imagenes")
-                        .HasForeignKey("SerieID")
+                        .HasForeignKey("PACS_SerieID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -326,26 +316,14 @@ namespace AlfaPackalApi.Migrations
                 {
                     b.HasOne("AlfaPackalApi.Modelos.Estudio", "Estudio")
                         .WithMany("Series")
-                        .HasForeignKey("EstudioID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PACS_EstudioID");
 
                     b.Navigation("Estudio");
-                });
-
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Doctor", b =>
-                {
-                    b.Navigation("Estudios");
                 });
 
             modelBuilder.Entity("AlfaPackalApi.Modelos.Estudio", b =>
                 {
                     b.Navigation("Series");
-                });
-
-            modelBuilder.Entity("AlfaPackalApi.Modelos.ListaDeTrabajo", b =>
-                {
-                    b.Navigation("Estudios");
                 });
 
             modelBuilder.Entity("AlfaPackalApi.Modelos.Paciente", b =>

@@ -6,6 +6,7 @@ using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
 using InterfazBasica.Service;
 using InterfazBasica.Service.IService;
+using InterfazBasica_DCStore.Service.IDicomService;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -17,28 +18,9 @@ namespace InterfazBasica_DCStore.Service.DicomServices
     public class CStoreSCP : DicomService, IDicomServiceProvider, IDicomCStoreProvider, IDicomCEchoProvider
     {
         // 25/01/24 Luis Felipe MG.-Dependencias
-        //private IEstudioService _estudioService;
-        //private readonly IMapper _mapper;
+        private IDicomOrchestrator _dicomOrchestrator;
 
-
-        // 14/02/24 Luis Felipe MG.-Evento
-        // Definición del delegado para el evento
-        /* Estructura del Delegado
-        public : Modificador
-        delegate: delegate
-        void: tipo de retorno
-        StudyReceivedEventHandler: nombre
-        DicomCStoreRequest: parametro de entrada
-
-        */
-        public delegate void StudyReceivedEventHandler(DicomCStoreRequest request);
-
-        public event EventHandler<DicomFile> DicomFileReceived;
-        // Evento que se dispara al recibir un estudio
-        public event StudyReceivedEventHandler StudyReceived;
-
-
-        private DicomFile dicomFile;
+        private DicomFile _dicomFile;
 
         private static readonly DicomTransferSyntax[] _acceptedTransferSyntaxes = new DicomTransferSyntax[]
             {
@@ -65,24 +47,17 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                DicomTransferSyntax.ExplicitVRBigEndian,
                DicomTransferSyntax.ImplicitVRLittleEndian
         };
-
-        //public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies,IEstudioService estudioService, IMapper mapper)
-        //    : base(stream, fallbackEncoding, log, dependencies)
-        //{
-        //    _estudioService = estudioService;
-        //    _mapper = mapper;
-        //}
-
+        //** Constructor original
 
         public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies)
             : base(stream, fallbackEncoding, log, dependencies)
         {
+            _dicomOrchestrator = ServiceLocator.GetService<IDicomOrchestrator>();
         }
 
-                    
         public Task OnReceiveAssociationRequestAsync(DicomAssociation association)
         {
-            if (association.CalledAE != "STORESCP")
+            if (association.CalledAE != "STORESCP") 
             {
                 return SendAssociationRejectAsync(
                     DicomRejectResult.Permanent,
@@ -92,7 +67,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
 
             foreach (var pc in association.PresentationContexts)
             {
-                if (pc.AbstractSyntax == DicomUID.Verification)
+               if (pc.AbstractSyntax == DicomUID.Verification)
                 {
                     pc.AcceptTransferSyntaxes(_acceptedTransferSyntaxes);
                 }
@@ -123,101 +98,23 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             /* nothing to do here */
         }
 
-        /*
-         * [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CrearVilla(VillaCreateDto modelo)
-        {
-            if(ModelState.IsValid)
-            {
-                var response = await _villaService.Crear<APIResponse>(modelo);
-                if(response != null && response.IsExitoso)
-                {
-                    return RedirectToAction(nameof(IndexVilla));
-                }
-            }
-            return View(modelo);
-        }
-         * */
-
         public async Task<DicomCStoreResponse> OnCStoreRequestAsync(DicomCStoreRequest request)
         {
-            // Extraer UID de estudio e instancia
-
             try
             {
-                // UIDs
-                var studyUid = request.Dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID).Trim();
-                var instUid = request.SOPInstanceUID.UID;
-                var seriesUid = request.Dataset.GetSingleValue<string>(DicomTag.SeriesInstanceUID).Trim();
-                var sopClassUID = request.Dataset.GetSingleValue<string>(DicomTag.SOPClassUID);
-
-                //Creacion de archivo DICOM
-                DicomDataset dataset = request.Dataset;
-                DicomFile dicomFile = new DicomFile(dataset);
-                StudyReceived?.Invoke(request);
-
-
-
-
-                if (request.Dataset.Contains(DicomTag.PixelData))
-                {
-                    //var pixelData = request.Dataset.GetDicomItem<DicomPixelData>(DicomTag.PixelData);
-                    var pixelData = DicomPixelData.Create(request.Dataset);
-                    // Aquí puedes trabajar con pixelData, por ejemplo, acceder a los frames de la imagen
-                    for (int i = 0; i < pixelData.NumberOfFrames; i++)
-                    {
-                        var frame = pixelData.GetFrame(i);
-                        byte[] pixelBytes = frame.Data;
-                        // Hacer algo con los bytes de píxeles
-                    }
-                }
-                //Detonacion de eventos
-                
-                // Aqui Ixchel
-                //EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
-                //var response = await _estudioService.Crear<APIResponse>(estudioDto);
-                //if (response != null && response.IsExitoso)
-                //{ 
-                //    // Insetar Series
-                //}
-                var path = Path.Combine(Path.GetFullPath(DS.RutaAlmacen), studyUid, seriesUid);
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                path = Path.Combine(path, instUid + ".dcm");
-
-                await request.File.SaveAsync(path);
-
-                return new DicomCStoreResponse(request, DicomStatus.Success);
+                // DicomFile apartir de DataSet
+                DicomFile dicomFile = new DicomFile(request.Dataset);
+                // Se entrega al orchestrator para registro de entidades PACS
+                var resultStoreDicomData = await _dicomOrchestrator.StoreDicomData(dicomFile);
+                // Envio de archivo DICOM para su almacenamiento fisico
+                //var resultStoreDicomFile = _dicomOrchestrator.StoreDicomFile(dicomFile);
+                //Si falla el proceso de almacenamiento
+                return new DicomCStoreResponse(request, resultStoreDicomData);
             }
-            catch (Exception ex)
+            catch 
             {
                 return new DicomCStoreResponse(request, DicomStatus.Warning);
             }
-            
-
-
-            //// Mapear y guardar la información del estudio
-            //EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
-            //response = await _estudioService.Crear<APIResponse>(estudioDto);
-            //if (response != null && response.IsExitoso)
-            //{
-            //    var idEstudioPacs = 
-            //    // Mapear y guardar la información de la serie
-            //    SerieCreateDto serieDto = _mapper.Map<SerieCreateDto>(request.Dataset);
-            //    serieDto.PACS_EstudioID = _estudioService.Obtener(studyUid); // Suponiendo que tienes una forma de obtener el ID del estudio
-            //    await GuardarSerie(serieDto);
-
-            //}
-
-            //// Mapear y guardar la información de la imagen
-            //ImagenCreateDto imagenDto = _mapper.Map<ImagenCreateDto>(request.Dataset);
-            //imagenDto.PACS_SerieID = ObtenerSerieIDDesdeUID(seriesUid); // Suponiendo que tienes una forma de obtener el ID de la serie
-            //await GuardarImagen(imagenDto, path); // Guarda la imagen y su ubicación
-
-            // Guardar el archivo físico de la imagen
-            
         }
 
 

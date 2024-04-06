@@ -5,8 +5,9 @@ namespace AlfaPackalApi.Repositorio.IRepositorio
 {
     public interface IEstudioRepositorio : IRepositorio<Estudio>
     {
-        Task<Estudio> Actualizar(Estudio entidad);
-        Task<bool> ExisteStudyInstanceUID(string studyInstanceUID);
-        Task<Estudio> GetStudyByInstanceUID(string studyInstanceUID);
+         //Task<Estudio> Actualizar(Estudio entidad);
+        Task<Estudio> GetByInstanceUID(string studyInstanceUID);
+        Task<Estudio> GetByAccessionNumber(string accessionNumbers);
+        Task<bool> ExistByInstanceUID(string studyInstanceUID);
     }
 }

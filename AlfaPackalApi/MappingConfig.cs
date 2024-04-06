@@ -1,6 +1,5 @@
 ﻿using AlfaPackalApi.Modelos;
 using AlfaPackalApi.Modelos.Dto.Pacs;
-using AlfaPackalApi.Modelos.Dto.RIS;
 using AutoMapper;
 
 namespace AlfaPackalApi
@@ -26,9 +25,9 @@ namespace AlfaPackalApi
             CreateMap<Imagen, ImagenUpdateDto>().ReverseMap();//Update
             CreateMap<Imagen, ImagenDto>().ReverseMap(); // Other
             // Lista de Trabajo
-            CreateMap<ListaDeTrabajo, ListaDeTrabajoCreateDto>().ReverseMap();//Create
-            CreateMap<ListaDeTrabajo, ListaDeTrabajoUpdateDto>().ReverseMap();//Update
-            CreateMap<ListaDeTrabajo, ListaDeTrabajoDto>().ReverseMap(); // Other
+            //CreateMap<ListaDeTrabajo, ListaDeTrabajoCreateDto>().ReverseMap();//Create
+            //CreateMap<ListaDeTrabajo, ListaDeTrabajoUpdateDto>().ReverseMap();//Update
+            //CreateMap<ListaDeTrabajo, ListaDeTrabajoDto>().ReverseMap(); // Other
 
         }
     }

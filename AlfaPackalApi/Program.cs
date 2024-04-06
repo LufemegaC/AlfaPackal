@@ -2,6 +2,8 @@ using AlfaPackalApi;
 using AlfaPackalApi.Datos;
 using AlfaPackalApi.Repositorio;
 using AlfaPackalApi.Repositorio.IRepositorio;
+using Api_PACsServer.Services;
+using Api_PACsServer.Services.IService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,9 +26,12 @@ builder.Services.AddScoped<IPacienteRepositorio, PacienteRepositorio>();
 builder.Services.AddScoped<IEstudioRepositorio,  EstudioRepositorio>();
 builder.Services.AddScoped<ISerieRepositorio,    SerieRepositorio>();
 builder.Services.AddScoped<IImagenRepositorio,   ImagenRepositorio>();
-// RIS
-builder.Services.AddScoped<IDoctorRepositorio,   DoctorRepositorio>();
-builder.Services.AddScoped<IPacienteRepositorio, PacienteRepositorio>();
+// Servicio de validacion
+builder.Services.AddScoped<IValidationService, ValidationService>();
+
+
+
+//builder.Services.AddScoped<IDoctorRepositorio,   DoctorRepositorio>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

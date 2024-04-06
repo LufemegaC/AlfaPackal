@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Api_PACsServer.Modelos.Dto;
 using static Utileria.DicomUtilities;
 
 namespace AlfaPackalApi.Controllers
@@ -24,7 +25,7 @@ namespace AlfaPackalApi.Controllers
             _logger = logger;
             _imagenRepo = imagenRepo;
             _mapper = mapper;
-            _response = new();
+            _response = new APIResponse();
         }
 
         [HttpGet]
@@ -46,17 +47,17 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
-        [HttpGet("{id:int}", Name = "GetImagen")]
+        [HttpGet("{id:int}", Name = "GetImagenByID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetImagen(int id)
+        public async Task<ActionResult<APIResponse>> GetImagenByID(int id)
         {
             try
             {
                 if (id <= 0)
                 {
-                    _logger.LogError("Error al traer imagen con Id " + id);
+                    //_logger.LogError("Error al traer imagen con Id " + id);
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsExitoso = false;
                     return BadRequest(_response);
@@ -80,11 +81,11 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
-        [HttpGet("{instanceUID}", Name = "GetImageByIdInstanceUID")]
+        [HttpGet("GetImageByInstanceUID/{instanceUID}", Name = "GetImageByInstanceUID")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetImageByIdInstanceUID(string instanceUID)
+        public async Task<ActionResult<APIResponse>> GetImageByInstanceUID(string instanceUID)
         {
             try
             {
@@ -96,7 +97,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(_response);
                 }
                 // Localizo registro en el modelo
-                var imagen = await _imagenRepo.GetImageByInstanceUID(instanceUID);
+                var imagen = await _imagenRepo.GetBySOPInstanceUID(instanceUID);
                 if (imagen == null) // Si el registro no fue encontrado
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -105,6 +106,7 @@ namespace AlfaPackalApi.Controllers
                 }
                 _response.Resultado = _mapper.Map<ImagenDto>(imagen);
                 _response.StatusCode = HttpStatusCode.OK;
+                _response.PacsResourceId = imagen.PACS_ImagenID;
                 return Ok(_mapper.Map<ImagenDto>(imagen));
             }
             catch (Exception ex)
@@ -115,7 +117,35 @@ namespace AlfaPackalApi.Controllers
             return _response;
         }
 
-        [HttpPost]
+        [HttpGet("ExistBySOPInstanceUID/{instanceUID}", Name = "ExistBySOPInstanceUID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<APIResponse>> ExistBySOPInstanceUID(string instanceUID)
+        {
+            try
+            {
+                //Si el formate de la instancia UID no es valido
+                if (!IsValidDicomUid(instanceUID))
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsExitoso = false;
+                    return BadRequest(_response);
+                }
+                var exists = await _imagenRepo.ExistBySOPInstanceUID(instanceUID);
+                _response.Resultado = exists;
+                _response.StatusCode = exists ? HttpStatusCode.OK : HttpStatusCode.NotFound;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsExitoso = false;
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
+            }
+            return _response;
+        }
+
+        [HttpPost("CrearImagen")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -132,7 +162,7 @@ namespace AlfaPackalApi.Controllers
                     return BadRequest(ModelState);
                 }
                 // Validación específica para SOPInstanceUID
-                if (await _imagenRepo.ExisteImagenInstanceUID(CreateDto.SOPInstanceUID))
+                if (await _imagenRepo.ExistBySOPInstanceUID(CreateDto.SOPInstanceUID))
                 {
                     return BadRequest("Ya existe un estudio con el mismo SOPInstanceUID.");
                 }
@@ -140,7 +170,8 @@ namespace AlfaPackalApi.Controllers
                 await _imagenRepo.Crear(modelo);
                 _response.Resultado = modelo;
                 _response.StatusCode = HttpStatusCode.Created;
-                return CreatedAtRoute("GetImagen", new { ImagenID = modelo.PACS_ImagenID }, _response);
+                _response.PacsResourceId = modelo.PACS_ImagenID;
+                return CreatedAtRoute("GetImagenByID", new { id = modelo.PACS_ImagenID }, _response);
             }
             catch (Exception ex)
             {
@@ -181,69 +212,6 @@ namespace AlfaPackalApi.Controllers
                 _response.ErrorsMessages = new List<string> { ex.ToString() };
             }
             return BadRequest(_response);
-        }
-
-        // 18/01/24.-Luis Felipe MG: Codigo comentado en esta version demo
-        //Metodo UPDATE
-        //[HttpPut("{id:int}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public async Task<IActionResult> UpdateImagen(int id, [FromBody] ImagenUpdateDto UpdateDto)
-        //{
-        //    try
-        //    {
-        //        if (UpdateDto == null || id != UpdateDto.PACS_ImagenID)
-        //        {
-        //            _response.IsExitoso = false;
-        //            _response.StatusCode = HttpStatusCode.BadRequest;
-        //            return BadRequest(_response);
-        //        }
-        //        var imagenExistente = await _imagenRepo.ObtenerPorID(x => x.PACS_ImagenID == id);
-        //        if (imagenExistente == null)
-        //        {
-        //            _response.IsExitoso = false;
-        //            _response.StatusCode = HttpStatusCode.NotFound;
-        //            return NotFound(_response);
-        //        }
-        //        Imagen modelo = _mapper.Map<Imagen>(UpdateDto);
-        //        await _imagenRepo.Actualizar(modelo);
-        //        _response.StatusCode = HttpStatusCode.NoContent;
-        //        return Ok(_response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _response.IsExitoso = false;
-        //        _response.ErrorsMessages = new List<string> { ex.ToString() };
-        //    }
-        //    return Ok(_response);
-        //}
-
-        [HttpPatch("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdatePartialImagen(int id, JsonPatchDocument<ImagenUpdateDto> patchDto)
-        {
-            if (patchDto == null || id == 0)
-            {
-                return BadRequest();
-            }
-            var imagenExistente = await _imagenRepo.ObtenerPorID(x => x.PACS_ImagenID == id, tracked: false);
-            if (imagenExistente == null)
-            {
-                return NotFound("Imagen no encontrada.");
-            }
-            ImagenUpdateDto imagenDto = _mapper.Map<ImagenUpdateDto>(imagenExistente);
-            patchDto.ApplyTo(imagenDto, ModelState);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            Imagen modelo = _mapper.Map<Imagen>(imagenDto);
-            await _imagenRepo.Actualizar(modelo);
-            _response.StatusCode = HttpStatusCode.NoContent;
-            return Ok(_response);
         }
     }
 }

@@ -10,9 +10,9 @@ namespace AlfaPackalApi.Datos
         { 
         
         }
-        public DbSet<Doctor> Doctores { get; set; }
+        //public DbSet<Doctor> Doctores { get; set; }
         public DbSet<Paciente> Pacientes { get; set; }
-        public DbSet<ListaDeTrabajo> ListasDeTrabajo { get; set; }
+        //public DbSet<ListaDeTrabajo> ListasDeTrabajo { get; set; }
         public DbSet<Estudio> Estudios { get; set; }
         public DbSet<Serie> Series { get; set; }
         public DbSet<Imagen> Imagenes { get; set; }
@@ -28,23 +28,9 @@ namespace AlfaPackalApi.Datos
             modelBuilder.Entity<Paciente>()
                .HasIndex(e => new { e.PatientName })
                .HasDatabaseName("IX_Paciente_PatientName");
-            //15/01/2024.- Luis Felipe M Indices por separado
-            //Apellido y Nombre
-            //modelBuilder.Entity<Paciente>()
-            //    .HasIndex(e => new { e.LastName, e.FirstName })
-            //    .HasDatabaseName("IX_Paciente_LastName_FirstName");
-            //// Apellido
-            //modelBuilder.Entity<Paciente>()
-            //    .HasIndex(e => e.LastName)
-            //    .HasDatabaseName("IX_Paciente_LastName");
-            //// Primer nombre
-            //modelBuilder.Entity<Paciente>()
-            //    .HasIndex(e => e.FirstName)
-            //    .HasDatabaseName("IX_Paciente_FirstName");
-            // 12/01/2024 .- Luis Felipe M Retiro indices x nombre y apellido
-            //modelBuilder.Entity<Paciente>()
-            //   .HasIndex(e => new { e.Apellido, e.Nombre })
-            //.HasDatabaseName("IX_Paciente_Apellido_Nombre");
+            modelBuilder.Entity<Paciente>()
+               .HasIndex(e => new { e.GeneratedPatientID })
+               .HasDatabaseName("IX_Paciente_GeneratedPatientID");
             // * Estudio
             // Crear índice para StudyDate en la entidad Estudio
             modelBuilder.Entity<Estudio>()
@@ -62,7 +48,11 @@ namespace AlfaPackalApi.Datos
             modelBuilder.Entity<Estudio>()
                 .HasIndex(e => new { e.PACS_PatientID, e.AccessionNumber })
                 .HasDatabaseName("IX_Estudio_PacienteID_AccessionNumber"); // IX_Estudio_PacienteID_EstudioID  
-            // * Serie
+                                                                           // Indices de busqueda por Paciente y numero de acceso
+            modelBuilder.Entity<Estudio>()
+                .HasIndex(e => new { e.PACS_PatientID, e.GeneratedPatientID })
+                .HasDatabaseName("IX_Estudio_PacienteID_GeneratedPatientID");
+            // * Serie *//
             modelBuilder.Entity<Serie>()
                 .HasIndex(e => e.SeriesInstanceUID)
                 .HasDatabaseName("IX_Serie_SeriesInstanceUID"); // IX_Estudios_AccessionNumber 

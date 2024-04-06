@@ -10,7 +10,11 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
         [Required]
         public string StudyInstanceUID { get; set; }
         // ID interno de paciente 
+        [Required]
         public int? PACS_PatientID { get; set; }
+        [StringLength(64)]
+        // ID patient de maetadatos
+        public string GeneratedPatientID { get; set; } // ID del paciente DICOM/Metadato
         public string? StudyComments { get; set; }
         // Modalidad de estudio Dicom/Metadato
         [Required]

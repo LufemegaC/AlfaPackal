@@ -9,6 +9,8 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 
         //Estudio
         public int? PACS_EstudioID { get; set; }
+        [Required]
+        public string StudyInstanceUID { get; set; }
         // Descripcion
         public string SeriesDescription { get; set; }
         // Identificador

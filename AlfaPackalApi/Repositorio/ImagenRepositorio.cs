@@ -13,21 +13,15 @@ namespace AlfaPackalApi.Repositorio
         {
             _db = db;
         }
-        public async Task<Imagen> Actualizar(Imagen entidad)
+
+        public async Task<Imagen> GetBySOPInstanceUID(string sopInstanceUID)
         {
-            //entidad.FechaActualizacion = DateTime.Now; 
-            _db.Imagenes.Update(entidad);
-            await _db.SaveChangesAsync();
-            return entidad;
-        }
-        public async Task<bool> ExisteImagenInstanceUID(string imageInstanceUID)
-        {
-            return await _db.Imagenes.AnyAsync(e => e.SOPInstanceUID == imageInstanceUID);
+            return await _db.Imagenes.FirstOrDefaultAsync(e => e.SOPInstanceUID == sopInstanceUID);
         }
 
-        public async Task<Imagen> GetImageByInstanceUID(string imageInstanceUID)
+        public async Task<bool> ExistBySOPInstanceUID(string sopInstanceUID)
         {
-            return await _db.Imagenes.FirstOrDefaultAsync(e => e.SOPInstanceUID == imageInstanceUID);
+            return await _db.Imagenes.AnyAsync(e => e.SOPInstanceUID == sopInstanceUID);
         }
 
     }

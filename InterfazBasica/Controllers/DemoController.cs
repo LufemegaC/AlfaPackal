@@ -28,12 +28,11 @@ namespace InterfazBasica_DCStore.Controllers
         public async Task<IActionResult> IndexEstudio()
         {
             List <EstudioDto> estudioList = new();
-            var response = await _estudioService.ObtenerTodos<APIResponse>();
+            var response = await _estudioService.GetAll<APIResponse>();
             if (response != null && response.IsExitoso)
             {
                 estudioList = JsonConvert.DeserializeObject<List<EstudioDto>>(Convert.ToString(response.Resultado));
             }
-
             return View(estudioList);
         }
 
@@ -45,7 +44,7 @@ namespace InterfazBasica_DCStore.Controllers
            // EstudioCreateDto estudioDto = _mapper.Map<EstudioCreateDto>(request.Dataset);
             if (ModelState.IsValid)
             {
-                var response = await _estudioService.Crear<APIResponse>(modelo);
+                var response = await _estudioService.Create<APIResponse>(modelo);
                 if (response != null && response.IsExitoso)
                 {
                     return RedirectToAction(nameof(IndexEstudio));

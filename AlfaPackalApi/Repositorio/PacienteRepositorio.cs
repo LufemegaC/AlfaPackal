@@ -2,6 +2,7 @@
 using AlfaPackalApi.Modelos;
 using AlfaPackalApi.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AlfaPackalApi.Repositorio
 {
@@ -12,18 +13,27 @@ namespace AlfaPackalApi.Repositorio
         {
             _db = db;
         }
-        public async Task<Paciente> Actualizar(Paciente entidad)
+
+
+        public async Task<Paciente> GetByName(string nombre)
         {
-            //entidad.FechaActualizacion = DateTime.Now; 
-            _db.Pacientes.Update(entidad);
-            await _db.SaveChangesAsync();
-            return entidad;
-        }
-        public async Task<bool> ExisteNombre(string nombre)
-        {
-            //return await _db.Pacientes.AnyAsync(e => e.PatientName == nombre);
-            return await _db.Pacientes.AnyAsync(e => e.PatientName.ToLower().Contains(nombre.ToLower()));
+            return await _db.Pacientes.FirstOrDefaultAsync(e => e.PatientName.ToLower().Contains(nombre.ToLower()));
         }
 
+
+        public async Task<Paciente> GetByGeneratedPatientId(string generatedId)
+        {
+            return await _db.Pacientes.FirstOrDefaultAsync(e => e.GeneratedPatientID == generatedId);
+        }
+
+        public async Task<Paciente> GetByMetadata(string patientID, string issuerOfPatientId)
+        {
+            return await _db.Pacientes.FirstOrDefaultAsync(e => e.PatientID == patientID && e.IssuerOfPatientID == issuerOfPatientId);
+        }
+        public async Task<bool> ExistByMetadata(string patienteID, string issuerOfPatientId)
+        {
+            return await _db.Pacientes.AnyAsync(e => e.PatientID == patienteID &&
+                                                e.IssuerOfPatientID == issuerOfPatientId);
+        }
     }
 }
