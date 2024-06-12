@@ -47,6 +47,21 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Formulario para subir la URL de una carpeta con archivos CDM -->
+            @*<form asp-action="SendCdmFiles" method="post">*@
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="folderPath" class="form-label">Seleccionar Carpeta con Archivos CDM:</label>
+                            <input type="text" name="folderPath" class="form-control" id="folderPath" placeholder="Ingrese la ruta de la carpeta">
+                        </div>
+                        <div class="form-group">
+                        <button type="submit" asp-action="SendCdmFiles" class="btn btn-primary" id="sendFiles">Importar Archivos</button>
+                        </div>
+                    </div>
+                </div>
+            @*</form>*@
         </div>
     </div>
 

@@ -9,6 +9,7 @@ using System.Net;
 using Api_PACsServer.Modelos.Dto;
 using static Utileria.DicomUtilities;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlfaPackalApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace AlfaPackalApi.Controllers
 
         // POST: api/Serie
         [HttpPost]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> CrearSerie([FromBody] SerieCreateDto createDto)
@@ -68,6 +70,7 @@ namespace AlfaPackalApi.Controllers
 
         // GET: api/Serie
         [HttpGet]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetSeries()
         {
@@ -87,6 +90,7 @@ namespace AlfaPackalApi.Controllers
 
         // GET: api/Serie/5
         [HttpGet("{id:int}", Name = "GetSerieById")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -123,6 +127,7 @@ namespace AlfaPackalApi.Controllers
         
         // GET: api/Serie/5
         [HttpGet("GetSerieByInstanceUID/{instanceUID}", Name = "GetSerieByInstanceUID")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -158,6 +163,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpGet("ExistSerieByInstanceUID/{instanceUID}", Name = "ExistSerieByInstanceUID")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

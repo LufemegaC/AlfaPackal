@@ -20,59 +20,55 @@ namespace InterfazBasica_DCStore.Service
         }
 
         //Crear Serie
-        public Task<T> Create<T>(SerieCreateDto dto)
+        public Task<T> Create<T>(SerieCreateDto dto,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.POST,
                 Datos = dto,
-                Url = _serieUrl + "/api/serie"
+                Url = _serieUrl + "/api/serie",
+                Token = token
             });
         }
 
         //Get Series
-        public Task<T> GetAll<T>()
+        public Task<T> GetAll<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _serieUrl + "/api/serie"
+                Url = _serieUrl + "/api/serie",
+                Token = token
             });
         }
 
-        public Task<T> GetByID<T>(int id)
+        public Task<T> GetByID<T>(int id,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _serieUrl + "/api/serie/" + id
+                Url = _serieUrl + "/api/serie/" + id,
+                Token = token
             });
         }
 
-        //public Task<T> GetAllByStudyInstanceUID<T>(string uid)
-        //{
-        //    return SendAsync<T>(new APIRequest()
-        //    {
-        //        APITipo = DS.APITipo.GET,
-        //        Url = _serieUrl + "/api/serie/" + uid
-        //    });
-        //}
-
-        public Task<T> GetBySeriesInstanceUID<T>(string instanceUID)
+        public Task<T> GetBySeriesInstanceUID<T>(string instanceUID,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _serieUrl + "/api/serie/GetSerieByInstanceUID/" + instanceUID
+                Url = _serieUrl + "/api/serie/GetSerieByInstanceUID/" + instanceUID,
+                Token = token
             });
         } 
         
-        public Task<T> ExistByInstanceUID<T>(string instanceUID)
+        public Task<T> ExistByInstanceUID<T>(string instanceUID,string token)
         { 
-        return SendAsync<T>(new APIRequest()
-        {
-            APITipo = DS.APITipo.GET,
-                Url = _serieUrl + "/api/serie/ExistSerieByInstanceUID/" + instanceUID
+            return SendAsync<T>(new APIRequest()
+            {
+                APITipo = DS.APITipo.GET,
+                Url = _serieUrl + "/api/serie/ExistSerieByInstanceUID/" + instanceUID,
+                Token = token
             });
         }
     }

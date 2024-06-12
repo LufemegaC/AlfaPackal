@@ -1,6 +1,7 @@
 ﻿using InterfazBasica.Models;
 using InterfazBasica.Service.IService;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 using Utileria;
 
@@ -50,8 +51,30 @@ namespace InterfazBasica.Service
                 }
 
                 HttpResponseMessage apiResponse = null; // Inicializo respuesta
+                if(!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                }
                 apiResponse = await client.SendAsync(message); // Envio mensaje
                 var apiContent = await apiResponse.Content.ReadAsStringAsync(); //Recibo respuesta
+                try
+                {
+                    APIResponse response = JsonConvert.DeserializeObject<APIResponse>(apiContent);
+                    if (response != null && (apiResponse.StatusCode == HttpStatusCode.BadRequest 
+                                          || apiResponse.StatusCode == HttpStatusCode.NotFound))
+                    {
+                        response.StatusCode = HttpStatusCode.BadRequest;
+                        response.IsExitoso = false;
+                        var res = JsonConvert.SerializeObject(response);
+                        var obj = JsonConvert.DeserializeObject<T>(res);
+                        return obj;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<T>(apiContent);
+                    return errorResponse;
+                }
                 var APIResponse = JsonConvert.DeserializeObject<T>(apiContent); //Convierto respuesta
                 return APIResponse; // Retorno resultado
 

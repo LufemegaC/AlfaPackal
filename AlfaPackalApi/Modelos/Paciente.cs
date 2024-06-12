@@ -18,6 +18,7 @@ namespace AlfaPackalApi.Modelos
         [Required, StringLength(64)]
         public string GeneratedPatientID { get; set; }
         // Nombre completo de paciente 
+        // ApellidoPaterno^ApellidoMaterno^Nombre(s)^Prefijo^Sufijo
         [Required]
         public string? PatientName { get; set; }
 		// Edad de paciente

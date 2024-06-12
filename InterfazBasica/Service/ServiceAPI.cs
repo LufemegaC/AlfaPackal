@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Xml.Linq;
+using Utileria;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace InterfazBasica_DCStore.Service
@@ -17,14 +18,18 @@ namespace InterfazBasica_DCStore.Service
         private readonly IEstudioService _estudioService;
         private readonly ISerieService _serieService;
         private readonly IImageService _imagenService;
+        // Contexto de Session:
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private string _token; //Token de autorizacion
 
         public ServiceAPI(IPacienteService pacienteService, IEstudioService estudioService,
-            ISerieService serieService, IImageService imageService)
+            ISerieService serieService, IImageService imageService, IHttpContextAccessor httpContextAccessor)
         {
             _pacienteService = pacienteService;
             _estudioService = estudioService;
             _serieService = serieService;
             _imagenService = imageService;
+            _httpContextAccessor = httpContextAccessor;
         }
         // ** METODOS DE REGISTRO DE ENTIDADES ** //
         // PACIENTE
@@ -37,7 +42,7 @@ namespace InterfazBasica_DCStore.Service
                 if (!resultValid.Success)
                     APIResponse.NoValidEntity(resultValid.ErrorsMessages, modelo);
                 // Valido si ya existe el registro
-                 var response = await _pacienteService.Create<APIResponse>(modelo);
+                 var response = await _pacienteService.Create<APIResponse>(modelo, Token);
                 //var response2 = await _pacienteService.CreatePruebas<APIResponse>(modelo);
                 return response;
             }
@@ -56,12 +61,12 @@ namespace InterfazBasica_DCStore.Service
             if (!resultValid.Success)
                 APIResponse.NoValidEntity(resultValid.ErrorsMessages, modelo);
             // Valido si ya existe el registro
-            var existStudy = await _estudioService.ExistStudyByInstanceUID<APIResponse>(modelo.StudyInstanceUID);
+            var existStudy = await _estudioService.ExistStudyByInstanceUID<APIResponse>(modelo.StudyInstanceUID, Token);
             if (existStudy != null && existStudy.Resultado is bool && (bool)existStudy.Resultado)
                 APIResponse.NoValidEntity(new List<string> { "El paciente ya está registrado con el ID proporcionado." }, modelo);
             try
             {
-                var response = await _estudioService.Create<APIResponse>(modelo);
+                var response = await _estudioService.Create<APIResponse>(modelo, Token);
                 return response;
             }
             catch (Exception ex)
@@ -79,7 +84,7 @@ namespace InterfazBasica_DCStore.Service
                 APIResponse.NoValidEntity(resultValid.ErrorsMessages, modelo);
             try
             {
-                var response = await _serieService.Create<APIResponse>(modelo);
+                var response = await _serieService.Create<APIResponse>(modelo, Token);
                 return response;
             }
             catch (Exception ex)
@@ -98,7 +103,7 @@ namespace InterfazBasica_DCStore.Service
             // Proceso de registros
             try
             {
-                var response = await _imagenService.Create<APIResponse>(modelo);
+                var response = await _imagenService.Create<APIResponse>(modelo, Token);
                 return response;
             }
             catch (Exception ex)
@@ -115,7 +120,7 @@ namespace InterfazBasica_DCStore.Service
         // Paciente por name
         public async Task<int?> GetPACSIDPatientByName(string name)
         {
-            var patient = await _pacienteService.GetByName<APIResponse>(name);
+            var patient = await _pacienteService.GetByName<APIResponse>(name, Token);
             if (patient != null && patient.IsExitoso)
             {
                 return patient.PacsResourceId;//PACS_ImageId
@@ -127,7 +132,7 @@ namespace InterfazBasica_DCStore.Service
         // Paciente por ID generada por DICOM Server
         public async Task<int?> GetPACSIDPatientByGeneratedID(string generatedID)
         {
-            var patient = await _pacienteService.GetByGeneratedPatientID<APIResponse>(generatedID);
+            var patient = await _pacienteService.GetByGeneratedPatientID<APIResponse>(generatedID, Token);
             if (patient != null && patient.IsExitoso)
             {
                 return patient.PacsResourceId;//PACS_ImageId
@@ -138,7 +143,7 @@ namespace InterfazBasica_DCStore.Service
         // Estudio por Instance UID (Metadato)
         public async Task<int?> GetPACSIDStudyByInstanceUID(string studyInstanceUID)
         {
-            var estudio = await _estudioService.GetStudyByInstanceUID<APIResponse>(studyInstanceUID);
+            var estudio = await _estudioService.GetStudyByInstanceUID<APIResponse>(studyInstanceUID, Token);
             if (estudio != null && estudio.IsExitoso)
             {
                 return estudio.PacsResourceId;//PACS_StudyId
@@ -149,7 +154,7 @@ namespace InterfazBasica_DCStore.Service
         // Serie por Instancia UID
         public async Task<int?> GetPACSIDSeriesByInstanceUID(string serieInstanceUID)
         {
-            var serie = await _serieService.GetBySeriesInstanceUID<APIResponse>(serieInstanceUID);
+            var serie = await _serieService.GetBySeriesInstanceUID<APIResponse>(serieInstanceUID, Token);
             if (serie != null && serie.IsExitoso)
             {
                 return serie.PacsResourceId;//PACS_SerieId
@@ -160,7 +165,7 @@ namespace InterfazBasica_DCStore.Service
         // Imagen por SOP Instance UID
         public async Task<int?> GetPACSIDImageBySOPInstanceUID(String sopInstanceUID)
         {
-            var image = await _imagenService.GetbySOPInstanceUID<APIResponse>(sopInstanceUID);
+            var image = await _imagenService.GetbySOPInstanceUID<APIResponse>(sopInstanceUID, Token);
             if (image != null && image.IsExitoso)
             {
                 return image.PacsResourceId;//PACS_ImageId
@@ -239,6 +244,17 @@ namespace InterfazBasica_DCStore.Service
             return operationResult;
         }
 
-        
+        public string Token
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_token))
+                {
+                    _token = _httpContextAccessor.HttpContext?.Session.GetString(DS.SessionToken);
+                }
+                return _token;
+            }
+        }
+
     }
 }

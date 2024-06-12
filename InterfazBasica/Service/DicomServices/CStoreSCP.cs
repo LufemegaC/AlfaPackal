@@ -106,6 +106,8 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                 DicomFile dicomFile = new DicomFile(request.Dataset);
                 // Se entrega al orchestrator para registro de entidades PACS
                 var resultStoreDicomData = await _dicomOrchestrator.StoreDicomData(dicomFile);
+                var resultStoreDicomFile = await _dicomOrchestrator.StoreDicomFile(dicomFile);
+
                 // Envio de archivo DICOM para su almacenamiento fisico
                 //var resultStoreDicomFile = _dicomOrchestrator.StoreDicomFile(dicomFile);
                 //Si falla el proceso de almacenamiento

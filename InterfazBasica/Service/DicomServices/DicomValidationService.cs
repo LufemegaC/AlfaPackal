@@ -12,17 +12,20 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Utileria;
 
 namespace InterfazBasica_DCStore.Service.DicomServices;
 public class DicomValidationService : IDicomValidationService
 {
 
-    private readonly IValidationService _validationService;
+    private readonly IGeneralAPIServices _validationService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private string _token;
 
-
-    public DicomValidationService(IValidationService validationService)
+    public DicomValidationService(IGeneralAPIServices validationService, IHttpContextAccessor httpContextAccessor)
     {
         _validationService = validationService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
@@ -65,7 +68,7 @@ public class DicomValidationService : IDicomValidationService
     {
         try
         {
-            var response = await _validationService.ValidateEntities<APIResponse>(mainEntitiesValues);
+            var response = await _validationService.ValidateEntities<APIResponse>(mainEntitiesValues,Token);
             if (response is null)
                 throw new InvalidOperationException("El resultado no valido.");
             mainEntitiesValues = JsonConvert.DeserializeObject<MainEntitiesValues>(response.ResultadoJson);
@@ -80,6 +83,17 @@ public class DicomValidationService : IDicomValidationService
         }
     }
 
+    public string Token
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_token))
+            {
+                _token = _httpContextAccessor.HttpContext?.Session.GetString(DS.SessionToken);
+            }
+            return _token;
+        }
+    }
 
 }
 

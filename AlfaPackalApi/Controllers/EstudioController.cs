@@ -4,6 +4,7 @@ using AlfaPackalApi.Repositorio.IRepositorio;
 using Api_PACsServer.Modelos.Dto;
 using AutoMapper;
 using FellowOakDicom;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using static Utileria.DicomUtilities;
@@ -12,6 +13,7 @@ namespace AlfaPackalApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize] // Pendiente probar con TOKEN
     public class EstudioController : ControllerBase
     {
         private readonly ILogger<EstudioController> _logger;
@@ -71,6 +73,7 @@ namespace AlfaPackalApi.Controllers
         //Obtener todos
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        /*[Authorize] // Pruebas*/
         public async Task<ActionResult<APIResponse>> GetEstudios()
         /*Metodo para obtener todas las Estudios*/
         {
@@ -96,6 +99,7 @@ namespace AlfaPackalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize] // Pendiente probar con TOKEN
         public async Task<ActionResult<APIResponse>> GetEstudioByID(int id)
         {
             /* Obtiene estudio por ID ( Control interno ) */
@@ -132,6 +136,7 @@ namespace AlfaPackalApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize] // Pendiente probar con TOKEN
         public async Task<IActionResult> DeleteEstudio(int id)
         {
             try
@@ -171,6 +176,7 @@ namespace AlfaPackalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize] // Pendiente probar con TOKEN
         public async Task<ActionResult<APIResponse>> GetStudyByInstanceUID(string instanceUID)
         {
             try
@@ -208,6 +214,7 @@ namespace AlfaPackalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize] // Pendiente probar con TOKEN
         public async Task<ActionResult<APIResponse>> GetStudyByAccessionNumber (string accessionNumber)
         {
             try
@@ -245,6 +252,7 @@ namespace AlfaPackalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize] // Pendiente probar con TOKEN
         public async Task<ActionResult<APIResponse>> ExistStudyByInstanceUID(string instanceUID)
         {
             try
@@ -269,6 +277,7 @@ namespace AlfaPackalApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
+ 
 
     }
 }

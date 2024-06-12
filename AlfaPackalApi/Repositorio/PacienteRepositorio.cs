@@ -2,6 +2,7 @@
 using AlfaPackalApi.Modelos;
 using AlfaPackalApi.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AlfaPackalApi.Repositorio
@@ -13,7 +14,6 @@ namespace AlfaPackalApi.Repositorio
         {
             _db = db;
         }
-
 
         public async Task<Paciente> GetByName(string nombre)
         {
@@ -34,6 +34,23 @@ namespace AlfaPackalApi.Repositorio
         {
             return await _db.Pacientes.AnyAsync(e => e.PatientID == patienteID &&
                                                 e.IssuerOfPatientID == issuerOfPatientId);
+        }
+
+        //Metodo para proceso C-FIND
+        public async Task<List<string>> FindByCriteria(string patientName, string patientId)
+        {
+            var query = _db.Pacientes.AsQueryable();
+            if (!string.IsNullOrEmpty(patientName))
+            {
+                query = query.Where(p => p.PatientName.Contains(patientName));
+            }
+
+            if (!string.IsNullOrEmpty(patientId))
+            {
+                query = query.Where(p => p.PatientID.Contains(patientId));
+            }
+            // Devuelve solo la lista de PACS_PatientID
+            return await query.Select(p => p.PACS_PatientID.ToString()).ToListAsync();
         }
     }
 }

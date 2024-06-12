@@ -2,7 +2,6 @@
 using InterfazBasica_DCStore.Service.DicomServices;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting.Server;
-using static Utileria.GeneralFunctions;
 
 namespace InterfazBasica_DCStore.Service.DicomServers
 {

@@ -1,7 +1,9 @@
 ﻿using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
 using InterfazBasica.Service.IService;
+using System;
 using Utileria;
+using static Utileria.DS;
 
 namespace InterfazBasica.Service
 {
@@ -15,68 +17,75 @@ namespace InterfazBasica.Service
             _estudioUrl = configuration.GetValue<string>("ServiceUrls:API_URL");
         }
 
-        public Task<T> Create<T>(EstudioCreateDto dto)
+        public Task<T> Create<T>(EstudioCreateDto dto,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.POST,
                 Datos = dto,
-                Url = _estudioUrl + "/api/estudio"
+                Url = _estudioUrl + "/api/estudio",
+                Token = token
             });
         }
 
-        public Task<T> GetAll<T>()
+        public Task<T> GetAll<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _estudioUrl + "/api/estudio"
+                Url = _estudioUrl + "/api/estudio" ,
+                Token = token
             });
         }
 
-        public Task<T> GetByID<T>(int id)
+        public Task<T> GetByID<T>(int id,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _estudioUrl + "/api/estudio/" + id
+                Url = _estudioUrl + "/api/estudio/" + id,
+                Token = token
             });
         }
 
-        public Task<T> GetAllByDate<T>(DateTime date)
+        public Task<T> GetAllByDate<T>(DateTime date,string token)
         {
             string dateString = date.ToString("yyyy-MM-dd");
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _estudioUrl + "/api/estudio/" + dateString
+                Url = _estudioUrl + "/api/estudio/" + dateString,
+                Token = token
             });
         }
 
-        public Task<T> GetStudyByInstanceUID<T>(string instanceUID)
+        public Task<T> GetStudyByInstanceUID<T>(string instanceUID,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _estudioUrl + "/api/estudio/GetStudyByInstanceUID/" + instanceUID
+                Url = _estudioUrl + "/api/estudio/GetStudyByInstanceUID/" + instanceUID,
+                Token = token
             });
         }
 
-        public Task<T> GetStudyByAccessionNumber<T>(string accessionNumber)
+        public Task<T> GetStudyByAccessionNumber<T>(string accessionNumber,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _estudioUrl + "/api/estudio/GetbyAccessionNumber/" + accessionNumber
+                Url = _estudioUrl + "/api/estudio/GetbyAccessionNumber/" + accessionNumber,
+                Token = token
             });
         }
 
-        public Task<T> ExistStudyByInstanceUID<T>(string instanceUID)
+        public Task<T> ExistStudyByInstanceUID<T>(string instanceUID,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _estudioUrl + "/api/estudio/ExistStudyByUID/" + instanceUID
+                Url = _estudioUrl + "/api/estudio/ExistStudyByUID/" + instanceUID,
+                Token = token
             });
         }
     }

@@ -17,31 +17,34 @@ namespace InterfazBasica_DCStore.Service
             _imagenUrl = configuration.GetValue<string>("ServiceUrls:API_URL");
         }
 
-        public Task<T> Create<T>(ImagenCreateDto dto)
+        public Task<T> Create<T>(ImagenCreateDto dto,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.POST,
                 Datos = dto,
-                Url = _imagenUrl + "/api/imagen/CrearImagen"
+                Url = _imagenUrl + "/api/imagen/CrearImagen",
+                Token = token
             });
         }
 
-        public Task<T> GetbyID<T>(int id)
+        public Task<T> GetbyID<T>(int id,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _imagenUrl + "/api/imagen/" + id
+                Url = _imagenUrl + "/api/imagen/" + id,
+                Token = token
             });
         }
 
-        public Task<T> GetbySOPInstanceUID<T>(string uid)
+        public Task<T> GetbySOPInstanceUID<T>(string uid,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _imagenUrl + "/api/imagen/GetImageByInstanceUID/" + uid
+                Url = _imagenUrl + "/api/imagen/GetImageByInstanceUID/" + uid,
+                Token = token
             });
         }
 
@@ -51,25 +54,28 @@ namespace InterfazBasica_DCStore.Service
         //    {
         //        APITipo = DS.APITipo.GET,
         //        Url = _imagenUrl + "/api/imagen/" + uid
+
         //    });
         //}
 
-        public Task<T> GetAll<T>()
+        public Task<T> GetAll<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _imagenUrl + "/api/imagen"
+                Url = _imagenUrl + "/api/imagen",
+                Token = token
             });
         }
 
 
-        public Task<T> ExistBySOPInstanceUID<T>(string sopInstanceUID)
+        public Task<T> ExistBySOPInstanceUID<T>(string sopInstanceUID,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _imagenUrl + "/api/imagen/ExistBySOPInstanceUID/" + sopInstanceUID
+                Url = _imagenUrl + "/api/imagen/ExistBySOPInstanceUID/" + sopInstanceUID,
+                Token = token
             });
         }
     }

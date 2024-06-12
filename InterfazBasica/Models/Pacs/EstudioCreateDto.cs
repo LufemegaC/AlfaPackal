@@ -28,6 +28,8 @@ namespace InterfazBasica.Models.Pacs
         // Numero de accesso DICOM/Metadato
         [Required, MaxLength(64)]
         public string AccessionNumber { get; set; }
+        // ubicacion de archivo DICOM
+        public string? DicomFileLocation { get; set; }
         // Nombre de institucion que realiza el estudio DICOM/Metadatos
         public string? InstitutionName { get; set; }
         // Informacion de participantes en el estudio

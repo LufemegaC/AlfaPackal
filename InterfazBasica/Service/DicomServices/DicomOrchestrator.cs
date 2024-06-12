@@ -2,14 +2,10 @@
 using FellowOakDicom.Imaging;
 using FellowOakDicom.Network;
 using InterfazBasica.Models;
-using InterfazBasica.Models.Pacs;
-using InterfazBasica.Service.IService;
 using InterfazBasica_DCStore.Models;
 using InterfazBasica_DCStore.Service.IDicomService;
 using InterfazBasica_DCStore.Service.IService;
-using System.ComponentModel;
 using System.Net;
-using System.Reflection;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
@@ -18,18 +14,22 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         private readonly IDicomValidationService _validationService;
         private readonly IDicomDecompositionService _decompositionService;
         private readonly IServiceAPI _serviceAPI;
-        private MainEntitiesValues _mainValues;
-        private string _storagePath;
+        
+        //private readonly IDicomImageFinderService _dicomImageFinderService;
+
+        private string _rootPath;
         public DicomOrchestrator(
             IDicomValidationService validationService,
             IDicomDecompositionService decompositionService,
-            IServiceAPI serviceAPI)
+            IServiceAPI serviceAPI,
+            IConfiguration configuration)
         {
             _validationService = validationService;
             _decompositionService = decompositionService;
             _serviceAPI = serviceAPI;
-            _mainValues = new MainEntitiesValues();
-            _storagePath = "C:\\Users\\Desktop\\Documents\\WEB\\DICOM\\ArchivosDicom\\REPOSITORIO_TEMP";
+            _rootPath = configuration.GetValue<string>("DicomSettings:StoragePath");
+            //services.Configure<DicomSettings>(Configuration.GetSection("DicomSettings"));
+
         }
 
         public async Task<DicomStatus> StoreDicomData(DicomFile dicomFile)
@@ -52,6 +52,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                     //Register image
                     var imageCreateDto = await _decompositionService.DecomposeDicomToImagen(metadata);
                     imageCreateDto.PACS_SerieID = mainDicomValues.PACS_SerieID;
+                    imageCreateDto.ImageLocation = RootFileConstructor(mainDicomValues);
                     var apiRespRegImg = await _serviceAPI.RegistrarImagen(imageCreateDto);
                     if (apiRespRegImg != null && apiRespRegImg.PacsResourceId == 0)
                         return TranslateApiResponseToDicomStatus(apiRespRegImg);
@@ -67,6 +68,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                     //Register image
                     var imageCreateDto = await _decompositionService.DecomposeDicomToImagen(metadata);
                     imageCreateDto.PACS_SerieID = apiRespRegSer.PacsResourceId;
+                    imageCreateDto.ImageLocation = RootFileConstructor(mainDicomValues);
                     var apiRespRegImg = await _serviceAPI.RegistrarImagen(imageCreateDto);
                     if (apiRespRegImg != null && apiRespRegImg.PacsResourceId == 0)
                         return TranslateApiResponseToDicomStatus(apiRespRegImg);
@@ -88,6 +90,8 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                 //recupero IDs del registro del paciente
                 estudioCreateDto.PACS_PatientID = apiRespRegPac.PacsResourceId; // ID Generado por la BDs
                 estudioCreateDto.GeneratedPatientID = apiRespRegPac.GeneratedServId;
+                //Asignacion de ruta:
+                //estudioCreateDto.DicomFileLocation 
                 var apiRespRegEst = await _serviceAPI.RegistrarEstudio(estudioCreateDto);
                 if (apiRespRegEst != null && apiRespRegEst.PacsResourceId == 0)
                     return DicomStatus.Cancel;
@@ -98,6 +102,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                     return DicomStatus.Cancel;
                 //--IMAGEN
                 imageCreateDto.PACS_SerieID = apiRespRegSer.PacsResourceId;
+                imageCreateDto.ImageLocation = RootFileConstructor(mainDicomValues);
                 var apiRespRegImg = await _serviceAPI.RegistrarImagen(imageCreateDto);
                 if (apiRespRegImg != null && apiRespRegImg.PacsResourceId == 0)
                     return DicomStatus.Cancel;
@@ -109,19 +114,14 @@ namespace InterfazBasica_DCStore.Service.DicomServices
 
         public async Task<DicomStatus> StoreDicomFile(DicomFile dicomFile)
         {
-            var studyUid = dicomFile.Dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID).Trim();
-            var instUid = dicomFile.Dataset.GetSingleValue<string>(DicomTag.SOPInstanceUID).Trim();
 
-            var path = Path.GetFullPath(_storagePath);
-            path = Path.Combine(path, studyUid);
-
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            path = Path.Combine(path, instUid) + ".dcm";
-            await dicomFile.SaveAsync(path);
+            var mainDicomValues = ExtractMainValues(dicomFile.Dataset);
+            var filePath = RootFileConstructor(mainDicomValues);
+            // Guarda el archivo DICOM en la ruta especificada.
+            await dicomFile.SaveAsync(filePath);
+            // Retorna una respuesta de éxito.
             return DicomStatus.Success;
+
         }
 
         internal MainEntitiesValues ExtractMainValues(DicomDataset dicomDataset)
@@ -165,6 +165,20 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             }
         }
 
+
+        internal string RootFileConstructor(MainEntitiesValues mainValues)
+        {
+            // Construye la ruta completa usando StudyInstanceUID y SeriesInstanceUID.
+            var fullPath = Path.Combine(_rootPath, mainValues.StudyInstanceUID, mainValues.SeriesInstanceUID);
+            // Verifica si la ruta del directorio existe, si no, la crea.
+            if (!Directory.Exists(fullPath))
+            {
+                Directory.CreateDirectory(fullPath);
+            }
+            // Completa la ruta del archivo añadiendo el SOPInstanceUID y la extensión .dcm.
+            var filePath = Path.Combine(fullPath, mainValues.SOPInstanceUID + ".dcm");
+            return filePath;
+        }
         ///
 
         public void ProcesarFrameEspecifico(DicomDataset dicomDataset, int indiceFrame)

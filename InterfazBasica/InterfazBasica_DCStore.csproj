@@ -26,6 +26,7 @@
 	<PackageReference Include="System.Buffers" version="4.5.1" />
 	<PackageReference Include="System.ComponentModel.Composition" version="8.0.0" />
 	<PackageReference Include="System.Diagnostics.DiagnosticSource" version="6.0.0" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
 	<PackageReference Include="System.Memory" version="4.5.5" />
 	<PackageReference Include="System.Numerics.Vectors" version="4.5.0" />
 	<PackageReference Include="System.Runtime.CompilerServices.Unsafe" version="6.0.0" />

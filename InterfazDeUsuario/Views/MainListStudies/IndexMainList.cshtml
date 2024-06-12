@@ -1,0 +1,53 @@
+﻿@model List<InterfazDeUsuario.Models.ViewModels.StudyListVM>
+
+@{
+    ViewData["Title"] = "Listado Principal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/StyleMainList.css" />
+}
+
+
+<div class="container p-4 my-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Listado Principal de Estudios</h1>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Información del Paciente</th>
+                <th>Modalidad</th>
+                <th>Descripcion</th>
+                <th>Descripción del Estudio</th>
+                <th>Fecha del Estudio</th>
+                <th>Parte examinada</th>
+                <th>Descripcion</th>
+                <th>Sucursal</th>
+            </tr>
+        </thead>
+        <tbody>
+           @foreach (var estudio in Model)
+            {
+                <tr>
+                    <td>
+                        @estudio.Paciente.PatientName <br />
+                        ID: @estudio.Paciente.PatientID <br />
+                        Sexo: @estudio.DescPatientSex <br />
+                        Edad: @estudio.Paciente.PatientAge
+                    </td>
+                    <td>@estudio.Estudio.Modality</td>
+                    <td>@estudio.DescModality</td>
+                    <td>@estudio.Estudio.StudyDescription</td>
+                    <td>@estudio.Estudio.StudyDate.ToShortDateString()</td>
+                    <td>@estudio.Estudio.BodyPartExamined</td>
+                    <td>@estudio.DescBodyPart</td>
+                    <td>@estudio.Estudio.InstitutionName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

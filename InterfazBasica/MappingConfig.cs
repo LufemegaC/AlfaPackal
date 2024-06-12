@@ -2,6 +2,7 @@
 using FellowOakDicom;
 using InterfazBasica.Models.Pacs;
 using InterfazBasica_DCStore.Utilities;
+using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using static InterfazBasica_DCStore.Utilities.DicomUtilities;
 using static Utileria.DicomValues;
@@ -71,6 +72,7 @@ namespace InterfazBasica_DCStore
         private static EstudioCreateDto MapDictionaryToEstudioCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
         //Mapeo de Diccionario de metadatos a entidad de creacion de estudio.
         {
+            
             var estudioDto = new EstudioCreateDto
             {
                 StudyInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.StudyInstanceUID, out object studyInstanceUidValue) ? studyInstanceUidValue as string : string.Empty,
@@ -79,6 +81,7 @@ namespace InterfazBasica_DCStore
                 StudyDescription = dicomTagDictionary.TryGetValue(DicomTag.StudyDescription, out object studyDescriptionValue) ? studyDescriptionValue as string : string.Empty,
                 AccessionNumber = dicomTagDictionary.TryGetValue(DicomTag.AccessionNumber, out object accessionNumberValue) ? accessionNumberValue as string : GenerateAccessionNumber(),
                 InstitutionName = dicomTagDictionary.TryGetValue(DicomTag.InstitutionName, out object institutionNameValue) ? institutionNameValue as string : string.Empty,
+                //DicomFileLocation = fullPath, // Location of dicom file
                 PerformingPhysicianName = dicomTagDictionary.TryGetValue(DicomTag.PerformingPhysicianName, out object performingPhysicianNameValue) ? performingPhysicianNameValue as string : string.Empty,
                 OperatorName = dicomTagDictionary.TryGetValue(DicomTag.OperatorsName, out object operatorNameValue) ? operatorNameValue as string : string.Empty,
                 ExposureTime = dicomTagDictionary.TryGetValue(DicomTag.ExposureTime, out object exposureTimeValue) ? exposureTimeValue as string : string.Empty,

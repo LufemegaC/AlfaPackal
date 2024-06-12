@@ -11,11 +11,10 @@ namespace InterfazBasica_DCStore.Service.DicomServices
     public class DicomDecompositionService : IDicomDecompositionService
     {
         private readonly IMapper _mapper;
-       
 
         public DicomDecompositionService(IMapper mapper)
         {
-            _mapper = mapper;
+            _mapper = mapper;  
         }
 
         public void AnonymizeDicomFile(DicomFile dicomFile)
@@ -29,14 +28,13 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         }
         public Task<PacienteCreateDto> DecomposeDicomToPaciente(Dictionary<DicomTag, object> metadata)
         {
-            var pacienteCreate = new PacienteCreateDto();
-            pacienteCreate = _mapper.Map<PacienteCreateDto>(metadata);
+            var pacienteCreate = _mapper.Map<PacienteCreateDto>(metadata);
             return Task.FromResult(pacienteCreate);
         }
         public Task<EstudioCreateDto> DecomposeDicomToEstudio(Dictionary<DicomTag, object> metadata)
         {
-            var estudioCreate = new EstudioCreateDto();
-            estudioCreate = _mapper.Map<EstudioCreateDto>(metadata);
+            var estudioCreate = _mapper.Map<EstudioCreateDto>(metadata);
+            //Si no tiene numero de acceso asigno uno
             if (string.IsNullOrWhiteSpace(estudioCreate.AccessionNumber))
             {
                 estudioCreate.AccessionNumber = GenerarAccessionNumber();
@@ -45,16 +43,13 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         }
         public Task<SerieCreateDto> DecomposeDicomToSerie(Dictionary<DicomTag, object> metadata)
         {
-            var pacienteCreate = new SerieCreateDto();
-            pacienteCreate = _mapper.Map<SerieCreateDto>(metadata);
-
+            var pacienteCreate = _mapper.Map<SerieCreateDto>(metadata);
             return Task.FromResult(pacienteCreate);
         }
 
         public Task<ImagenCreateDto> DecomposeDicomToImagen(Dictionary<DicomTag, object> metadata)
         {
-            var imagenCreate = new ImagenCreateDto();
-            imagenCreate = _mapper.Map<ImagenCreateDto>(metadata);
+            var imagenCreate = _mapper.Map<ImagenCreateDto>(metadata);
             return Task.FromResult(imagenCreate);
         }
        

@@ -12,10 +12,12 @@ namespace InterfazBasica.Models
         public int PacsResourceId { get; set; } = 0;
         public string? GeneratedServId { get; set; }
         public string? ResultadoJson { get; set; }
-
+		public int TotalPaginas { get; set; }
         public APIResponse()
         {
 
+            // Inicializa la lista de mensajes de error como una lista vacía
+            ErrorsMessages = new List<string>();
         }
         // Constructor que acepta una lista de errores
         public APIResponse(List<string> errors = null,object resultado = null)

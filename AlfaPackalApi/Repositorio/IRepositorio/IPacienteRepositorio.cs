@@ -9,5 +9,7 @@ namespace AlfaPackalApi.Repositorio.IRepositorio
         Task<Paciente> GetByGeneratedPatientId(string generatedId);
         Task<Paciente> GetByMetadata(string patientID, string issuerOfPatientId);
         Task<bool> ExistByMetadata(string patientID,string issuerOfPatientId);
+        // Metodo para C-FIND
+        Task<List<string>> FindByCriteria(string patientName, string patientId);
     }
 }

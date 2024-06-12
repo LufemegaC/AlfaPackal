@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Api_PACsServer.Modelos.Dto;
 using static Utileria.DicomUtilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlfaPackalApi.Controllers
 {
@@ -29,6 +30,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetImagenes()
         {
@@ -48,6 +50,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetImagenByID")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -82,6 +85,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpGet("GetImageByInstanceUID/{instanceUID}", Name = "GetImageByInstanceUID")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -118,6 +122,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpGet("ExistBySOPInstanceUID/{instanceUID}", Name = "ExistBySOPInstanceUID")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -146,6 +151,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpPost("CrearImagen")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -182,6 +188,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

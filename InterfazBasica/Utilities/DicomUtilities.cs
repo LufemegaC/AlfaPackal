@@ -1,4 +1,6 @@
-﻿namespace InterfazBasica_DCStore.Utilities
+﻿using InterfazBasica_DCStore.Models;
+
+namespace InterfazBasica_DCStore.Utilities
 {
     public class DicomUtilities
     {
@@ -42,6 +44,7 @@
                 return $"{DateTime.Now:yyyyMMdd}-{counter:0000}";
             }
         }
+ 
     }
 
 }

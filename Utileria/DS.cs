@@ -17,6 +17,8 @@ namespace Utileria
             DELETE
         }
 
+        public static string SessionToken = "JWToken";
+
         /*public enum Rutas
         {
             _storagePath = "sda"

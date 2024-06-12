@@ -1,42 +1,45 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model InterfazBasica_DCStore.Models.ViewModels.DicomServerVM
 
-@model InterfazBasica_DCStore.Models.ViewModels.DicomServerVM
+@section Styles {
+    <link rel="stylesheet" href="~/css/StyleServer.css" asp-append-version="true" />
+}
+
 
 <form method="post" asp-controller="Gateway">
     <!-- Tarjeta de Servidor DICOM -->
-    <div class="card mt-4">
-        <div class="card-header bg-primary text-white">
-            Servidor DICOM - Gateway
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <!-- Información del Servidor -->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="Host" class="form-label">IP:</label>
-                        <input asp-for="Host" type="text" id="Host" class="form-control" value="@Model.Host" readonly />
-                    </div>
-                    <div class="form-group">
-                        <label for="Port" class="form-label">Puerto:</label>
-                        <input asp-for="Port" type="text" id="Port" class="form-control" value="@Model.Port" readonly />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Estado:</label>
-                        <input type="text" class="form-control" value="@Model.Estatus" readonly />
-                    </div>
-                </div>
+    <div class="wrapper">
+        <div class="server_box">
+            <div class="login-header">
+                <span>DICOM Server</span>
+            </div>
 
-                <!-- Botones de Control -->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <button type="submit" asp-action="Start" class="btn btn-success mb-3">Iniciar</button>
-                        <button type="submit" asp-action="Stop" class="btn btn-danger mb-3">Detener</button>
-@*                        <button type="submit" asp-action="ClienteLocal" class="btn btn-success mb-3">Echo Local</button>
-                        <button type="submit" asp-action="PruebaQRService" class="btn btn-success mb-3">Prueba QR</button>*@
+            <div class="main_board">
+                <div class="input_group">
+                    <div class="input_box">
+                        <input asp-for="Host" type="text" id="Host" class="form-control input-field" value="@Model.Host" readonly />                    
+                        <label for="Host" class="label">IP</label>
+                        <i class='bx bx-log-out-circle icon'></i>
+                    </div>
+                    <div class="input_box">
+                        <input asp-for="Port" type="text" id="Port" class="form-control input-field" value="@Model.Port" readonly />
+                        <label for="Port" class="label">Port</label>
+                        <i class='bx bx-window-open icon'></i>
+                    </div>
+                    <div class="input_box">
+                        <input asp-for="Estatus" type="text" id="Estatus" class="form-control input-field" value="@Model.Estatus" readonly />
+                        <label for="Estatus" class="label">Estatus</label>
+                        <i class='bx bx-revision icon'></i>
                     </div>
                 </div>
+                <div class="server_img">
+                    <img src="~/img/logoServer.png" alt="">
+                    <input type="submit" class="red-submit" value="Validar conexion con nube">
+                </div>
+            </div>
+            <div class="input_box">
+                <button type="submit" asp-action="Start" class="input-submit">Iniciar</button>
+                <button type="submit" asp-action="Stop" class="input-submit">Detener</button>
+                <button type="submit" asp-action="Back" class="input-submit">Atras</button>
             </div>
         </div>
     </div>
@@ -51,3 +54,7 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

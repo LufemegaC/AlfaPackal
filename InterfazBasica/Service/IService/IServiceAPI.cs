@@ -34,7 +34,14 @@ namespace InterfazBasica_DCStore.Service.IService
         Task<int?> GetPACSIDSeriesByInstanceUID(string seriesInstanceUID);
         // Validacion por SOP Instance UID unica en el archivo DICOM
         Task<int?> GetPACSIDImageBySOPInstanceUID(string sopInstanceUID);
-        
-        
-    }
+
+        // Adaptacion de interfaz de ejemplo IDicomImageFinderService
+        //Task<List<String>>
+
+    } 
 }
+
+
+
+
+

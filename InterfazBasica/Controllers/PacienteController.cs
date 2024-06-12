@@ -31,34 +31,34 @@ namespace InterfazBasica_DCStore.Controllers
         }
         public async Task<IActionResult> IndexPaciente(PacienteCreateDto modelo)
         {
-            List<PacienteDto> pacienteList = new();
-            var response = await _pacienteService.GetAll<APIResponse>();
-            if (response != null && response.IsExitoso)
-            {
-                pacienteList = JsonConvert.DeserializeObject<List<PacienteDto>>(Convert.ToString(response.Resultado));
-            }
-            return View(pacienteList);
+            //List<PacienteDto> pacienteList = new();
+            //var response = await _pacienteService.GetAll<APIResponse>();
+            //if (response != null && response.IsExitoso)
+            //{
+            //    pacienteList = JsonConvert.DeserializeObject<List<PacienteDto>>(Convert.ToString(response.Resultado));
+            //}
+            return View();
         }
 
         //Get
         public async Task<IActionResult> CrearPaciente()
         {
-            return View(_pacienteCreateDto);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearPaciente(PacienteCreateDto modelo)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _pacienteService.Create<APIResponse>(_pacienteCreateDto);
-                if (response != null && response.IsExitoso)
-                {
-                    return RedirectToAction(nameof(IndexPaciente));
-                }
-            }
-            return View(_pacienteCreateDto);
+            //if (ModelState.IsValid)
+            //{
+            //    var response = await _pacienteService.Create<APIResponse>(_pacienteCreateDto);
+            //    if (response != null && response.IsExitoso)
+            //    {
+            //        return RedirectToAction(nameof(IndexPaciente));
+            //    }
+            //}
+            return View();
         }
     }
 }

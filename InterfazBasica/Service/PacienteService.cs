@@ -18,13 +18,14 @@ namespace InterfazBasica_DCStore.Service
         }
 
         //CrearPaciente
-        public Task<T> Create<T>(PacienteCreateDto dto)
+        public Task<T> Create<T>(PacienteCreateDto dto,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.POST,
                 Datos = dto,
-                Url = _pacienteUrl + "/api/paciente"
+                Url = _pacienteUrl + "/api/paciente",
+                Token = token
             });
         }
 
@@ -40,52 +41,57 @@ namespace InterfazBasica_DCStore.Service
         //}
 
         //GetPaciente
-        public Task<T> GetAll<T>()
+        public Task<T> GetAll<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _pacienteUrl + "/api/paciente"
+                Url = _pacienteUrl + "/api/paciente",
+                Token = token
             });
         }
 
         //GetPacienteByID
-        public Task<T> GetByPACS_ID<T>(int pacsId)
+        public Task<T> GetByPACS_ID<T>(int pacsId,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _pacienteUrl + "/api/paciente/" + pacsId
+                Url = _pacienteUrl + "/api/paciente/" + pacsId,
+                Token = token
             });
         }
 
         //DeletePaciente - no implementada
 
         //Metodos de Paciente repo
-        public Task<T> GetByName<T>(string name)
+        public Task<T> GetByName<T>(string name,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _pacienteUrl + "/api/paciente/GetByName/" + name
+                Url = _pacienteUrl + "/api/paciente/GetByName/" + name,
+                Token = token
             });
         }
 
-        public Task<T> GetByGeneratedPatientID<T>(string generatedId)
+        public Task<T> GetByGeneratedPatientID<T>(string generatedId,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _pacienteUrl + "/api/paciente/GetByGeneratedPatientID/" + generatedId
+                Url = _pacienteUrl + "/api/paciente/GetByGeneratedPatientID/" + generatedId  ,           
+                Token = token
             });
         }
 
-        public Task<T> ExistByMetadata<T>(string patientID, string issuerOfPatientID)
+        public Task<T> ExistByMetadata<T>(string patientID, string issuerOfPatientID,string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 APITipo = DS.APITipo.GET,
-                Url = _pacienteUrl+"/api/paciente/ExistByMetadata/"+patientID+"/"+issuerOfPatientID
+                Url = _pacienteUrl+"/api/paciente/ExistByMetadata/"+patientID+"/"+issuerOfPatientID,
+                Token = token
             });
         }
   

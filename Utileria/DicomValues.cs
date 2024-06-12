@@ -4,6 +4,7 @@
     {
         public enum Modality
         {
+            cr, // Radiografio computarizada
             CT, // Tomografía Computarizada
             MR, // Resonancia Magnética
             US, // Ultrasonido
@@ -44,7 +45,28 @@
             YBR_FULL,//Imagen en color utilizando la codificación YCbCr.
         }
 
-
+        public enum BodyPartExamined
+        {
+            HEAD, // Cabeza
+            NECK, // Cuello
+            CHEST, // Tórax
+            ABDOMEN, // Abdomen
+            PELVIS, // Pelvis
+            SPINE, // Columna vertebral
+            SHOULDER, // Hombro
+            ELBOW, // Codo
+            WRIST, // Muñeca
+            HAND, // Mano
+            HIP, // Cadera
+            KNEE, // Rodilla
+            ANKLE, // Tobillo
+            FOOT, // Pie
+            HEART, // Corazón
+            LUNG, // Pulmón
+            LIVER, // Hígado
+            KIDNEY, // Riñón
+            BRAIN // Cerebro
+        }
 
 
     }

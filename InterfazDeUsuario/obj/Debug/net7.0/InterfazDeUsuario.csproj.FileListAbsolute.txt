@@ -1,0 +1,80 @@
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\appsettings.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.staticwebassets.runtime.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.exe
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.deps.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.runtimeconfig.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.pdb
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\CommunityToolkit.HighPerformance.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\fo-dicom.core.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\fo-dicom.json.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\Microsoft.Bcl.HashCode.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\Utileria.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\bin\Debug\net7.0\Utileria.pdb
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.csproj.AssemblyReference.cache
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.AssemblyInfoInputs.cache
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.AssemblyInfo.cs
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.csproj.CoreCompileInputs.cache
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.RazorAssemblyInfo.cache
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.RazorAssemblyInfo.cs
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.InterfazDeUsuario.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.build.InterfazDeUsuario.props
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.InterfazDeUsuario.props
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.InterfazDeUsuario.props
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\scopedcss\bundle\InterfazDeUsuario.styles.css
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\scopedcss\projectbundle\InterfazDeUsuario.bundle.scp.css
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.csproj.CopyComplete
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\refint\InterfazDeUsuario.dll
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.pdb
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.genruntimeconfig.cache
+C:\Users\Desktop\source\repos\AlfaPackal\InterfazDeUsuario\obj\Debug\net7.0\ref\InterfazDeUsuario.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\appsettings.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.staticwebassets.runtime.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.exe
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.deps.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.runtimeconfig.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\InterfazDeUsuario.pdb
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\CommunityToolkit.HighPerformance.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\fo-dicom.core.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\fo-dicom.json.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\Microsoft.Bcl.HashCode.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\Utileria.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\bin\Debug\net7.0\Utileria.pdb
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.csproj.AssemblyReference.cache
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.AssemblyInfoInputs.cache
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.AssemblyInfo.cs
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.csproj.CoreCompileInputs.cache
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.RazorAssemblyInfo.cache
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.RazorAssemblyInfo.cs
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.InterfazDeUsuario.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.build.InterfazDeUsuario.props
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.InterfazDeUsuario.props
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.InterfazDeUsuario.props
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\scopedcss\bundle\InterfazDeUsuario.styles.css
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\scopedcss\projectbundle\InterfazDeUsuario.bundle.scp.css
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.csproj.CopyComplete
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\refint\InterfazDeUsuario.dll
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.pdb
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\InterfazDeUsuario.genruntimeconfig.cache
+C:\Users\Desktop\Documents\WEB\AVANC\040624\AlfaPackal - Omega\InterfazDeUsuario\obj\Debug\net7.0\ref\InterfazDeUsuario.dll

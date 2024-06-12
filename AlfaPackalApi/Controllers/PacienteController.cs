@@ -6,6 +6,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Api_PACsServer.Modelos.Dto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AlfaPackalApi.Controllers
 {
@@ -28,9 +30,8 @@ namespace AlfaPackalApi.Controllers
 
         // ** Metodos del repositorio ** //
         // ** CREAR
-        //[HttpPost("CrearPaciente")]
         [HttpPost]
-        //[HttpPost("CrearPaciente")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> CrearPaciente([FromBody] PacienteCreateDto createDto)
@@ -88,6 +89,7 @@ namespace AlfaPackalApi.Controllers
 
         // ** OBTENER TODOS
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetPacientes() //works
         {
@@ -107,6 +109,7 @@ namespace AlfaPackalApi.Controllers
 
         // ** OBTENER POR ID
         [HttpGet("{id:int}", Name = "GetPacienteByID")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -181,6 +184,7 @@ namespace AlfaPackalApi.Controllers
         //** Metodos de Paciente repositorio ** //
         //** GetByName
         [HttpGet("GetByName/{name}", Name = "GetPacienteByName")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -217,6 +221,7 @@ namespace AlfaPackalApi.Controllers
         // ** GetByGeneratedPatientId
         // GET: api/Paciente/5
         [HttpGet("GetByGeneratedPatientID/{generatedPatientID}", Name = "GetByGeneratedPatientID")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -252,6 +257,7 @@ namespace AlfaPackalApi.Controllers
         }
 
         [HttpGet("ExistByMetadata/{patientID}/{issuerOfPatientID}", Name = "ExistPatientByMetadata")]
+        [Authorize] // Pendiente probar con TOKEN
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

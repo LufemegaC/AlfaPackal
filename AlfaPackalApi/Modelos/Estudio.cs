@@ -5,6 +5,7 @@ using System.Numerics;
 using static Utileria.DicomValues;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using Api_PACsServer.Modelos.AccessControl;
 
 namespace AlfaPackalApi.Modelos
 {
@@ -42,8 +43,15 @@ namespace AlfaPackalApi.Modelos
         // Numero de accesso DICOM/Metadato
         [Required, MaxLength(64)]  
         public string AccessionNumber { get; set; }
+        // dirección del archivo DICOM
+        public string? DicomFileLocation { get; set; }
         // Nombre de institucion que realiza el estudio DICOM/Metadatos
         public string? InstitutionName { get; set; }
+        // ** Institucion emisora
+        [Required]
+        public int InstitutionId { get; set; }
+        [ForeignKey("InstitutionId")]
+        public virtual Institution Institution { get; set; }
         // Informacion de participantes en el estudio
         public string? PerformingPhysicianName { get; set; } //Medico
         public string? OperatorName { get; set; }//Operador

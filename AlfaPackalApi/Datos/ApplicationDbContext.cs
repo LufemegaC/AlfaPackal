@@ -1,25 +1,43 @@
 ﻿using AlfaPackalApi.Modelos;
+using Api_PACsServer.Modelos;
+using Api_PACsServer.Modelos.AccessControl;
+using Api_PACsServer.Modelos.Dto.Vistas;
+using Api_PACsServer.Modelos.Geografia;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AlfaPackalApi.Datos
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<UsuarioSistema>
     {
+        //DbContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { 
         
         }
         //public DbSet<Doctor> Doctores { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Paciente> Pacientes { get; set; }
         //public DbSet<ListaDeTrabajo> ListasDeTrabajo { get; set; }
         public DbSet<Estudio> Estudios { get; set; }
         public DbSet<Serie> Series { get; set; }
         public DbSet<Imagen> Imagenes { get; set; }
+        // Lista blanca de IPs
+        public DbSet<WhitelistedIP> WhitelistedIPs { get; set; }
+        public DbSet<DicomServer> DicomServers { get; set; }
+        public DbSet<Institution> Institutions { get; set; }
+        public DbSet<Estado> Estados { get; set; }
+        public DbSet<Ciudad> Ciudades { get; set; }
+        public DbSet<EstudioConPacienteDto> EstudiosConPacienteDtos { get; set; }
+
+        // Tabla de identity + Institurion
+        public DbSet<UsuarioSistema> UsuariosSistema { get; set; }
+
 
         //Agrego indices secundarios para busquedas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { 
+        {
             // Sobreecribo metodo para agregar indices secundarios
             base.OnModelCreating(modelBuilder);
             // * Paciente
@@ -71,6 +89,14 @@ namespace AlfaPackalApi.Datos
             modelBuilder.Entity<Imagen>()
                 .HasIndex(e => new { e.PACS_SerieID, e.ImageNumber })
                 .HasDatabaseName("IX_Serie_SerieID_ImageNumber");
+
+            ////--- Configuracion de para mapeo de entidad de listado de estudios con pacientes
+            //
+            modelBuilder.Entity<EstudioConPacienteDto>(eb =>
+            {
+                eb.HasNoKey(); // Indica que no tiene una clave primaria, ya que es solo para lectura
+                eb.ToView("sql1"); // Especifica que no está mapeado a una vista o tabla específica
+            });
         }
 
         public override int SaveChanges()
