@@ -65,7 +65,13 @@ namespace Api_PACsServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("NumberOfFiles")
+                        .HasColumnType("int");
+
                     b.Property<int?>("NumberOfFrames")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NumberOfSeries")
                         .HasColumnType("int");
 
                     b.Property<string>("OperatorName")
@@ -89,6 +95,9 @@ namespace Api_PACsServer.Migrations
                     b.Property<string>("StudyInstanceUID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("TotalFileSizeMB")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -162,6 +171,9 @@ namespace Api_PACsServer.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
+
+                    b.Property<decimal?>("TotalFileSizeMB")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -254,6 +266,9 @@ namespace Api_PACsServer.Migrations
                         .HasMaxLength(16)
                         .HasColumnType("nvarchar(16)");
 
+                    b.Property<int?>("NumberOfImages")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PACS_EstudioID")
                         .HasColumnType("int");
 
@@ -280,6 +295,9 @@ namespace Api_PACsServer.Migrations
                     b.Property<string>("StudyInstanceUID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("TotalFileSizeMB")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -324,7 +342,7 @@ namespace Api_PACsServer.Migrations
                     b.Property<int>("InstitutionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PuertoRedLocal")
+                    b.Property<int>("PuertoRedLocal")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

@@ -23,6 +23,7 @@ namespace InterfazBasica.Models.Pacs
         public string? BodyPartExamined { get; set; }
         // Numero de accesso DICOM/Metadato
         public string AccessionNumber { get; set; }
+        public int InstitutionId { get; set; }
         public string? InstitutionName { get; set; }
         // Informacion de participantes en el estudio
         public string? PerformingPhysicianName { get; set; } //Medico

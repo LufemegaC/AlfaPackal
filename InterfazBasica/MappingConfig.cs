@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using FellowOakDicom;
 using InterfazBasica.Models.Pacs;
+using InterfazBasica_DCStore.Models;
 using InterfazBasica_DCStore.Utilities;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using Utileria;
 using static InterfazBasica_DCStore.Utilities.DicomUtilities;
 using static Utileria.DicomValues;
 
@@ -11,7 +13,13 @@ namespace InterfazBasica_DCStore
 {
     public class MappingConfig : Profile
     {
-        public MappingConfig() {
+        private string _rootPath;
+
+        public MappingConfig(IConfiguration configuration) {
+            // 
+            _rootPath = configuration.GetValue<string>("DicomSettings:StoragePath");
+
+
             //Paciente 
             CreateMap<PacienteDto, PacienteCreateDto>().ReverseMap();
             CreateMap<PacienteDto, PacienteUpdateDto>().ReverseMap();
@@ -130,10 +138,14 @@ namespace InterfazBasica_DCStore
 
         private static ImagenCreateDto MapDictionaryToImagenCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
         {
+            var studyUID = dicomTagDictionary.TryGetValue(DicomTag.StudyInstanceUID, out object estudioIdValue) ? estudioIdValue as string : string.Empty;
+            var serieUID = dicomTagDictionary.TryGetValue(DicomTag.SeriesInstanceUID, out object seriesInstanceUID) ? seriesInstanceUID as string : string.Empty;
+            var instanceUID = dicomTagDictionary.TryGetValue(DicomTag.SOPInstanceUID, out object sopInstanceUIDValue) ? sopInstanceUIDValue as string : string.Empty;
             var imagenDto = new ImagenCreateDto
             {
-                SOPInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SOPInstanceUID, out object sopInstanceUIDValue) ? sopInstanceUIDValue as string : string.Empty,
-                SeriesInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SeriesInstanceUID, out object seriesInstanceUID) ? seriesInstanceUID as string : string.Empty,
+                SOPInstanceUID = studyUID,
+                SeriesInstanceUID = serieUID,
+                StudyInstanceUID = instanceUID,
                 ImageNumber = dicomTagDictionary.TryGetValue(DicomTag.InstanceNumber, out object imageNumberValue) ? Convert.ToInt32(imageNumberValue) : 0,
                 ImageComments = dicomTagDictionary.TryGetValue(DicomTag.ImageComments, out object imageCommentsValue) ? imageCommentsValue as string : string.Empty,
                 //RETIRED ImageLocation = dicomTagDictionary.TryGetValue(DicomTag.ImageLocation, out object imageLocationValue) ? imageLocationValue as string : string.Empty,
@@ -142,9 +154,27 @@ namespace InterfazBasica_DCStore
                 Rows = dicomTagDictionary.TryGetValue(DicomTag.Rows, out object rowsValue) ? Convert.ToInt32(rowsValue) : 0,
                 Columns = dicomTagDictionary.TryGetValue(DicomTag.Columns, out object columnsValue) ? Convert.ToInt32(columnsValue) : 0,
                 PixelSpacing = dicomTagDictionary.TryGetValue(DicomTag.PixelSpacing, out object pixelSpacingValue) ? pixelSpacingValue as string : string.Empty,
+                //12/07/24 LFMG: Ruta de almacenamiento.
+                ImageLocation = RootFileDicomConstructor(studyUID, serieUID, instanceUID)
             };
 
-            return imagenDto;
+        return imagenDto;
         }
+
+        internal string RootFileDicomConstructor(string StudyUID, string SerieUID, string InstanceUID)
+        {
+            // Construye la ruta completa usando StudyInstanceUID y SeriesInstanceUID.
+            var fullPath = Path.Combine(_rootPath, StudyUID, SerieUID);
+            // Verifica si la ruta del directorio existe, si no, la crea.
+            if (!Directory.Exists(fullPath))
+            {
+                Directory.CreateDirectory(fullPath);
+            }
+            // Completa la ruta del archivo añadiendo el SOPInstanceUID y la extensión .dcm.
+            var filePath = Path.Combine(fullPath, InstanceUID + ".dcm");
+            return filePath;
+        }
+
+
     }
 }

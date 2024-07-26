@@ -33,13 +33,22 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
         public string? DicomFileLocation { get; set; }
         // Nombre de institucion que realiza el estudio DICOM/Metadatos
         public string? InstitutionName { get; set; }
+        // ** Institucion emisora
+        [Required]
+        public int InstitutionId { get; set; }
         // Informacion de participantes en el estudio
         public string? PerformingPhysicianName { get; set; } //Medico
         public string? OperatorName { get; set; }//Operador
         //Parametros tecnicos
         public string? ExposureTime { get; set; } //Tiempo de exposicion 
         public string? KVP { get; set; }
-        // Numero de Frames/Imagenes
-        public int? NumberOfFrames { get; set; }
+        // 09/07/24 Luis Felipe MG: Agrego las propiedades 
+        // del proceso de carga
+        // numero de archios dcm relacionados al estudio
+        public int? NumberOfFiles { get; set; }
+        // Tamaño total del estudio en MB
+        public decimal TotalFileSizeMB { get; set; }
+        // Número de series
+        public int? NumberOfSeries { get; set; }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using static Utileria.DicomValues;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InterfazBasica.Models.Pacs
 {
@@ -30,6 +28,9 @@ namespace InterfazBasica.Models.Pacs
         public string AccessionNumber { get; set; }
         // ubicacion de archivo DICOM
         public string? DicomFileLocation { get; set; }
+        // ** Institucion emisora
+        [Required]
+        public int InstitutionId { get; set; }
         // Nombre de institucion que realiza el estudio DICOM/Metadatos
         public string? InstitutionName { get; set; }
         // Informacion de participantes en el estudio

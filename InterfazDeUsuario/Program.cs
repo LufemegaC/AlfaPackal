@@ -1,5 +1,6 @@
 using InterfazDeUsuario.Services;
 using InterfazDeUsuario.Services.IServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,29 @@ builder.Services.AddHttpContextAccessor();
 // Registro de IHttpClientFactory
 builder.Services.AddHttpClient<IDataService,DataService>();
 builder.Services.AddSingleton<IDataService, DataService>();
-
+// Registro de IHttpClientFactory
+builder.Services.AddHttpClient<IWadoUriService, WadoUriService>();
+builder.Services.AddSingleton<IWadoUriService, WadoUriService>();
+//Usuario 
+builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(option =>
+{
+    option.IdleTimeout = TimeSpan.FromMinutes(100);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                                    .AddCookie(options =>
+                                    {
+                                        options.Cookie.HttpOnly = true;
+                                        options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
+                                        options.LoginPath = "/Usuario/Login";
+                                        options.AccessDeniedPath = "/Usuario/AccesoDenegado";
+                                        options.SlidingExpiration = true;
+                                    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,7 +48,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

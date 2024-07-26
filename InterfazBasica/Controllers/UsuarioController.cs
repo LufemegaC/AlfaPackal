@@ -8,19 +8,28 @@ using Utileria;
 using InterfazBasica_DCStore.Models.Indentity;
 using InterfazBasica.Models;
 using System.IdentityModel.Tokens.Jwt;
+using InterfazBasica_DCStore.Models.Pacs;
+using Newtonsoft.Json.Linq;
 
 namespace InterfazBasica_DCStore.Controllers
 {
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly string _localIP;
+
         public UsuarioController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
+            _localIP = GeneralFunctions.GetLocalIPAddress();
         }
         public async Task<IActionResult> Login()
         {
-            return View();
+            var loginRequestDto = new LoginRequestDto
+            {
+                LocalIP = _localIP,
+            };
+            return View(loginRequestDto);
         }
 
         [HttpPost]
@@ -31,10 +40,9 @@ namespace InterfazBasica_DCStore.Controllers
             if (response != null && response.IsExitoso == true)
             {
                 LoginResponseDto loginResponse = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.Resultado));
-
+                // config token de acceso
                 var handler = new JwtSecurityTokenHandler();
                 var jwt = handler.ReadJwtToken(loginResponse.Token);
-
                 //Claims
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(c => c.Type == "unique_name").Value));
@@ -42,15 +50,22 @@ namespace InterfazBasica_DCStore.Controllers
                 //identity.AddClaim(new Claim(ClaimTypes.Role, loginResponse.Usuario.Rol));
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-                // Session
-                HttpContext.Session.SetString(DS.SessionToken, loginResponse.Token);
-                return RedirectToAction("Index", "Gateway"); 
+                // Recupero informacion del servidor
+                ServerInfo.Aetitle = loginResponse.DicomServer.AETitle;
+                ServerInfo.Token = loginResponse.Token;
+                ServerInfo.InstitutionId = loginResponse.DicomServer.InstitutionId;
+                TempData["DicomServer"] = JsonConvert.SerializeObject(loginResponse.DicomServer);
+                //Token se asigna a la session del usuario
+                HttpContext.Session.SetString(ServerInfo.SessionToken, loginResponse.Token);
+                //HttpContext.Session.SetString(DS.SessionToken, loginResponse.Token);
+                return RedirectToAction("MenuPrincipal", "Gateway"); 
             }
             else
             {
                 ModelState.AddModelError("ErrorMessages", response.ErrorsMessages.FirstOrDefault());
+                TempData["error"] = response.ErrorsMessages.FirstOrDefault();
                 return View(modelo);
+
             }
         }
         /// ** REGISTRAR

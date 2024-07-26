@@ -2,6 +2,7 @@
 using InterfazBasica.Models.Pacs;
 using InterfazBasica.Service.IService;
 using InterfazBasica_DCStore.Models;
+using InterfazBasica_DCStore.Models.Pacs;
 using InterfazBasica_DCStore.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -250,7 +251,8 @@ namespace InterfazBasica_DCStore.Service
             {
                 if (string.IsNullOrEmpty(_token))
                 {
-                    _token = _httpContextAccessor.HttpContext?.Session.GetString(DS.SessionToken);
+                    //_token = _httpContextAccessor.HttpContext?.Session.GetString(ServerInfo.SessionToken);
+                    _token = ServerInfo.Token;
                 }
                 return _token;
             }

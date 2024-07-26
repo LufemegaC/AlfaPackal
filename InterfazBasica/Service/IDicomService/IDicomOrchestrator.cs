@@ -9,5 +9,7 @@ namespace InterfazBasica_DCStore.Service.IDicomService
         Task<DicomStatus> StoreDicomData (DicomFile dicomFile);
 
         Task<DicomStatus> StoreDicomFile(DicomFile dicomFile);
+
+        string GetServerAEtitle();
     }
 }

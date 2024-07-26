@@ -6,6 +6,9 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 {
     public class EstudioDto
     {   // 17/01/24 Luis Felipe MG .- Agrego los DisplayName
+        
+        // ID Interno de estudio
+        public int PACS_EstudioID { get; set; }
         // ID de estudio Dicom/Metadato
         public string StudyInstanceUID { get; set; }
         public int? PACS_PatientID { get; set; }
@@ -23,6 +26,8 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
         public string? BodyPartExamined { get; set; }
         // Numero de accesso DICOM/Metadato
         public string AccessionNumber { get; set; }
+        // ** Institucion emisora (interno)
+        public int InstitutionId { get; set; }
         // Nombre de institucion que realiza el estudio DICOM/Metadatos
         public string? InstitutionName { get; set; }
         // Informacion de participantes en el estudio
@@ -31,7 +36,15 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
         //Parametros tecnicos
         public string? ExposureTime { get; set; } //Tiempo de exposicion 
         public string? KVP { get; set; }
-        // Numero de Frames/Imagenes
-        public int? NumberOfFrames { get; set; }
+        // ******************************************* //
+        // 09/07/24 Luis Felipe MG: Agrego las propiedades 
+        // del proceso de carga
+
+        // numero de archios dcm relacionados al estudio
+        public int? NumberOfFiles { get; set; }
+        // Tamaño total del estudio en MB
+        public decimal? TotalFileSizeMB { get; set; }
+        // Número de series
+        public int? NumberOfSeries { get; set; }
     }
 }

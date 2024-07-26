@@ -1,4 +1,6 @@
-﻿@model List<InterfazDeUsuario.Models.ViewModels.StudyListVM>
+﻿@*@model List<InterfazDeUsuario.Models.ViewModels.StudyListVM>*@
+
+@model InterfazDeUsuario.Models.ViewModels.ListadoPrincipalVM
 
 @{
     ViewData["Title"] = "Listado Principal";
@@ -6,48 +8,73 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/StyleMainList.css" />
+    <link rel="stylesheet" href="~/css/StyleMainList2.css" />
 }
 
+<form method="post" class="form_style" asp-controller="Gateway">
+    <main class="table">
+        <section class="table__header">
+            <h5>Estudios de ...</h5>
+            <div class="input-group">
+                <input type="search" placeholder="Search Data...">
+                <i class='bx bx-search-alt'></i>
+            </div>
+        </section>
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="header-cell cab_patient">Paciente<span class="icon-arrow">&UpArrow; </span> </th>
+                        <th class="header-cell cab_modality">Modalidad<span class="icon-arrow">&UpArrow; </span> </th>
+                        <th class="header-cell cab_DescModal">Descripcion<span class="icon-arrow">&UpArrow; </span> </th>
+                        <th class="header-cell cab_Study">Estudio<span class="icon-arrow">&UpArrow; </span> </th>
+                        <th class="header-cell cab_StudyDate">Fecha del Estudio<span class="icon-arrow">&UpArrow; </span> </th>
+                        @*<th class="header-cell">Parte examinada<span class="icon-arrow">&UpArrow; </span> </th>
+                        <th class="header-cell">Descripcion<span class="icon-arrow">&UpArrow; </span> </th>
+                        <th>Sucursal<span class="icon-arrow">&UpArrow; </span> </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var estudio in Model.StudyList)
+                    {
+                        <tr data-id="@estudio.Estudio.StudyInstanceUID" onclick="handleRowClick(this)">
+                            
+                            <td class="cab_patient">
+                                @estudio.Paciente.PatientName <br />
+                                ID: @estudio.Paciente.PatientID <br />
+                            </td>
+                            <td>@estudio.Estudio.Modality</td>
+                            <td>@estudio.DescModality</td>
+                            <td>@estudio.Estudio.StudyDescription</td>
+                            <td>@estudio.Estudio.StudyDate.ToShortDateString()</td>
+                            @*<td>@estudio.Estudio.BodyPartExamined</td>
+                            <td>@estudio.DescBodyPart</td>*@
+                        </tr>
+                            @*<td>@estudio.Estudio.InstitutionName</td>*@
+                    }
+                </tbody>
+            </table>
+        </section>
+    </main>
+</form>
 
-<div class="container p-4 my-4 border">
-    <div class="row pb-2">
-        <div class="col">
-            <h1 class="text-primary">Listado Principal de Estudios</h1>
-        </div>
-    </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Información del Paciente</th>
-                <th>Modalidad</th>
-                <th>Descripcion</th>
-                <th>Descripción del Estudio</th>
-                <th>Fecha del Estudio</th>
-                <th>Parte examinada</th>
-                <th>Descripcion</th>
-                <th>Sucursal</th>
-            </tr>
-        </thead>
-        <tbody>
-           @foreach (var estudio in Model)
-            {
-                <tr>
-                    <td>
-                        @estudio.Paciente.PatientName <br />
-                        ID: @estudio.Paciente.PatientID <br />
-                        Sexo: @estudio.DescPatientSex <br />
-                        Edad: @estudio.Paciente.PatientAge
-                    </td>
-                    <td>@estudio.Estudio.Modality</td>
-                    <td>@estudio.DescModality</td>
-                    <td>@estudio.Estudio.StudyDescription</td>
-                    <td>@estudio.Estudio.StudyDate.ToShortDateString()</td>
-                    <td>@estudio.Estudio.BodyPartExamined</td>
-                    <td>@estudio.DescBodyPart</td>
-                    <td>@estudio.Estudio.InstitutionName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<script src="~/js/MainListScript.js"></script>
+
+<a asp-action="IndexMainList"
+   asp-route-pageNumber="@(1)" class="btn btn-outline-primary  000000">
+    <i class="bi bi-skip-start-fill"></i>
+</a>
+<a asp-action="IndexMainList"
+   asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-outline-primary @Model.Previo">
+    Anterior
+</a>
+<span>Pagina @Model.PageNumber de @Model.TotalPaginas </span>
+<a asp-action="IndexMainList"
+   asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-outline-primary @Model.Siguiente">
+    Siguiente
+</a>
+<a asp-action="IndexMainList"
+   asp-route-pageNumber="@Model.TotalPaginas" class="btn btn-outline-primary">
+    <i class="bi bi-skip-end-fill"></i>
+</a>
+

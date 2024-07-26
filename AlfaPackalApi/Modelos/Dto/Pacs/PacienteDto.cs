@@ -6,7 +6,8 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 {
     public class PacienteDto
     {
-        // ID Paciente (Metadato)         
+        // ID Paciente (Metadato)
+        public int PACS_PatientID { get; set; } // ID interno/sistema
         public string? PatientID { get; set; } // ID del paciente DICOM/Metadato
         public string GeneratedPatientID { get; set; }
         // Nombre completo de paciente         

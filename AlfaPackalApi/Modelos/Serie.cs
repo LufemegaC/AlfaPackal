@@ -33,7 +33,7 @@ namespace AlfaPackalApi.Modelos
         public string BodyPartExamined { get; set; } 
         // Patient Position - posición del paciente.
         [MaxLength(16)]
-        public string PatientPosition { get; set; }
+        public string PatientPosition { get; set; }     
         // Imagenes de la serie
         public virtual ICollection<Imagen> Imagenes { get; set; }
         // Campos de control

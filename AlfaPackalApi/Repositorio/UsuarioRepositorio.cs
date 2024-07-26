@@ -40,7 +40,8 @@ namespace Api_PACsServer.Repositorio
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-
+            // Bandera que indica en es un servidor
+            var isServer = (loginRequestDto.LocalIP != null);
             //Busca usuario y contraseña en la DBs
             var usuario = await _db.UsuariosSistema.FirstOrDefaultAsync(u => u.UserName.ToLower() == loginRequestDto.UserName.ToLower());
             //Institucion del usuario
@@ -68,7 +69,6 @@ namespace Api_PACsServer.Repositorio
             var tokenHandler = new JwtSecurityTokenHandler();
             // Convierte la clave secreta en un arreglo de bytes
             var key = Encoding.ASCII.GetBytes(_secretKey);
-
             // Define las propiedades del token
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -78,9 +78,17 @@ namespace Api_PACsServer.Repositorio
                     new Claim(ClaimTypes.Role, roles.FirstOrDefault())
                     //new Claim("InstitutionId", usuario.InstitutionId.ToString()) // Agrega el Id de la institución del usuario como un reclamo personalizado
                 }),
-                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
+            // Configura la expiración del token en función de la bandera isServer
+            if (isServer)
+            {
+                tokenDescriptor.Expires = DateTime.UtcNow.AddDays(1);
+            }
+            else
+            {
+                tokenDescriptor.Expires = DateTime.UtcNow.AddHours(8);
+            }
             var token = tokenHandler.CreateToken(tokenDescriptor);
             LoginResponseDto loginResponseDto = new()
             {
@@ -89,7 +97,6 @@ namespace Api_PACsServer.Repositorio
                 AssignedInstitutionName = InstitutionUser.AssignedInstitutionName,
             };
             return loginResponseDto;
-
         }
 
         public async Task<UsuarioDto> Registrar(RegistroRequestDto registroRequestDto)

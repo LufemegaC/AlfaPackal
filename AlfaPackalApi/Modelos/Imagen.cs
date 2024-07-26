@@ -18,6 +18,9 @@ namespace AlfaPackalApi.Modelos
         public string SeriesInstanceUID { get; set; } // Identificador  
         // UID
         [Required, MaxLength(64)]
+        public string SOPClassUID { get; set; }
+        // UID
+        [Required, MaxLength(64)]
         public string SOPInstanceUID { get; set; }
         // Numero de la imagen dentro de la serie
 		[Required]
@@ -35,6 +38,8 @@ namespace AlfaPackalApi.Modelos
         public int Columns { get; set; }
         // Pixel Spacing para el espaciamiento físico de los píxeles en la imagen
         public string? PixelSpacing { get; set; }
+        public int? NumberOfFrames { get; set; }
+       
         // Campos de control
         public DateTime CreationDate { get; set; }
         public DateTime UpdateDate { get; set; }

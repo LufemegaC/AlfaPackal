@@ -1,4 +1,5 @@
 ﻿using FellowOakDicom.Network;
+using InterfazBasica_DCStore.Models.Pacs;
 using System.Net;
 
 namespace InterfazBasica.Models

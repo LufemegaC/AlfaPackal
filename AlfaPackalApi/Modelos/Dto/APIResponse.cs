@@ -12,6 +12,7 @@ namespace Api_PACsServer.Modelos.Dto
         public int PacsResourceId { get; set; } = 0;
         public string? GeneratedServId { get; set; }
         public string? ResultadoJson { get; set; }
+        public int TotalPaginas { get; set; }
 
         public APIResponse()
         {

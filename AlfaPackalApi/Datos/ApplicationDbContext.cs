@@ -1,11 +1,11 @@
 ﻿using AlfaPackalApi.Modelos;
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.AccessControl;
+using Api_PACsServer.Modelos.Cargas;
 using Api_PACsServer.Modelos.Dto.Vistas;
 using Api_PACsServer.Modelos.Geografia;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AlfaPackalApi.Datos
 {
@@ -29,6 +29,11 @@ namespace AlfaPackalApi.Datos
         public DbSet<Institution> Institutions { get; set; }
         public DbSet<Estado> Estados { get; set; }
         public DbSet<Ciudad> Ciudades { get; set; }
+        // Entidades para informacion de carga
+        public DbSet<EstudioCarga> EstudiosCarga { get; set; }
+        public DbSet<SerieCarga> SeriesCarga { get; set; }
+        public DbSet<ImagenCarga> ImagenesCarga { get; set; }
+        // Modelo para visualizacion de datos
         public DbSet<EstudioConPacienteDto> EstudiosConPacienteDtos { get; set; }
 
         // Tabla de identity + Institurion

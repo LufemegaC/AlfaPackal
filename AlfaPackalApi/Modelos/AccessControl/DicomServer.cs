@@ -14,7 +14,7 @@ namespace Api_PACsServer.Modelos.AccessControl
         [Required, StringLength(16)] // DICOM AETitles pueden tener hasta 16 caracteres
         public string AETitle { get; set; }
 
-        public int? PuertoRedLocal { get; set; }
+        public int PuertoRedLocal { get; set; }
 
         [Required, StringLength(100)]
         public string Description { get; set; }

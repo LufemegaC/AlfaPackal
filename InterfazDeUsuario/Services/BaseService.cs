@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
+using System.Web;
 using Utileria;
 
 namespace InterfazDeUsuario.Services
@@ -24,7 +25,23 @@ namespace InterfazDeUsuario.Services
                 var client = _httpClient.CreateClient("InterfaceClient");
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
-                message.RequestUri = new Uri(apiRequest.Url);
+                //Validacion de parametros de paginado
+                if (apiRequest.Parametros == null)
+                {
+                    message.RequestUri = new Uri(apiRequest.Url);
+                }
+                else
+                {
+                    var builder = new UriBuilder(apiRequest.Url);
+                    var query = HttpUtility.ParseQueryString(builder.Query);
+                    //Agregar parametros
+                    query["PageNumber"] = apiRequest.Parametros.PageNumber.ToString();
+                    query["PageSize"] = apiRequest.Parametros.PageSize.ToString();
+                    query["InstitutionId"] = apiRequest.Parametros.InstitutionId.ToString();
+                    builder.Query = query.ToString();
+                    string url = builder.ToString();
+                    message.RequestUri = new Uri(url);
+                }
                 //Validacion de contenido
                 if (apiRequest.Datos != null)
                 {

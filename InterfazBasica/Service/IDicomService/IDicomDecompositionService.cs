@@ -1,5 +1,6 @@
 ﻿using FellowOakDicom;
 using InterfazBasica.Models.Pacs;
+using InterfazBasica_DCStore.Models;
 
 namespace InterfazBasica_DCStore.Service.IDicomService
 {
@@ -13,6 +14,9 @@ namespace InterfazBasica_DCStore.Service.IDicomService
         void ConvertDicomToFile(DicomFile dicomFile, string outputPath, DicomTransferSyntax transferSyntax);
         //void UpdatePatientData(DicomFile dicomFile, string patientName, string patientId);
         void AnonymizeDicomFile(DicomFile dicomFile);
+
+        //Get file size from Dicom in MB
+        double GetFileSizeInMB(DicomFile dicomFile);
 
         /////*** Entidades 
         //PacienteCreateDto DecomposeDicomToPaciente(Dictionary<DicomTag, object> metadata);

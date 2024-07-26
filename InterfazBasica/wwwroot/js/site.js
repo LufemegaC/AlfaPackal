@@ -2,3 +2,9 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+// Funcion para recorrer directorio y realizarm migracion de
+// archivos DICOM (dcm)
+
+
+

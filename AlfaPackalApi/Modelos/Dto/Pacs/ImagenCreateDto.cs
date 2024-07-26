@@ -34,5 +34,15 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 
         // Pixel Spacing para el espaciamiento físico de los píxeles en la imagen
         public string? PixelSpacing { get; set; }
+        // Numeros de frames ( Metadato )
+        public int? NumberOfFrames { get; set; }
+
+        // 09/07/24 Luis Felipe MG: Agrego las propiedades 
+        // del proceso de carga
+        public decimal TotalFileSizeMB { get; set; }
+
+        // 12/07/24 Luis Felipe MG : Agrego banderas de presencia
+        public bool ExistStudy { get; set; }
+
     }
 }

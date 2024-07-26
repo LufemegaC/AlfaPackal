@@ -27,5 +27,12 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 
         [MaxLength(16)]
         public string PatientPosition { get; set; }// Patient Position - posición del paciente.
+
+        // 09/07/24 Luis Felipe MG: Agrego las propiedades 
+        // del proceso de carga 
+        // Numero de imagenes relacionadas
+        public int? NumberOfImages { get; set; }
+        // Tamaño total del estudio en MB
+        public decimal TotalFileSizeMB { get; set; }
     }
 }

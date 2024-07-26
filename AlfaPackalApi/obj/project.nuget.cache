@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0Kh2yNXNtt1tE6CQd/CikItf5XugBzxbpkDFz9YVOSKJeFCbCiXg4M9nRNSoea9h6JTJcuicNTVJNIU7/WerLw==",
+  "dgSpecHash": "9qNR9v9UvgR1Yr1PaQ26KqYX9L55TAhMjWM2U2gfPmMo6/b+5GJF3Zh+r/ZT6JSJ/C4hKa2L7oAzfgWWBFeLkA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj": {}
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj": {
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj",
+        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj",
         "projectName": "Api_PACsServer",
-        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj",
+        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\AlfaPackalApi\\Api_PACsServer.csproj",
         "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\AlfaPackalApi\\obj\\",
+        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\AlfaPackalApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,8 +29,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
-                "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj"
+              "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
+                "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj"
               }
             }
           }
@@ -111,14 +111,14 @@
         }
       }
     },
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
         "projectName": "Utileria",
-        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
         "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\obj\\",
+        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",

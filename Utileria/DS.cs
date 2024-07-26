@@ -19,6 +19,8 @@ namespace Utileria
 
         public static string SessionToken = "JWToken";
 
+        public static string Institution = "Institution";
+
         /*public enum Rutas
         {
             _storagePath = "sda"

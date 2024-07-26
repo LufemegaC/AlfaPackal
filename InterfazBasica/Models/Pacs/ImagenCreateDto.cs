@@ -12,6 +12,8 @@ namespace InterfazBasica.Models.Pacs
         public int PACS_SerieID { get; set; }
         [Required, MaxLength(64)]
         public string SeriesInstanceUID { get; set; } // Identificador  
+        [Required, MaxLength(64)]
+        public string StudyInstanceUID { get; set; } // Identificador  
         // UID
         [Required, MaxLength(64)]
         public string SOPInstanceUID { get; set; }
@@ -34,5 +36,12 @@ namespace InterfazBasica.Models.Pacs
 
         // Pixel Spacing para el espaciamiento físico de los píxeles en la imagen
         public string? PixelSpacing { get; set; }
+        public int? NumberOfFrames { get; set; }
+
+        // 09/07/24 Luis Felipe MG: Agrego las propiedades 
+        // del proceso de carga
+        public decimal? TotalFileSizeMB { get; set; }
+        // 12/07/24 Luis Felipe MG : Agrego bandera de presencia
+        public bool ExistStudy { get; set; }
     }
 }

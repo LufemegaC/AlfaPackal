@@ -12,6 +12,7 @@ namespace InterfazBasica.Models.Pacs
         public string ImageComments { get; set; } //Descripción de la imagen
         [Required, MaxLength(64),Display(Name = "Numero de imagen")]
         public int ImageNumber { get; set; }
+        public int? NumberOfFrames { get; set; }
 
 
     }

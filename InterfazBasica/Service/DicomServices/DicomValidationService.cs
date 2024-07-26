@@ -3,6 +3,7 @@ using FellowOakDicom.Network;
 using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
 using InterfazBasica_DCStore.Models;
+using InterfazBasica_DCStore.Models.Pacs;
 using InterfazBasica_DCStore.Service.IDicomService;
 using InterfazBasica_DCStore.Service.IService;
 using Microsoft.AspNetCore.Http;
@@ -89,7 +90,8 @@ public class DicomValidationService : IDicomValidationService
         {
             if (string.IsNullOrEmpty(_token))
             {
-                _token = _httpContextAccessor.HttpContext?.Session.GetString(DS.SessionToken);
+                //_token = _httpContextAccessor.HttpContext?.Session.GetString(ServerInfo.SessionToken);
+                _token = ServerInfo.Token;
             }
             return _token;
         }

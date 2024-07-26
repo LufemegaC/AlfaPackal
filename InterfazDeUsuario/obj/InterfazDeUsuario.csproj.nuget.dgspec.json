@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj": {}
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj": {
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
+        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
         "projectName": "InterfazDeUsuario",
-        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
+        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
         "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\InterfazDeUsuario\\obj\\",
+        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\InterfazDeUsuario\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,8 +29,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
-                "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj"
+              "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
+                "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj"
               }
             }
           }
@@ -44,6 +44,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[7.6.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -67,14 +73,14 @@
         }
       }
     },
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
         "projectName": "Utileria",
-        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
         "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\obj\\",
+        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",

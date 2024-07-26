@@ -15,7 +15,7 @@ namespace WorkStation.Controllers
         private IDicomClient _client { get; set; }
         private DicomClienteVM _viewModelClient { get; set; }
 
-        private const int BatchSize = 10; // Tamaño del lote
+        private const int BatchSize = 1; // Tamaño del lote
         public WorkstationController(IDicomClient client, ILogger<WorkstationController> logger)
         {
             _client = client;
@@ -37,57 +37,72 @@ namespace WorkStation.Controllers
         [HttpPost] 
         public async Task<IActionResult> SendDicomFile(IFormFile dicomFile)
         {
+            //if (dicomFile != null && dicomFile.Length > 0)
+            //{
+            //    try
+            //    {
+            //        _client.NegotiateAsyncOps();
+            //        await _client.AddRequestAsync(new DicomCEchoRequest());
+            //        string errorMessage = "Proceso correcto";
+            //        // Event handler para manejar la respuesta de C-STORE
+            //        async Task OnCStoreResponseReceived(DicomCStoreRequest request, DicomCStoreResponse response)
+            //        {
+            //            // Aquí puedes verificar el estado de la respuesta
+
+            //            if (response.Status == DicomStatus.DuplicateSOPInstance)
+            //            {
+            //                // Establece el mensaje correspondiente a duplicado
+            //                errorMessage = "La imagen DICOM ya está registrada.";
+
+            //            }
+            //            else if (response.Status == DicomStatus.Success)
+            //            {
+            //                // Establece el mensaje de éxito
+            //                errorMessage = "Archivo DICOM enviado con éxito.";
+            //            }
+            //            else
+            //            {
+            //                // Otros casos, puedes usar response.Status.Description para obtener una descripción del estado
+            //                errorMessage = $"El servidor respondió con estado: {response.Status.Description}";
+            //            }
+
+            //            // Puedes usar este mensaje para actualizar el ViewBag o gestionar la respuesta
+            //            // Ten en cuenta que necesitas manejar el contexto de sincronización ya que estás dentro de un callback asincrónico
+            //        }
+
+            //        using (var stream = dicomFile.OpenReadStream())
+            //        {
+            //            var dicomImage = DicomFile.Open(stream);
+            //            //Codigo original
+            //            //await _client.AddRequestAsync(new DicomCStoreRequest(dicomImage));
+            //            //Codigo de pruebas
+            //            var dicomCSToreRequest = new DicomCStoreRequest(dicomImage);
+            //            await _client.AddRequestAsync(dicomCSToreRequest);
+            //            //
+            //            await _client.SendAsync();
+            //        }
+
+            //        ViewBag.Message = errorMessage;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Manejar excepción
+            //        ViewBag.Message = $"Error: {ex.Message}";
+            //    }
+            //}
+            //else
+            //{
+            //    ViewBag.Message = "Debe seleccionar un archivo DICOM";
+            //}
+            //return View("Index", _viewModelClient);
+            /////////
+            ///
             if (dicomFile != null && dicomFile.Length > 0)
             {
-                try
+                using (var stream = dicomFile.OpenReadStream())
                 {
-                    _client.NegotiateAsyncOps();
-                    await _client.AddRequestAsync(new DicomCEchoRequest());
-                    string errorMessage = "Proceso correcto";
-                    // Event handler para manejar la respuesta de C-STORE
-                    async Task OnCStoreResponseReceived(DicomCStoreRequest request, DicomCStoreResponse response)
-                    {
-                        // Aquí puedes verificar el estado de la respuesta
-                        
-                        if (response.Status == DicomStatus.DuplicateSOPInstance)
-                        {
-                            // Establece el mensaje correspondiente a duplicado
-                            errorMessage = "La imagen DICOM ya está registrada.";
-                             
-                        }
-                        else if (response.Status == DicomStatus.Success)
-                        {
-                            // Establece el mensaje de éxito
-                            errorMessage = "Archivo DICOM enviado con éxito.";
-                        }
-                        else
-                        {
-                            // Otros casos, puedes usar response.Status.Description para obtener una descripción del estado
-                            errorMessage = $"El servidor respondió con estado: {response.Status.Description}";
-                        }
-
-                        // Puedes usar este mensaje para actualizar el ViewBag o gestionar la respuesta
-                        // Ten en cuenta que necesitas manejar el contexto de sincronización ya que estás dentro de un callback asincrónico
-                    }
-
-                    using (var stream = dicomFile.OpenReadStream())
-                    {
-                        var dicomImage = DicomFile.Open(stream);
-                        //Codigo original
-                        //await _client.AddRequestAsync(new DicomCStoreRequest(dicomImage));
-                        //Codigo de pruebas
-                        var dicomCSToreRequest = new DicomCStoreRequest(dicomImage);
-                        await _client.AddRequestAsync(dicomCSToreRequest);
-                        //
-                        await _client.SendAsync();
-                    }
-
-                    ViewBag.Message = errorMessage;
-                }
-                catch (Exception ex)
-                {
-                    // Manejar excepción
-                    ViewBag.Message = $"Error: {ex.Message}";
+                    var resultMessage = await ProcessDicomFile(stream, dicomFile.FileName);
+                    ViewBag.Message = resultMessage;
                 }
             }
             else
@@ -106,50 +121,18 @@ namespace WorkStation.Controllers
                 ViewBag.Message = "Debe seleccionar una carpeta válida con archivos DICOM";
                 return View("Index", _viewModelClient);
             }
-
             try
             {
-                _client.NegotiateAsyncOps();
-                await _client.AddRequestAsync(new DicomCEchoRequest());
-                string errorMessage = "Proceso correcto";
-
                 // Obtener todos los archivos .dcm en la carpeta y sus subcarpetas
-                var dicomFiles = Directory.GetFiles(folderPath, "*.dcm", SearchOption.AllDirectories);
-                var fileCount = 0;
-
+                var dicomFiles = GetDicomFromDirectory(folderPath);
                 foreach (var filePath in dicomFiles)
                 {
                     try
                     {
-                        using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                        using (var stream = System.IO.File.OpenRead(filePath))
                         {
-                            var dicomImage = DicomFile.Open(stream);
-                            var request = new DicomCStoreRequest(dicomImage);
-                            request.OnResponseReceived += (DicomCStoreRequest req, DicomCStoreResponse res) =>
-                            {
-                                if (res.Status == DicomStatus.DuplicateSOPInstance)
-                                {
-                                    errorMessage = "La imagen DICOM ya está registrada.";
-                                }
-                                else if (res.Status == DicomStatus.Success)
-                                {
-                                    errorMessage = "Archivo DICOM enviado con éxito.";
-                                }
-                                else
-                                {
-                                    errorMessage = $"El servidor respondió con estado: {res.Status.Description}";
-                                }
-                            };
-                            await _client.AddRequestAsync(request);
-                        }
-
-                        fileCount++;
-
-                        // Enviar el lote cuando se alcanza el tamaño de lote
-                        if (fileCount % BatchSize == 0)
-                        {
-                            await _client.SendAsync();
-                            //_client.Clear();
+                            var resultMessage = await ProcessDicomFile(stream, Path.GetFileName(filePath));
+                            _logger.LogInformation(resultMessage);
                         }
                     }
                     catch (Exception ex)
@@ -158,14 +141,6 @@ namespace WorkStation.Controllers
                         _logger.LogError(ex, $"Error procesando el archivo {filePath}");
                     }
                 }
-
-                // Enviar cualquier archivo restante en el último lote
-                if (fileCount % BatchSize != 0)
-                {
-                    await _client.SendAsync();
-                }
-
-                ViewBag.Message = errorMessage;
             }
             catch (Exception ex)
             {
@@ -217,6 +192,72 @@ namespace WorkStation.Controllers
         public IActionResult Exit()
         {
             return View("Index");
+        }
+
+        
+        // Funcion de almacenamiento 
+        private async Task<string> ProcessDicomFile(Stream dicomFileStream, string fileName)
+        {
+            try
+            {
+                _client.NegotiateAsyncOps();
+                await _client.AddRequestAsync(new DicomCEchoRequest());
+                string errorMessage = "Proceso correcto";
+
+                async Task OnCStoreResponseReceived(DicomCStoreRequest request, DicomCStoreResponse response)
+                {
+                    if (response.Status == DicomStatus.DuplicateSOPInstance)
+                    {
+                        errorMessage = "La imagen DICOM ya está registrada.";
+                    }
+                    else if (response.Status == DicomStatus.Success)
+                    {
+                        errorMessage = "Archivo DICOM enviado con éxito.";
+                    }
+                    else
+                    {
+                        errorMessage = $"El servidor respondió con estado: {response.Status.Description}";
+                    }
+                }
+
+                var dicomImage = DicomFile.Open(dicomFileStream);
+                var dicomCStoreRequest = new DicomCStoreRequest(dicomImage);
+                await _client.AddRequestAsync(dicomCStoreRequest);
+                await _client.SendAsync();
+
+                return errorMessage;
+            }
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        static List<string> GetDicomFromDirectory(string path)
+        {
+            List<string> dicomFiles = new List<string>();
+
+            GetDicomFilesRecursive(path, dicomFiles);
+
+            return dicomFiles;
+        }
+        // Funcion recursiva para recorrer directorio
+        static void GetDicomFilesRecursive(string path, List<string> dicomFiles)
+        {
+            string[] files = Directory.GetFiles(path);
+            foreach (string file in files)
+            {
+                if (Path.GetExtension(file).Equals(".dcm", StringComparison.OrdinalIgnoreCase))
+                {
+                    dicomFiles.Add(file);
+                }
+            }
+
+            string[] directories = Directory.GetDirectories(path);
+            foreach (string directory in directories)
+            {
+                GetDicomFilesRecursive(directory, dicomFiles);
+            }
         }
     }
 }

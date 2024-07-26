@@ -3,6 +3,7 @@ using FellowOakDicom;
 using FellowOakDicom.Network;
 using InterfazBasica.Models;
 using InterfazBasica.Models.Pacs;
+using InterfazBasica_DCStore.Models;
 using InterfazBasica_DCStore.Service.IDicomService;
 using System.Reflection;
 
@@ -11,10 +12,9 @@ namespace InterfazBasica_DCStore.Service.DicomServices
     public class DicomDecompositionService : IDicomDecompositionService
     {
         private readonly IMapper _mapper;
-
-        public DicomDecompositionService(IMapper mapper)
+        public DicomDecompositionService(IMapper mapper, IConfiguration configuration)
         {
-            _mapper = mapper;  
+            _mapper = mapper;
         }
 
         public void AnonymizeDicomFile(DicomFile dicomFile)
@@ -107,6 +107,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             // Si el elemento no tiene valores, retorna null o una cadena vacía.
             return null;
         }
+
         public string GetDicomElementAsString(DicomDataset dicomDataset, DicomTag dicomTag)
         {
             throw new NotImplementedException();
@@ -117,9 +118,16 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             throw new NotImplementedException();
         }
 
+        public double GetFileSizeInMB(DicomFile dicomFile)
+        {
+            var fileInfo = new FileInfo(dicomFile.File.Name);
+            return (double)fileInfo.Length / (1024 * 1024);
+        }
         //public void UpdatePatientData(DicomFile dicomFile, string patientName, string patientId)
         //{
         //    throw new NotImplementedException();
         //}
+
+        
     }
 }

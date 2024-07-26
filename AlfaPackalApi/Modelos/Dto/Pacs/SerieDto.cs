@@ -5,7 +5,7 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
 {
     public class SerieDto
     {
-		
+        public int PACS_SerieID { get; set; } //ID interno
         // Descripcion
         public string SeriesDescription { get; set; }// Descripcion
         [Required, MaxLength(64), Display(Name = "Id de Instancia")]
@@ -23,5 +23,11 @@ namespace AlfaPackalApi.Modelos.Dto.Pacs
         public string BodyPartExamined { get; set; } // Body Part Examined - parte del cuerpo examinada.
         [MaxLength(16),Display(Name = "Posicion del paciente")]
         public string PatientPosition { get; set; }// Patient Position - posición del paciente.
+        // 09/07/24 Luis Felipe MG: Agrego las propiedades 
+        // del proceso de carga 
+         public int? NumberOfImages { get; set; }
+        // Tamaño total del estudio en MB
+        public decimal? TotalFileSizeMB { get; set; }
+
     }
 }

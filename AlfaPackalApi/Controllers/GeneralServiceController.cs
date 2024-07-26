@@ -1,31 +1,33 @@
-﻿using AlfaPackalApi.Modelos;
-using Api_PACsServer.Modelos;
+﻿using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Dto;
-using Api_PACsServer.Services;
 using Api_PACsServer.Services.IService;
-using Azure;
-using FellowOakDicom.Network;
-using FellowOakDicom;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Api_PACsServer.Modelos.Especificaciones;
+using Api_PACsServer.Modelos.AccessControl;
+using AutoMapper;
+using Api_PACsServer.Modelos.Dto.Vistas;
 
 namespace Api_PACsServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GeneralServiceController : ControllerBase
     {
-        IGeneralAPIService _generalAPIService;
+        private readonly IGeneralAPIService _generalAPIService;
         protected APIResponse _response;
+        private readonly IMapper _mapper;
 
 
-        public GeneralServiceController(IGeneralAPIService generalAPIService)
+        public GeneralServiceController(IGeneralAPIService generalAPIService, IMapper mapper)
         {
             _generalAPIService = generalAPIService;
             _response = new APIResponse();
+            _mapper = mapper;
         }
 
         [HttpPost("ValidateEntities")]
@@ -56,7 +58,6 @@ namespace Api_PACsServer.Controllers
 
 
         [HttpGet("ListadoPrincipal")]
-        [Authorize]
         public async Task<ActionResult<APIResponse>> ObtenerListadoPrincipal()
         {
             try
@@ -73,7 +74,11 @@ namespace Api_PACsServer.Controllers
             return _response;
         }
 
-        [HttpGet("GetMainList")]
+        [HttpGet("GetMainList/{institutionId:int}", Name = "GetMainList")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetMainList(int institutionId)
         {
             try
@@ -91,6 +96,26 @@ namespace Api_PACsServer.Controllers
         }
 
 
-        
+        [HttpGet("GetMainListPaginado")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<APIResponse> GetMainListPaginado([FromQuery] ParametrosPag parametros)
+        /*Metodo para obtener todas las villas*/
+        {
+            try
+            {
+                var studyList = _generalAPIService.ListaEstudiosPaginado(parametros);
+                _response.Resultado = studyList;
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.TotalPaginas = studyList.MetaData.TotalPages;
+            }
+            catch (Exception ex)
+            {
+                _response.IsExitoso = false;
+                _response.ErrorsMessages = new List<string> { ex.ToString() };
+            }
+            return _response;
+            //return Ok(await _db.Villas.ToListAsync());
+        }
     }
 }

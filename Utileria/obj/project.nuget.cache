@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RskhMRheNCcs/JFI0aKoDjxvL1/ab1KjXww206Hv2SBikDE4i5pY6uplvzDFG3eSeX24nCuLzXAlB49ocWGTjw==",
+  "dgSpecHash": "1JueH6AdFOgLVLppbB1HPoQUU/LFRx244+4YdDtbyI1cjFDwaBWsSgWWRNG8gS732gJsdwWzsRdpigunfOcxFA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\040624\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\communitytoolkit.highperformance\\8.2.0\\communitytoolkit.highperformance.8.2.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom\\5.1.1\\fo-dicom.5.1.1.nupkg.sha512",

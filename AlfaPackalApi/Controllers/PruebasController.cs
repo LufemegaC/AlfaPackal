@@ -1,8 +1,8 @@
 ﻿using AlfaPackalApi.Controllers;
 using AlfaPackalApi.Modelos;
 using AlfaPackalApi.Modelos.Dto.Pacs;
-using AlfaPackalApi.Repositorio.IRepositorio;
 using Api_PACsServer.Modelos.Dto;
+using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using AutoMapper;
 using FellowOakDicom;
 using Microsoft.AspNetCore.Http;

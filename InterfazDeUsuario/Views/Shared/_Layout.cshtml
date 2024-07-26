@@ -1,37 +1,86 @@
-﻿<!DOCTYPE html>
+﻿@using Utileria;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAcc
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - InterfazDeUsuario</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/StyleLayout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InterfazDeUsuario.styles.css" asp-append-version="true" />
+    
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">InterfazDeUsuario</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+        <div class="hero">
+            <nav>
+                <img src="~/img/BarraSuperior/LogoCompany3.png" alt="" class="logo">
+                <ul>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Principal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">Conocenos</a>
+                    </li>
+                    @* Valido session para mostrar login o logout *@
+                    @if (httpContextAcc.HttpContext.Session.GetString(DS.SessionToken) != null &&
+                    httpContextAcc.HttpContext.Session.GetString(DS.SessionToken).ToString().Length > 0)
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="logout">Logout</a>
                         </li>
+                    }
+                    else
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-black-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Login</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MainListStudies" asp-action="IndexMainList">Listado Principal</a>
-                        </li>
-                    </ul>
+                        @* <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Registrar">Registar</a>
+                    </li>*@
+                    }
+                </ul>
+                <img src="~/img/BarraSuperior/LogoDICOM3.png" alt="" class="user-pic" onclick="toggleMenu()">
+
+                <div class="sub-menu-wrap" id="subMenu">
+                    <div class="sub-menu">
+                        <div class="user-info">
+                            <img src="~/img/BarraSuperior/user.png" alt="">
+                            <h2>James Bond</h2>
+                        </div>
+                        <hr>
+                        <a href="#" class="sub-menu-link">
+                            <img src="~/img/BarraSuperior/profile.png" alt="">
+                            <p>Edit Profile</p>
+                            <span>></span>
+                        </a>
+                        <a href="#" class="sub-menu-link">
+                            <img src="~/img/BarraSuperior/setting.png" alt="">
+                            <p>Settings & Privacy</p>
+                            <span>></span>
+                        </a>
+                        <a href="#" class="sub-menu-link">
+                            <img src="~/img/BarraSuperior/help.png" alt="">
+                            <p>Help & Support</p>
+                            <span>></span>
+                        </a>
+                        <a href="#" class="sub-menu-link">
+                            <img src="~/img/BarraSuperior/logout.png" alt="">
+                            <p>Logo</p>
+                            <span>></span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -44,9 +93,16 @@
             &copy; 2024 - InterfazDeUsuario - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script>
+        let subMenu = document.getElementById("subMenu");
+        function toggleMenu() {
+            subMenu.classList.toggle("open-menu");
+        }
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

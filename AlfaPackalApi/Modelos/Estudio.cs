@@ -57,10 +57,8 @@ namespace AlfaPackalApi.Modelos
         public string? OperatorName { get; set; }//Operador
         //Parametros tecnicos
         public string? ExposureTime { get; set; } //Tiempo de exposicion 
-        public string? KVP { get; set; }
-        // Numero de Frames/Imagenes
-        public int? NumberOfFrames { get; set; }
-        // Comentarios de imagen
+        public string? KVP { get; set; } // Numero de Frames/Imagenes
+        //public int? NumberOfFrames { get; set; } // 08/07/24.-LFM: Paso valor al nivel de Imagen.
         public virtual ICollection<Serie> Series { get; set; }
         // Datos de bitacora
         public DateTime CreationDate { get; set; }

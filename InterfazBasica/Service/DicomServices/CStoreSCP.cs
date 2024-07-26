@@ -57,7 +57,8 @@ namespace InterfazBasica_DCStore.Service.DicomServices
 
         public Task OnReceiveAssociationRequestAsync(DicomAssociation association)
         {
-            if (association.CalledAE != "STORESCP") 
+            var AEtitle = _dicomOrchestrator.GetServerAEtitle();
+            if (association.CalledAE != AEtitle) 
             {
                 return SendAssociationRejectAsync(
                     DicomRejectResult.Permanent,

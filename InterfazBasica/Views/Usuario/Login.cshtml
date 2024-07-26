@@ -1,7 +1,9 @@
 ﻿@model InterfazBasica_DCStore.Models.Indentity.LoginRequestDto
+
 @section Styles {
     <link rel="stylesheet" href="~/css/StyleLogin.css" asp-append-version="true" />
 }
+
 <form method="post" autocomplete="off" asp-controller="Usuario">
     <div class="wrapper">
         <div class="login_box">
@@ -10,7 +12,6 @@
             </div>
             @*PENDIENTE VALIDAR SI ESTO FUNCIONA *@
             <div style="position: absolute; left: -9999px;">
-                <input type="text" name="fakeusernameremembered" />
                 <input type="password" name="fakepasswordremembered" />
             </div>
             @*HASTA AQUI*@
@@ -24,20 +25,13 @@
                 <label for="pass" class="label">Password</label>
                 <i class="bx bx-lock-alt icon"></i>
             </div>
-            <div class="remember-forgot">
-                <div class="remember-me">
-                    <input type="checkbox" id="remember">
-                    <label for="remember"> Remember me</label>
-                </div>
-                <div class="forgot">
-                    <a href="#">Forgot password</a>
-                </div>
+            <div class="input_box"> 
+                <input asp-for="LocalIP" id="ip" type="text" class="form-control input-field-ip" autocomplete="off" required readonly>
+                <label for="ip" class="label-ip">IP</label>
+                <i class='bx bx-code icon-ip'></i>
             </div>
             <div class="input_box">
                 <button type="submit" class="input-submit" value="Login">Login</button>
-            </div>
-            <div class="register">
-                <span>Don´t have an account? <a href="#">Register</a></span>
             </div>
         </div>
     </div>

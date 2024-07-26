@@ -1,4 +1,7 @@
-﻿namespace Api_PACsServer.Utilities
+﻿using Api_PACsServer.Modelos.Dto;
+using System.Net;
+
+namespace Api_PACsServer.Utilities
 {
     public class ConverterHelp
     {
@@ -43,6 +46,17 @@
                 "KIDNEY" => "Riñón",
                 "BRAIN" => "Cerebro",
                 _ => "S/V"
+            };
+        }
+
+        public static APIResponse CreateResponse(bool isSuccess, HttpStatusCode statusCode, object result = null, List<string> errors = null)
+        {
+            return new APIResponse
+            {
+                IsExitoso = isSuccess,
+                StatusCode = statusCode,
+                Resultado = result,
+                ErrorsMessages = errors ?? new List<string>()
             };
         }
     }
