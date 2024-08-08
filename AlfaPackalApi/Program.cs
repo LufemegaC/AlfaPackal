@@ -1,14 +1,15 @@
 using AlfaPackalApi;
 using AlfaPackalApi.Datos;
 using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Repositorio;
+using Api_PACsServer.Orchestrators;
+using Api_PACsServer.Orchestrators.IOrchestrator;
 using Api_PACsServer.Repositorio.Cargas;
-using Api_PACsServer.Repositorio.IRepositorio;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Repositorio.Pacs;
+using Api_PACsServer.Repository.Authentication;
+using Api_PACsServer.Repository.IRepository.Authentication;
 using Api_PACsServer.Services;
-using Api_PACsServer.Services.IService;
 using Api_PACsServer.Services.IService.Pacs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -78,37 +79,29 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
  });
 // Relacion de IdentityUser con DBContext
-builder.Services.AddIdentity<UsuarioSistema, IdentityRole>()
+builder.Services.AddIdentity<SystemUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
-
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-
-
-// Repositorios para informacion de carga
-builder.Services.AddScoped<IEstudioCargaRepositorio, EstudioCargaRepositorio>();
-builder.Services.AddScoped<ISerieCargaRepositorio, SerieCargaRepositorio>();
-builder.Services.AddScoped<IImagenCargaRepositorio, ImagenCargaRepositorio>();
-// Repositorios de entidades de PACs
-builder.Services.AddScoped<IPacienteRepositorio, PacienteRepositorio>();
-builder.Services.AddScoped<IEstudioRepositorio,  EstudioRepositorio>();
-builder.Services.AddScoped<ISerieRepositorio,    SerieRepositorio>();
-builder.Services.AddScoped<IImagenRepositorio,   ImagenRepositorio>();
-// Servicios de actualizacion de info de carga
-//builder.Services.AddScoped<IFileSizeService, FileSizeService>();
-// Servicios de para manejo de entidades
-builder.Services.AddScoped<IEstudioService, EstudioService>();
+// Repositories for load info
+builder.Services.AddScoped<IStudyLoadRepository, StudyLoadRepository>();
+builder.Services.AddScoped<ISerieLoadRepository, SerieLoadRepository>();
+builder.Services.AddScoped<IInstanceLoadRepository, InstanceLoadRepository>();
+// Repositories for access
+builder.Services.AddScoped<ILocalDicomServerRepostory, LocalDicomServerRepostory>();
+builder.Services.AddScoped<IInstitutionRespository, InstitutionRespository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+// Repositories for main entities
+builder.Services.AddScoped<IStudyRepository,  StudyRepository>();
+builder.Services.AddScoped<ISerieRepository,    SerieRepository>();
+builder.Services.AddScoped<IInstanceRepository,   InstanceRepository>();
+// Serivice for entities
+builder.Services.AddScoped<IStudyService, StudyService>();
 builder.Services.AddScoped<ISerieService, SerieService>();
-builder.Services.AddScoped<IImagenService, ImagenService>();
-// Servicio de validacion
-builder.Services.AddScoped<IGeneralAPIService, GeneralAPIService>();
-builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
-//builder.Services.AddScoped<IDoctorRepositorio,   DoctorRepositorio>();
-builder.Services.AddScoped<IWhiteListRepositorio, WhiteListRepositorio>();
-
-
+builder.Services.AddScoped<IInstanceService, InstanceService>();
+// Other services
+builder.Services.AddScoped<IDicomOrchestrator, DicomOrchestrator>();
 
 var app = builder.Build();
 

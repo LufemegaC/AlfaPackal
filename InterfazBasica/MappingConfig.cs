@@ -13,13 +13,8 @@ namespace InterfazBasica_DCStore
 {
     public class MappingConfig : Profile
     {
-        private string _rootPath;
 
         public MappingConfig(IConfiguration configuration) {
-            // 
-            _rootPath = configuration.GetValue<string>("DicomSettings:StoragePath");
-
-
             //Paciente 
             CreateMap<PacienteDto, PacienteCreateDto>().ReverseMap();
             CreateMap<PacienteDto, PacienteUpdateDto>().ReverseMap();
@@ -64,8 +59,7 @@ namespace InterfazBasica_DCStore
                 PatientName = dicomTagDictionary.TryGetValue(DicomTag.PatientName, out object patientNameValue) ? patientNameValue as string : string.Empty,
                 PatientAge = dicomTagDictionary.TryGetValue(DicomTag.PatientAge, out object patientAgeValue) ? patientAgeValue as string : string.Empty,
                 PatientSex = dicomTagDictionary.TryGetValue(DicomTag.PatientSex, out object patientSexValue) ? patientSexValue as string : string.Empty,
-                PatientWeight = dicomTagDictionary.TryGetValue(DicomTag.PatientWeight, out object patientWeightValue) ? patientWeightValue as string : string.Empty,
-                
+                PatientWeight = dicomTagDictionary.TryGetValue(DicomTag.PatientWeight, out object patientWeightValue) ? patientWeightValue as string : string.Empty,  
             };
 
             // Asumimos que la fecha de nacimiento viene en formato string y necesita ser convertida a DateTime
@@ -154,27 +148,9 @@ namespace InterfazBasica_DCStore
                 Rows = dicomTagDictionary.TryGetValue(DicomTag.Rows, out object rowsValue) ? Convert.ToInt32(rowsValue) : 0,
                 Columns = dicomTagDictionary.TryGetValue(DicomTag.Columns, out object columnsValue) ? Convert.ToInt32(columnsValue) : 0,
                 PixelSpacing = dicomTagDictionary.TryGetValue(DicomTag.PixelSpacing, out object pixelSpacingValue) ? pixelSpacingValue as string : string.Empty,
-                //12/07/24 LFMG: Ruta de almacenamiento.
-                ImageLocation = RootFileDicomConstructor(studyUID, serieUID, instanceUID)
             };
 
         return imagenDto;
         }
-
-        internal string RootFileDicomConstructor(string StudyUID, string SerieUID, string InstanceUID)
-        {
-            // Construye la ruta completa usando StudyInstanceUID y SeriesInstanceUID.
-            var fullPath = Path.Combine(_rootPath, StudyUID, SerieUID);
-            // Verifica si la ruta del directorio existe, si no, la crea.
-            if (!Directory.Exists(fullPath))
-            {
-                Directory.CreateDirectory(fullPath);
-            }
-            // Completa la ruta del archivo añadiendo el SOPInstanceUID y la extensión .dcm.
-            var filePath = Path.Combine(fullPath, InstanceUID + ".dcm");
-            return filePath;
-        }
-
-
     }
 }

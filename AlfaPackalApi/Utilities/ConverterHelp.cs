@@ -1,4 +1,4 @@
-﻿using Api_PACsServer.Modelos.Dto;
+﻿using Api_PACsServer.Models.Dto;
 using System.Net;
 
 namespace Api_PACsServer.Utilities
@@ -53,9 +53,9 @@ namespace Api_PACsServer.Utilities
         {
             return new APIResponse
             {
-                IsExitoso = isSuccess,
+                IsSuccessful = isSuccess,
                 StatusCode = statusCode,
-                Resultado = result,
+                ResponseData = result,
                 ErrorsMessages = errors ?? new List<string>()
             };
         }

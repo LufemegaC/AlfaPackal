@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "GRtZ09hODrcXuUFT5EiMWm4MW6aXkkR7WyEfAu/yeFU=",
+  "Source": "Api_PACsServer",
+  "BasePath": "_content/Api_PACsServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
