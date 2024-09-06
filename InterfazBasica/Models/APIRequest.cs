@@ -1,20 +1,13 @@
-﻿using static Utileria.DS;
+﻿using static InterfazBasica_DCStore.Utilities.LocalUtility;
+
 
 namespace InterfazBasica.Models
 {
     public class APIRequest
     {
-        public APITipo APITipo { get; set; } = APITipo.GET;
+        public APIType APIType { get; set; } = APIType.GET;
         public string Url { get; set; }
-        public object Datos { get; set; }
+        public object RequestData { get; set; }
         public string Token { get; set; }
-        public Parametros Parametros { get; set; }
-    }
-
-    public class Parametros
-    {
-        public int PageNumber{ get; set; }
-
-        public int PageSize { get; set; }
     }
 }

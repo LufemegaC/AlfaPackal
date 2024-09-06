@@ -22,301 +22,67 @@ namespace Api_PACsServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Estudio", b =>
-                {
-                    b.Property<int>("PACS_EstudioID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_EstudioID"));
-
-                    b.Property<string>("AccessionNumber")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("BodyPartExamined")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DicomFileLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExposureTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GeneratedPatientID")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<int>("InstitutionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InstitutionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("KVP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Modality")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfFiles")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NumberOfFrames")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NumberOfSeries")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OperatorName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PACS_PatientID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PerformingPhysicianName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StudyComments")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StudyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StudyDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StudyInstanceUID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("TotalFileSizeMB")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PACS_EstudioID");
-
-                    b.HasIndex("AccessionNumber")
-                        .HasDatabaseName("IX_Estudios_AccessionNumber");
-
-                    b.HasIndex("InstitutionId");
-
-                    b.HasIndex("StudyDate")
-                        .HasDatabaseName("IX_Estudios_StudyDate");
-
-                    b.HasIndex("PACS_PatientID", "AccessionNumber")
-                        .HasDatabaseName("IX_Estudio_PacienteID_AccessionNumber");
-
-                    b.HasIndex("PACS_PatientID", "GeneratedPatientID")
-                        .HasDatabaseName("IX_Estudio_PacienteID_GeneratedPatientID");
-
-                    b.HasIndex("PACS_PatientID", "PACS_EstudioID")
-                        .HasDatabaseName("IX_Estudio_PacienteID_EstudioID");
-
-                    b.ToTable("Estudios");
-                });
-
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Imagen", b =>
-                {
-                    b.Property<int>("PACS_ImagenID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_ImagenID"));
-
-                    b.Property<int>("Columns")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageComments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ImageNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PACS_SerieID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PhotometricInterpretation")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
-
-                    b.Property<string>("PixelSpacing")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Rows")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SOPInstanceUID")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("SeriesInstanceUID")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<decimal?>("TotalFileSizeMB")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PACS_ImagenID");
-
-                    b.HasIndex("PACS_SerieID", "ImageNumber")
-                        .HasDatabaseName("IX_Serie_SerieID_ImageNumber");
-
-                    b.HasIndex("SOPInstanceUID", "ImageNumber")
-                        .HasDatabaseName("IX_Serie_SOPInstanceUID_ImageNumber");
-
-                    b.ToTable("Imagenes");
-                });
-
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Paciente", b =>
-                {
-                    b.Property<int>("PACS_PatientID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_PatientID"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GeneratedPatientID")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("IssuerOfPatientID")
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("PatientAge")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
-
-                    b.Property<DateTime?>("PatientBirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PatientID")
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PatientSex")
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
-
-                    b.Property<string>("PatientWeight")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PACS_PatientID");
-
-                    b.HasIndex("GeneratedPatientID")
-                        .HasDatabaseName("IX_Paciente_GeneratedPatientID");
-
-                    b.HasIndex("PatientName")
-                        .HasDatabaseName("IX_Paciente_PatientName");
-
-                    b.ToTable("Pacientes");
-                });
-
             modelBuilder.Entity("AlfaPackalApi.Modelos.Serie", b =>
                 {
-                    b.Property<int>("PACS_SerieID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PACS_SerieID"));
-
-                    b.Property<string>("BodyPartExamined")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
+                    b.Property<string>("SeriesInstanceUID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Modality")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
-
-                    b.Property<int?>("NumberOfImages")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PACS_EstudioID")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientPosition")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("SeriesDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SeriesDescription")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SeriesInstanceUID")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<int?>("SeriesNumber")
+                    b.Property<int>("SeriesNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("StudyInstanceUID")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("TotalFileSizeMB")
-                        .HasColumnType("decimal(18,2)");
+                    b.HasKey("SeriesInstanceUID");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                    b.HasIndex("SeriesDateTime")
+                        .HasDatabaseName("IX_Serie_SeriesDateTime");
 
-                    b.HasKey("PACS_SerieID");
-
-                    b.HasIndex("SeriesInstanceUID")
-                        .HasDatabaseName("IX_Serie_SeriesInstanceUID");
-
-                    b.HasIndex("PACS_EstudioID", "SeriesNumber")
-                        .HasDatabaseName("IX_Serie_EstudioID_SeriesNumber");
-
-                    b.HasIndex("SeriesInstanceUID", "SeriesNumber")
-                        .HasDatabaseName("IX_Serie_SeriesInstanceUID_SeriesNumber");
+                    b.HasIndex("StudyInstanceUID");
 
                     b.ToTable("Series");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.DicomServer", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.Institution", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssignedInstitutionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityID");
+
+                    b.ToTable("Institutions");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.LocalDicomServer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -342,40 +108,20 @@ namespace Api_PACsServer.Migrations
                     b.Property<int>("InstitutionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PuertoRedLocal")
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Port")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("InstitutionId");
 
-                    b.ToTable("DicomServers");
+                    b.ToTable("LocalDicomServers");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.Institution", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssignedInstitutionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdCiudad")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdCiudad");
-
-                    b.ToTable("Institutions");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.UsuarioSistema", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.SystemUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -453,64 +199,199 @@ namespace Api_PACsServer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.WhitelistedIP", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.Geography.City", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("StateID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("DateRemoved")
-                        .HasColumnType("datetime2");
+                    b.HasKey("ID");
 
-                    b.Property<int>("DicomServerId")
-                        .HasColumnType("int");
+                    b.HasIndex("StateID");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DicomServerId");
-
-                    b.ToTable("WhitelistedIPs");
+                    b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.Dto.Vistas.EstudioConPacienteDto", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.Geography.State", b =>
                 {
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("States");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Instance", b =>
+                {
+                    b.Property<string>("SOPInstanceUID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Columns")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageComments")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InstanceNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NumberOfFrames")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhotometricInterpretation")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("PixelSpacing")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rows")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SOPClassUID")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("SeriesInstanceUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SOPInstanceUID");
+
+                    b.HasIndex("SeriesInstanceUID", "InstanceNumber")
+                        .HasDatabaseName("IX_Instance_SeriesUID_InstanceNumber");
+
+                    b.ToTable("Instances");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Load.InstanceDetails", b =>
+                {
+                    b.Property<string>("SOPInstanceUID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalFileSizeMB")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("SOPInstanceUID");
+
+                    b.ToTable("InstancesDetails");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Load.SerieDetails", b =>
+                {
+                    b.Property<string>("SeriesInstanceUID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("NumberOfSeriesRelatedInstances")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalFileSizeMB")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("SeriesInstanceUID");
+
+                    b.ToTable("SeriesDetails");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Load.StudyDetails", b =>
+                {
+                    b.Property<string>("StudyInstanceUID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AccessionNumber")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("NumberOfStudyRelatedInstances")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NumberOfStudyRelatedSeries")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalFileSizeMB")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("StudyInstanceUID");
+
+                    b.ToTable("StudiesDetails");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Study", b =>
+                {
+                    b.Property<string>("StudyInstanceUID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("BodyPartExamined")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DescBodyPart")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("DescModality")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescPatientSex")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("InstitutionID")
+                        .HasColumnType("int");
 
                     b.Property<string>("InstitutionName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IssuerOfPatientID")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("Modality")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientAge")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PatientID")
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("PatientName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PatientSex")
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
+
+                    b.Property<string>("PatientWeight")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StudyDate")
@@ -519,46 +400,29 @@ namespace Api_PACsServer.Migrations
                     b.Property<string>("StudyDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable((string)null);
+                    b.Property<int>("StudyID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.ToView("sql1", (string)null);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudyID"));
+
+                    b.HasKey("StudyInstanceUID");
+
+                    b.HasIndex("InstitutionID");
+
+                    b.HasIndex("PatientName")
+                        .HasDatabaseName("IX_Study_PatientName");
+
+                    b.HasIndex("StudyDate")
+                        .HasDatabaseName("IX_Study_StudyDate");
+
+                    b.HasIndex("StudyID")
+                        .HasDatabaseName("IX_Study_StudyID");
+
+                    b.ToTable("Studies");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.Geografia.Ciudad", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdEstado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdEstado");
-
-                    b.ToTable("Ciudades");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.Geografia.Estado", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Estados");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.Usuario", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -569,7 +433,7 @@ namespace Api_PACsServer.Migrations
                     b.Property<int>("InstitutionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Nombres")
+                    b.Property<string>("Names")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -589,7 +453,7 @@ namespace Api_PACsServer.Migrations
 
                     b.HasIndex("InstitutionId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -725,7 +589,29 @@ namespace Api_PACsServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Estudio", b =>
+            modelBuilder.Entity("AlfaPackalApi.Modelos.Serie", b =>
+                {
+                    b.HasOne("Api_PACsServer.Modelos.Study", "Study")
+                        .WithMany("Series")
+                        .HasForeignKey("StudyInstanceUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Study");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.Institution", b =>
+                {
+                    b.HasOne("Api_PACsServer.Modelos.Geography.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.LocalDicomServer", b =>
                 {
                     b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
                         .WithMany()
@@ -733,93 +619,87 @@ namespace Api_PACsServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AlfaPackalApi.Modelos.Paciente", "Paciente")
-                        .WithMany("Estudios")
-                        .HasForeignKey("PACS_PatientID")
+                    b.Navigation("Institution");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.SystemUser", b =>
+                {
+                    b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
+                        .WithMany()
+                        .HasForeignKey("InstitutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Institution");
-
-                    b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Imagen", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.Geography.City", b =>
+                {
+                    b.HasOne("Api_PACsServer.Modelos.Geography.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("State");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Instance", b =>
                 {
                     b.HasOne("AlfaPackalApi.Modelos.Serie", "Serie")
-                        .WithMany("Imagenes")
-                        .HasForeignKey("PACS_SerieID")
+                        .WithMany("Instances")
+                        .HasForeignKey("SeriesInstanceUID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Serie");
                 });
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Serie", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.Load.InstanceDetails", b =>
                 {
-                    b.HasOne("AlfaPackalApi.Modelos.Estudio", "Estudio")
-                        .WithMany("Series")
-                        .HasForeignKey("PACS_EstudioID");
+                    b.HasOne("Api_PACsServer.Modelos.Instance", "Instance")
+                        .WithOne("InstanceDetails")
+                        .HasForeignKey("Api_PACsServer.Modelos.Load.InstanceDetails", "SOPInstanceUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Estudio");
+                    b.Navigation("Instance");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.DicomServer", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.Load.SerieDetails", b =>
+                {
+                    b.HasOne("AlfaPackalApi.Modelos.Serie", "Serie")
+                        .WithOne("SerieDetails")
+                        .HasForeignKey("Api_PACsServer.Modelos.Load.SerieDetails", "SeriesInstanceUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Serie");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Load.StudyDetails", b =>
+                {
+                    b.HasOne("Api_PACsServer.Modelos.Study", "Study")
+                        .WithOne("StudyDetails")
+                        .HasForeignKey("Api_PACsServer.Modelos.Load.StudyDetails", "StudyInstanceUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Study");
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Study", b =>
                 {
                     b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
                         .WithMany()
-                        .HasForeignKey("InstitutionId")
+                        .HasForeignKey("InstitutionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Institution");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.Institution", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.Geografia.Ciudad", "Ciudad")
-                        .WithMany()
-                        .HasForeignKey("IdCiudad")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ciudad");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.UsuarioSistema", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
-                        .WithMany()
-                        .HasForeignKey("InstitutionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Institution");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.WhitelistedIP", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.DicomServer", "Institution")
-                        .WithMany()
-                        .HasForeignKey("DicomServerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Institution");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.Geografia.Ciudad", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.Geografia.Estado", "Estado")
-                        .WithMany()
-                        .HasForeignKey("IdEstado")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Estado");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.Usuario", b =>
+            modelBuilder.Entity("Api_PACsServer.Modelos.User", b =>
                 {
                     b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
                         .WithMany()
@@ -841,7 +721,7 @@ namespace Api_PACsServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.UsuarioSistema", null)
+                    b.HasOne("Api_PACsServer.Modelos.AccessControl.SystemUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -850,7 +730,7 @@ namespace Api_PACsServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.UsuarioSistema", null)
+                    b.HasOne("Api_PACsServer.Modelos.AccessControl.SystemUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -865,7 +745,7 @@ namespace Api_PACsServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.UsuarioSistema", null)
+                    b.HasOne("Api_PACsServer.Modelos.AccessControl.SystemUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -874,26 +754,33 @@ namespace Api_PACsServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.UsuarioSistema", null)
+                    b.HasOne("Api_PACsServer.Modelos.AccessControl.SystemUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Estudio", b =>
-                {
-                    b.Navigation("Series");
-                });
-
-            modelBuilder.Entity("AlfaPackalApi.Modelos.Paciente", b =>
-                {
-                    b.Navigation("Estudios");
-                });
-
             modelBuilder.Entity("AlfaPackalApi.Modelos.Serie", b =>
                 {
-                    b.Navigation("Imagenes");
+                    b.Navigation("Instances");
+
+                    b.Navigation("SerieDetails")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Instance", b =>
+                {
+                    b.Navigation("InstanceDetails")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Api_PACsServer.Modelos.Study", b =>
+                {
+                    b.Navigation("Series");
+
+                    b.Navigation("StudyDetails")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

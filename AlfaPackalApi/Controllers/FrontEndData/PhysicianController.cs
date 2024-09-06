@@ -1,13 +1,16 @@
 ﻿using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Orchestrators.IOrchestrator;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Api_PACsServer.Controllers.FrontEndData
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class PhysicianController : ControllerBase
     {
@@ -22,12 +25,12 @@ namespace Api_PACsServer.Controllers.FrontEndData
 
         [HttpGet("ListStudies")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<APIResponse> GetMainStudiesList([FromQuery] PaginationParameters parametros)
+        public ActionResult<APIResponse> GetMainStudiesList([FromQuery] PaginationParameters parameters)
         /*Metodo para obtener todas las villas*/
         {
             try
             {
-                var studiesList = _userOrchestrator.GetRecentStudies(parametros);
+                var studiesList = _userOrchestrator.GetRecentStudies(parameters);
                 _response.ResponseData = studiesList.Studies;
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.TotalPages = studiesList.TotalPages;

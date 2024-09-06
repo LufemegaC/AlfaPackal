@@ -15,8 +15,8 @@ builder.Services.AddSingleton<IDataService, DataService>();
 builder.Services.AddHttpClient<IWadoUriService, WadoUriService>();
 builder.Services.AddSingleton<IWadoUriService, WadoUriService>();
 //Usuario 
-builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddHttpClient<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(option =>
 {

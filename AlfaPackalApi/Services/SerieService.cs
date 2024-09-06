@@ -1,36 +1,37 @@
 ﻿using AlfaPackalApi.Modelos;
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Load;
+using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Models.Dto.Series;
+using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Services.IService.Pacs;
 using Api_PACsServer.Utilities;
 using AutoMapper;
 
-
-
 namespace Api_PACsServer.Services
 {
     public class SerieService : ISerieService
     {
         private readonly ISerieRepository _serieRepo;
-        private readonly ISerieLoadRepository _serieLoadRepo;
+        private readonly ISerieDetailsRepository _serieDetailsRepo;
         private readonly IMapper _mapper;
 
-        public SerieService(ISerieRepository serieRepo, ISerieLoadRepository serieLoadRepo,
+        public SerieService(ISerieRepository serieRepo, ISerieDetailsRepository serieDetailsRepo,
                             IMapper mapper)
         {
             _serieRepo = serieRepo;
-            _serieLoadRepo = serieLoadRepo;
+            _serieDetailsRepo = serieDetailsRepo;
             _mapper = mapper;
         }
 
         public async Task<Serie> Create(SerieCreateDto createDto)
         {
+            
             var serieInstanceUID = createDto.SeriesInstanceUID;
-            if (!DicomUtilities.ValidateUID(serieInstanceUID))
-                throw new ArgumentException("The format of the instance UID is not valid.");
+            //if (!DicomUtilities.ValidateUID(serieInstanceUID))
+            //    throw new ArgumentException("The format of the instance UID is not valid.");
             // Specific validation for StudyInstanceUID
             if (await _serieRepo.Exists(u => u.SeriesInstanceUID == serieInstanceUID))
                 throw new InvalidOperationException("The instance UID already exists.");
@@ -38,27 +39,27 @@ namespace Api_PACsServer.Services
             var serie = _mapper.Map<Serie>(createDto);
             serie.CreationDate = DateTime.UtcNow;
             await _serieRepo.Create(serie);
-            // Load information registration
-            var serieLoad = MapSerieToCarga(serie.PACSSerieID, createDto.TotalFileSizeMB);
-            await _serieLoadRepo.Create(serieLoad);
+            // Details information registration
+            var serieDetailsCreate = new SerieDetailsCreateDto(serie.SeriesInstanceUID, createDto.TotalFileSizeMB);
+            var serieDetails = _mapper.Map<SerieDetails>(serieDetailsCreate);
+            await _serieDetailsRepo.Create(serieDetails);
             // return dto
             return serie;
         }
      
-        public async Task<Serie> GetById(int serieId)
-        {
-            if (serieId <= 0)
-                throw new ArgumentException("Invalid ID.");
-            var serie = await _serieRepo.Get(v => v.PACSStudyID == serieId);
-            if (serie == null)
-                throw new ArgumentException("Series not found.");
-            return serie;   
-        }
+        //public async Task<Serie> GetById(int studyId, int seriesNumber)
+        //{
+        //    if (studyId <= 0 || seriesNumber <= 0)
+        //        throw new ArgumentException("Invalid IDs value.");
+        //    var serie = await _serieRepo.Get(v => v.StudyID == studyId &&
+        //                                     v.SeriesNumber == seriesNumber);
+        //    if (serie == null)
+        //        throw new ArgumentException("Series not found.");
+        //    return serie;   
+        //}
 
         public async Task<Serie> GetByUID(string serieInstacenUID)
         {
-            if (!DicomUtilities.ValidateUID(serieInstacenUID))
-                throw new ArgumentException("The instance UID format is not valid.");
             var serie = await _serieRepo.Get(v => v.SeriesInstanceUID == serieInstacenUID);
             if (serie == null)
                 throw new KeyNotFoundException("Series not found.");
@@ -71,52 +72,28 @@ namespace Api_PACsServer.Services
             return await _serieRepo.Exists(s => s.SeriesInstanceUID == serieInstacenUID);
         }
 
-        public async Task<IEnumerable<SerieDto>> GetAllByStudyPacsId(int studyId)
+        public async Task<IEnumerable<SerieDto>> GetAllByStudyUID(string studyInstanceUID)
         {
-            if (studyId <= 0)
-                throw new ArgumentException("Invalid ID.");
-            IEnumerable<Serie> serieList = await _serieRepo.GetAll(v => v.PACSStudyID == studyId);
+            if (string.IsNullOrEmpty(studyInstanceUID))
+                throw new ArgumentException("Invalid study UID value.");
+            IEnumerable<Serie> serieList = await _serieRepo.GetAll(v => v.StudyInstanceUID == studyInstanceUID);
             return _mapper.Map<IEnumerable<SerieDto>>(serieList);                
         }
 
-        //public async Task<IEnumerable<SerieDto>> GetAllByStudyUID(string studyInstanceUID)
-        //{
-        //    var study = await
-            
-            
-            
-        //    // Validate format with fo-dicom
-        //    if (!DicomUtilities.ValidateUID(studyInstanceUID))
-        //        throw new ArgumentException("The instance UID format is not valid.");
-            
-            
-        //    IEnumerable<Serie> serieList = await _serieRepo.GetAll(u => u.InstastudyInstanceUID);
-
-        //    return _mapper.Map<IEnumerable<SerieDto>>(serieList);
-        //}
-
-        public async Task<SerieLoad> UpdateLoadForNewInstance(int serieId, decimal totalSizeFile)
+        public async Task<SerieDetails> UpdateLoadForNewInstance(string seriesInstanceUID, decimal totalSizeFile)
         {
-            var serieLoad = await _serieLoadRepo.Get(u => u.PACSSerieID == serieId);
-            serieLoad.UpdateDate = DateTime.UtcNow;
-            serieLoad.TotalFileSizeMB += totalSizeFile;
-            serieLoad.NumberOfInstances += 1;
-            return await _serieLoadRepo.Update(serieLoad);
+            var serieDetails = await _serieDetailsRepo.Get(u => u.SeriesInstanceUID == seriesInstanceUID);
+            var serieDetailsUpdateDto = _mapper.Map<SerieDetailsUpdateDto>(serieDetails);
+
+            serieDetailsUpdateDto.TotalFileSizeMB = serieDetailsUpdateDto.TotalFileSizeMB + totalSizeFile;
+            serieDetailsUpdateDto.NumberOfSeriesRelatedInstances++;
+            _mapper.Map(serieDetailsUpdateDto, serieDetails);
+            return await _serieDetailsRepo.Update(serieDetails);
         }
 
-        //** Private
-        private SerieLoad MapSerieToCarga(int SerieID, decimal totalSizeFile)
-        // Pendiente delegar a Servicio o mapeo
+        public async Task<SerieCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
         {
-            var serieCarga = new SerieLoad
-            {
-                PACSSerieID = SerieID,
-                NumberOfInstances = 1,
-                TotalFileSizeMB = totalSizeFile,
-                CreationDate = DateTime.UtcNow,
-                UpdateDate = DateTime.UtcNow
-            };
-            return serieCarga;
+            return _mapper.Map<SerieCreateDto>(metadata);
         }
     }
 }

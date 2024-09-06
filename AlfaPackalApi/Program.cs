@@ -10,6 +10,7 @@ using Api_PACsServer.Repositorio.Pacs;
 using Api_PACsServer.Repository.Authentication;
 using Api_PACsServer.Repository.IRepository.Authentication;
 using Api_PACsServer.Services;
+using Api_PACsServer.Services.IService;
 using Api_PACsServer.Services.IService.Pacs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -85,23 +86,28 @@ builder.Services.AddIdentity<SystemUser, IdentityRole>()
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 // Repositories for load info
-builder.Services.AddScoped<IStudyLoadRepository, StudyLoadRepository>();
-builder.Services.AddScoped<ISerieLoadRepository, SerieLoadRepository>();
-builder.Services.AddScoped<IInstanceLoadRepository, InstanceLoadRepository>();
+builder.Services.AddScoped<IStudyDetailsRepository, StudyDetailsRepository>();
+builder.Services.AddScoped<ISerieDetailsRepository, SerieDetailsRepository>();
+builder.Services.AddScoped<IInstanceDetailsRepository, InstanceDetailsRepository>();
+// Repositories for main entities
+builder.Services.AddScoped<IStudyRepository, StudyRepository>();
+builder.Services.AddScoped<ISerieRepository, SerieRepository>();
+builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
 // Repositories for access
 builder.Services.AddScoped<ILocalDicomServerRepostory, LocalDicomServerRepostory>();
 builder.Services.AddScoped<IInstitutionRespository, InstitutionRespository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-// Repositories for main entities
-builder.Services.AddScoped<IStudyRepository,  StudyRepository>();
-builder.Services.AddScoped<ISerieRepository,    SerieRepository>();
-builder.Services.AddScoped<IInstanceRepository,   InstanceRepository>();
-// Serivice for entities
+// Service for entities
 builder.Services.AddScoped<IStudyService, StudyService>();
 builder.Services.AddScoped<ISerieService, SerieService>();
 builder.Services.AddScoped<IInstanceService, InstanceService>();
-// Other services
+// Session 
+builder.Services.AddScoped<ISessionService, SessionService>();
+// Orchestrator
 builder.Services.AddScoped<IDicomOrchestrator, DicomOrchestrator>();
+builder.Services.AddScoped<IAuthOrchestrator, AuthOrchestrator>();
+builder.Services.AddScoped<IUserOchestrator, UserOchestrator>();
+
 
 var app = builder.Build();
 

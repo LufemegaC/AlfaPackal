@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Api_PACsServer.Modelos.AccessControl;
 using Api_PACsServer.Modelos.IModels;
+using Api_PACsServer.Modelos.Load;
 
 namespace Api_PACsServer.Modelos
 {
@@ -12,22 +13,19 @@ namespace Api_PACsServer.Modelos
     // standardizing to English.
     {
         // ** Study info **//
-        // Primary key, internal study ID
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int PACSStudyID { get; set; }
         // UID of the study entity
-        [Required]
+        [Key, Required]
         public string StudyInstanceUID { get; set; }
-        // Study comments
-        public string? StudyComments { get; set; }
+        // Primary key, internal study ID
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int StudyID { get; set; }
+        // Relación uno a uno con SerieDetails
+        public virtual StudyDetails StudyDetails { get; set; } // Relación uno a uno con SerieDetails
         // Study description DICOM
         public string? StudyDescription { get; set; }
         // Date the study was performed DICOM/Metadata
         [Required]
-        public DateTime StudyDate { get; set; }
-        // Accession number DICOM/Metadata
-        [MaxLength(64)]
-        public string? AccessionNumber { get; set; }
+        public DateTime StudyDate { get; set; }    
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
         // Study modality DICOM/Metadata

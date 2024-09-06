@@ -6,8 +6,8 @@ using InterfazBasica.Service.IService;
 using InterfazBasica_DCStore;
 using InterfazBasica_DCStore.Service;
 using InterfazBasica_DCStore.Service.DicomServices;
-using InterfazBasica_DCStore.Service.IDicomService;
 using InterfazBasica_DCStore.Service.IService;
+using InterfazBasica_DCStore.Service.IService.Dicom;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,23 +18,11 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 //Configuracion de servicio de acceso al contexto de Session
 builder.Services.AddHttpContextAccessor();
 //***  Servicios de BDs y API ***//
-// Estudio
-builder.Services.AddHttpClient<IEstudioService, EstudioService>(); // Cliente Http de estudio
-builder.Services.AddSingleton<IEstudioService, EstudioService>(); // Inyeccion de dependencia para estudio
-// Paciente
-builder.Services.AddHttpClient<IPacienteService, PacienteService>(); // Cliente Http de estudio
-builder.Services.AddSingleton<IPacienteService, PacienteService>(); // Inyeccion de dependencia para estudio
-// Serie
-builder.Services.AddHttpClient<ISerieService, SerieService>(); // Cliente Http de estudio
-builder.Services.AddSingleton<ISerieService, SerieService>(); // Inyeccion de dependencia para estudio
-// Imagen
-builder.Services.AddHttpClient<IImageService, ImagenService>(); // Cliente Http de estudio
-builder.Services.AddSingleton<IImageService, ImagenService>(); // Inyeccion de dependencia para estudio
 // Servicios generales, mas de un repositorio
 builder.Services.AddSingleton<IServiceAPI, ServiceAPI>(); // Inyeccion de dependencia para estudio
 //Usuario 
-builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddHttpClient<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(option =>
@@ -44,7 +32,6 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<IGeneralAPIServices, GeneralAPIService>(); // Servicios de validacion por API
 // Servicios de administracion DICOM
 builder.Services.AddSingleton<IDicomValidationService, DicomValidationService>(); // Inyeccion de dependencia para Validacion Dicom
 builder.Services.AddSingleton<IDicomDecompositionService,DicomDecompositionService>(); // Inyeccion de dependencia para Decomposicion Dicom

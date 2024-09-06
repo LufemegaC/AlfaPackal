@@ -1,17 +1,8 @@
-﻿using AutoMapper;
-using FellowOakDicom;
-using FellowOakDicom.Imaging;
+﻿using FellowOakDicom;
 using FellowOakDicom.Network;
-using InterfazBasica.Models;
-using InterfazBasica.Models.Pacs;
-using InterfazBasica.Service;
-using InterfazBasica.Service.IService;
-using InterfazBasica_DCStore.Service.IDicomService;
-using System;
-using System.ComponentModel.DataAnnotations;
+using InterfazBasica_DCStore.Service.IService.Dicom;
 using System.Text;
-using Utileria;
-using static Utileria.DicomValues;
+
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
@@ -19,7 +10,6 @@ namespace InterfazBasica_DCStore.Service.DicomServices
     {
         // 25/01/24 Luis Felipe MG.-Dependencias
         private IDicomOrchestrator _dicomOrchestrator;
-
         private DicomFile _dicomFile;
 
         private static readonly DicomTransferSyntax[] _acceptedTransferSyntaxes = new DicomTransferSyntax[]
@@ -107,7 +97,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                 DicomFile dicomFile = new DicomFile(request.Dataset);
                 // Se entrega al orchestrator para registro de entidades PACS
                 var resultStoreDicomData = await _dicomOrchestrator.StoreDicomData(dicomFile);
-                var resultStoreDicomFile = await _dicomOrchestrator.StoreDicomFile(dicomFile);
+                //var resultStoreDicomFile = await _dicomOrchestrator.StoreDicomFile(dicomFile);
 
                 // Envio de archivo DICOM para su almacenamiento fisico
                 //var resultStoreDicomFile = _dicomOrchestrator.StoreDicomFile(dicomFile);

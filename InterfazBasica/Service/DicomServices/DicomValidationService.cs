@@ -1,101 +1,120 @@
 ﻿using FellowOakDicom;
 using FellowOakDicom.Network;
-using InterfazBasica.Models;
-using InterfazBasica.Models.Pacs;
-using InterfazBasica_DCStore.Models;
-using InterfazBasica_DCStore.Models.Pacs;
-using InterfazBasica_DCStore.Service.IDicomService;
-using InterfazBasica_DCStore.Service.IService;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using Utileria;
+using InterfazBasica_DCStore.Models.Dtos.MainEntities;
+using InterfazBasica_DCStore.Service.IService.Dicom;
+
 
 namespace InterfazBasica_DCStore.Service.DicomServices;
 public class DicomValidationService : IDicomValidationService
 {
-
-    private readonly IGeneralAPIServices _validationService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private string _token;
-
-    public DicomValidationService(IGeneralAPIServices validationService, IHttpContextAccessor httpContextAccessor)
-    {
-        _validationService = validationService;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-
-    //Implementacion de la interfaz
     public DicomStatus IsValidDicomFile(DicomFile dicomFile)
-    // Metodo para la validacion de un archivo DICOM
     {
         // Verificación de nulidad del archivo DICOM y sus componentes esenciales
         if (dicomFile == null || dicomFile.Dataset == null || dicomFile.FileMetaInfo == null)
             return DicomStatus.InvalidObjectInstance;
-        // Validacion de metadatos importantes
-        // Identificador de paciente
-        //if (!dicomFile.Dataset.Contains(DicomTag.PatientID))
-        //    return DicomStatus.InvalidAttributeValue;
+
         // Identificador de estudio
         if (!dicomFile.Dataset.Contains(DicomTag.StudyInstanceUID))
             return DicomStatus.InvalidAttributeValue;
+
+        // Obtención de UIDs
+        string sopClassUID = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.SOPClassUID, null);
+        string instanceUID = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.SOPInstanceUID, null);
+        string studyUID = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.StudyInstanceUID, null);
+        string seriesUID = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.SeriesInstanceUID, null);
+
         // Verificación de la presencia y validez de UIDs
-        var sopClassUid = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.SOPClassUID, null);
-        var instanceUid = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.SOPInstanceUID, null);
-        if (string.IsNullOrWhiteSpace(sopClassUid))
+        if (string.IsNullOrWhiteSpace(sopClassUID) || !DicomUID.IsValidUid(sopClassUID))
             return DicomStatus.NoSuchSOPClass;
-        // Validacion de formato de UIDs
-        if (!DicomUID.IsValidUid(sopClassUid) || (!DicomUID.IsValidUid(instanceUid)))
+        if (!DicomUID.IsValidUid(instanceUID) || !DicomUID.IsValidUid(studyUID) || !DicomUID.IsValidUid(seriesUID))
             return DicomStatus.InvalidAttributeValue;
-        // Valido que se trate de un archivo DICOM de imagen 
-        DicomUID uid = DicomUID.Parse(sopClassUid);
-        if (!uid.IsImageStorage)
+
+        // Validación de que sea un SOP Class de imagenología
+        DicomUID sopClassDicomUID = DicomUID.Parse(sopClassUID);
+        if (!sopClassDicomUID.IsImageStorage)
             return DicomStatus.SOPClassNotSupported;
-        // Verificar la coherencia entre el Media Storage SOP Class UID y SOP Class UIDs dentro del Dataset.
+
+        // Verificar la coherencia entre el Media Storage SOP Class UID y SOP Class UID dentro del Dataset
         DicomUID mediaStorageSOPClassUID = dicomFile.FileMetaInfo.MediaStorageSOPClassUID;
-        DicomUID sopClassUID = DicomUID.Parse(dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.SOPClassUID, null));
-        if (mediaStorageSOPClassUID != sopClassUID)
+        if (mediaStorageSOPClassUID != sopClassDicomUID)
             return DicomStatus.StorageDataSetDoesNotMatchSOPClassError;
-        //Paso las valdaciones
+
+        // Paso las validaciones
         return DicomStatus.Success;
     }
 
-    public async Task<MainEntitiesValues> ValidateEntities(MainEntitiesValues mainEntitiesValues)
+    public DicomStatus ValidateCreateDtos(MainEntitiesCreateDto mainEntitiesDto)
     {
+        DicomStatus status = DicomStatus.Success;
         try
         {
-            var response = await _validationService.ValidateEntities<APIResponse>(mainEntitiesValues,Token);
-            if (response is null)
-                throw new InvalidOperationException("El resultado no valido.");
-            mainEntitiesValues = JsonConvert.DeserializeObject<MainEntitiesValues>(response.ResultadoJson);
-            
-            
-            return mainEntitiesValues;
+            ushort studyCode = ValidateMainEntitiesCreate(mainEntitiesDto);
+            if (studyCode != DicomStatus.Success.Code)
+            {
+                status = DicomStatus.Lookup(studyCode);
+            }
         }
         catch (Exception ex)
         {
-            // Manejo de errores al intentar registrar al paciente.
-            return null;
+            status = new DicomStatus("A90D", DicomState.Failure, "Internal server error.", ex.Message);
         }
+        return status;
     }
 
-    public string Token
+    // *** Intenal metods ***//
+
+    internal ushort ValidateMainEntitiesCreate(MainEntitiesCreateDto mainEntitiesDto)
     {
-        get
-        {
-            if (string.IsNullOrEmpty(_token))
-            {
-                //_token = _httpContextAccessor.HttpContext?.Session.GetString(ServerInfo.SessionToken);
-                _token = ServerInfo.Token;
-            }
-            return _token;
-        }
-    }
+        // Validación de PatientName
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.PatientName))
+            return 0xA901; // Code for "Invalid or missing patient name"
 
+        // Validación de StudyInstanceUID
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.StudyInstanceUID))
+            return 0xA902; // Code for "Invalid or missing StudyInstanceUID"
+
+        // Validación de Modality
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.Modality))
+            return 0xA903; // Code for "Invalid or missing Modality"
+
+        // Validación de StudyDate
+        if (mainEntitiesDto.StudyDate > DateTime.Now)
+            return 0xA904; // Code for "Study date is in the future"
+
+        // Validación de AccessionNumber
+        if (mainEntitiesDto.AccessionNumber != null && mainEntitiesDto.AccessionNumber.Length > 64)
+            return 0xA905; // Code for "AccessionNumber exceeds the maximum length"
+
+        // Validación de SeriesInstanceUID
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.SeriesInstanceUID))
+            return 0xA906; // Code for "Invalid or missing SeriesInstanceUID"
+
+        // Validación de Series Modality
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.Modality))
+            return 0xA907; // Code for "Invalid or missing Modality"
+
+        // Validación de SeriesDateTime
+        if (mainEntitiesDto.SeriesDateTime.HasValue && mainEntitiesDto.SeriesDateTime > DateTime.Now)
+            return 0xA908; // Code for "Series date is in the future"
+
+        // Validación de SOPInstanceUID
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.SOPInstanceUID))
+            return 0xA909; // code for "Invalid or missing SOPInstanceUID"
+
+        // Validación de ImageNumber
+        if (mainEntitiesDto.InstanceNumber <= 0)
+            return 0xA90A; // code for "ImageNumber is invalid"
+
+        // Validación de Rows y Columns
+        if (mainEntitiesDto.Rows <= 0 || mainEntitiesDto.Columns <= 0)
+            return 0xA90C; // code for "Invalid dimension information"
+
+        // Validación de PhotometricInterpretation
+        if (string.IsNullOrWhiteSpace(mainEntitiesDto.PhotometricInterpretation))
+            return 0xA90B; // warning code for "Photometric interpretation information is missing"
+
+        // Si todas las validaciones pasan
+        return DicomStatus.Success.Code;
+    }
 }
 

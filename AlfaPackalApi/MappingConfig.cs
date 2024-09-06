@@ -8,6 +8,8 @@ using Api_PACsServer.Modelos;
 using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Modelos.Load;
 using Api_PACsServer.Models.Dto.Instances;
+using Api_PACsServer.Utilities;
+using Api_PACsServer.Models.Dto;
 
 namespace AlfaPackalApi
 {
@@ -17,19 +19,27 @@ namespace AlfaPackalApi
         public MappingConfig() {
             // Studies
             CreateMap<Study, StudyCreateDto>().ReverseMap();
-            CreateMap<Study, StudyDto>().ReverseMap(); 
-            CreateMap<StudyLoad, StudyLoadUpdateDto>().ReverseMap();
+            CreateMap<StudyCreateDto, MainEntitiesCreateDto>().ReverseMap();
+            CreateMap<Study, StudyDto>()
+             .ForMember(dest => dest.DescModality, opt => opt.MapFrom(src => ConverterHelp.GetDescModality(src.Modality)))
+             .ForMember(dest => dest.DescBodyPartE, opt => opt.MapFrom(src => ConverterHelp.GetDescBodyPart(src.BodyPartExamined)))
+             .ReverseMap();
+            CreateMap<StudyDetails, StudyDetailsUpdateDto>().ReverseMap();
+            CreateMap<StudyDetails, StudyDetailsCreateDto>().ReverseMap();
             // Serie
             CreateMap<Serie, SerieCreateDto>().ReverseMap();
-            CreateMap<Serie, SerieUpdateDto>().ReverseMap();
-            CreateMap<SerieLoad, SerieUpdateDto>().ReverseMap(); 
+            CreateMap<SerieCreateDto, MainEntitiesCreateDto>().ReverseMap();
+            CreateMap<SerieDetails, SerieDetailsCreateDto>().ReverseMap();
+            CreateMap<SerieDetails, SerieDetailsUpdateDto>().ReverseMap();
             // Instances
             CreateMap<Instance, InstanceCreateDto>().ReverseMap();
+            CreateMap<InstanceCreateDto, MainEntitiesCreateDto>().ReverseMap();
             CreateMap<Instance, InstanceDto>().ReverseMap();
+            CreateMap<InstanceDetails, InstanceDetailsCreateDto>().ReverseMap();
             // Users
             CreateMap<SystemUser, UserDto>().ReverseMap();
             CreateMap<RegisterRequestDto, SystemUser>()
-            .ConvertUsing(src => MapRegisterRequestToSystemUser(src));
+                .ConvertUsing(src => MapRegisterRequestToSystemUser(src));
             // Servers
             CreateMap<LocalDicomServer,LocalDicomServerDto>().ReverseMap();
         }

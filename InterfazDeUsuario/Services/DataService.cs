@@ -3,6 +3,7 @@ using InterfazDeUsuario.Models.Especificaciones;
 using InterfazDeUsuario.Services.IServices;
 using System.Net.Http;
 using Utileria;
+using static InterfazDeUsuario.Utility.LocalUtility;
 
 namespace InterfazDeUsuario.Services
 {
@@ -21,8 +22,8 @@ namespace InterfazDeUsuario.Services
         {
             return SendAsync<T>(new APIRequest()
             {
-                APITipo = DS.APITipo.GET,
-                Url = _validateUrl + "/api/GeneralService/GetMainList/" + institutionId,
+                APIType = APIType.GET,
+                Url = _validateUrl + "/api/physician/ListStudies/" + institutionId,
                 Token = token
             });
         }
@@ -31,10 +32,10 @@ namespace InterfazDeUsuario.Services
         {
             return SendAsync<T>(new APIRequest()
             {
-                APITipo = DS.APITipo.GET,
-                Url = _validateUrl + "/api/GeneralService/GetMainListPaginado",
+                APIType = APIType.GET,
+                Url = _validateUrl + "/api/physician/ListStudies",
                 Token = token,
-                Parametros = new ParametrosPag() 
+                Parameters = new PaginationParameters() 
                 { 
                     PageNumber = pageNumber, 
                     PageSize = pageSize, 

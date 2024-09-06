@@ -6,19 +6,21 @@ namespace Api_PACsServer.Models.Dto.Series
     {
         // ID of the parent study, link to Study
         [Required]
-        public int? PACSStudyID { get; set; }
+        public string SeriesInstanceUID { get; set; }
+        [Required]
+        public string StudyInstanceUID { get; set; }
         // Description
         public string SeriesDescription { get; set; }
-        // Instance UID  
-        [Required, MaxLength(64)]
-        public string SeriesInstanceUID { get; set; }
-        public int? SeriesNumber { get; set; }
+        // Series number
+        public int SeriesNumber { get; set; }  
+        // Study modality DICOM/Metadata
+        public string? Modality { get; set; }
         // Start date and time of the series
         public DateTime? SeriesDateTime { get; set; }
         // Patient Position.
         [MaxLength(16)]
         public string? PatientPosition { get; set; }
-        //** Load Section **//
+        //** Details Section **//
         // Total size of the study in MB.
         public decimal TotalFileSizeMB { get; set; }
     }

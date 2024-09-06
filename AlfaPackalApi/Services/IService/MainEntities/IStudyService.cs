@@ -14,9 +14,9 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// <summary>
         /// Creates a new Study entity.
         /// </summary>
-        /// <param name="createDto">The data transfer object containing the details of the Study to be created.</param>
+        /// <param name="CreateDto">The data transfer object containing the details of the Study to be created.</param>
         /// <returns>The task result contains the created Study entity.</returns>
-        Task<Study> Create(StudyCreateDto createDto);
+        Task<Study> Create(StudyCreateDto CreateDto);
 
         /// <summary>
         /// Gets a Study entity by its ID.
@@ -42,17 +42,17 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// <summary>
         /// Updates the load information of a Study entity for a new series.
         /// </summary>
-        /// <param name="studyId">The ID of the Study to be updated.</param>
+        /// <param name="serieInstanceUID">The UID of the Study to be updated.</param>
         /// <returns>The task result contains the updated StudyLoad entity.</returns>
-        Task<StudyLoad> UpdateLoadForNewSerie(int studyId);
+        Task<StudyDetails> UpdateDetailsForNewSerie(string studyInstanceUID);
 
         /// <summary>
         /// Updates the load information of a Study entity for a new instance.
         /// </summary>
-        /// <param name="studyId">The ID of the Study to be updated.</param>
+        /// <param name="serieInstanceUID">The UID of the Study to be updated.</param>
         /// <param name="totalSizeFile">The total size of the file in MB.</param>
         /// <returns>The task result contains the updated StudyLoad entity.</returns>
-        Task<StudyLoad> UpdateLoadForNewInstance(int studyId, decimal totalSizeFile);
+        Task<StudyDetails> UpdateDetailsForNewInstance(string studyInstanceUID, decimal totalSizeFile);
 
         /// <summary>
         /// Retrieves the most recent studies for a specified institution.
@@ -63,5 +63,14 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// paginated according to the provided parameters.
         /// </returns>
         UserStudiesListDto GetRecentStudies(PaginationParameters parameters);
+
+        /// <summary>
+        /// Maps the provided metadata from DICOM to a StudyCreateDto object.
+        /// </summary>
+        /// <param name="metadata">The metadata containing the main entities required for creating a Study entity.</param>
+        /// <returns>
+        /// A StudyCreateDto object mapped from the provided metadata, ready to be used for creating a new Study entity.
+        /// </returns>
+        Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
     }
 }

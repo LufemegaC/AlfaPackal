@@ -1,18 +1,16 @@
 ﻿using InterfazDeUsuario.Models;
-using InterfazDeUsuario.Models.Identity;
-using InterfazDeUsuario.Models.ViewModels;
+using InterfazDeUsuario.Models.Dtos.PacsDto;
 using InterfazDeUsuario.Services.IServices;
+using InterfazDeUsuario.Utility;
+using InterfazDeUsuario.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Utileria;
 
 namespace InterfazDeUsuario.Controllers
 {
     public class MainListStudiesController : Controller
     {
         private readonly IDataService _dataService;
-
         private string _token;
         private int _institution;
 
@@ -26,24 +24,22 @@ namespace InterfazDeUsuario.Controllers
             //ListadoPrincipalVM mainList = new();
             string tokenV = Token;
             int institution = InstitutionId;
-            var studiesMainList = new List<StudyListVM>();
-            ListadoPrincipalVM listadoPrincipalVM = new ListadoPrincipalVM();
+            var studyListVM = new StudiesMainListVM();
             // Validacion de pagina uno
             if (pageNumber < 1) pageNumber = 1;
-            var response = await _dataService.GetMainListPaginado<APIResponse>(tokenV, InstitutionId, pageNumber, 10);
-            if (response != null && response.IsExitoso)
+            var response = await _dataService.GetMainListPaginado<APIResponse>(tokenV, institution, pageNumber, 10);
+            if (response != null && response.IsSuccessful)
             {
-                studiesMainList = JsonConvert.DeserializeObject<List<StudyListVM>>(Convert.ToString(response.Resultado));
-                listadoPrincipalVM = new ListadoPrincipalVM()
-                {
-                    StudyList = studiesMainList,
-                    PageNumber = pageNumber,
-                    TotalPaginas = JsonConvert.DeserializeObject<int>(Convert.ToString(response.TotalPaginas))
-                };
-                if (pageNumber > 1) listadoPrincipalVM.Previo = "";
-                if (listadoPrincipalVM.TotalPaginas <= pageNumber) listadoPrincipalVM.Siguiente = "disabled";
+                // Deserializar la lista de estudios desde la respuesta
+                var studiesMainList = JsonConvert.DeserializeObject<IEnumerable<StudyDto>>(Convert.ToString(response.ResponseData));
+                // Crear el ViewModel con los datos necesarios para la vista
+                studyListVM.StudyList = studiesMainList;
+                studyListVM.PageNumber = pageNumber;
+                studyListVM.TotalPages = JsonConvert.DeserializeObject<int>(Convert.ToString(response.TotalPages));
+                studyListVM.Prev = pageNumber > 1 ? "" : "disabled";
+                studyListVM.Next = studyListVM.TotalPages > pageNumber ? "" : "disabled";
             }
-            return View(listadoPrincipalVM);
+            return View(studyListVM);
 
         }
 
@@ -74,7 +70,7 @@ namespace InterfazDeUsuario.Controllers
             {
                 if (string.IsNullOrEmpty(_token))
                 {
-                    _token = HttpContext.Session.GetString(DS.SessionToken);
+                    _token = HttpContext.Session.GetString(LocalUtility.SessionToken);
                 }
                 return _token;
             }
@@ -86,7 +82,7 @@ namespace InterfazDeUsuario.Controllers
             {
                 if (_institution == 0 )
                 {
-                    _institution = HttpContext.Session.GetInt32(DS.Institution) ?? 0;
+                    _institution = HttpContext.Session.GetInt32(LocalUtility.SessionInstitution) ?? 0;
                 }
                 return _institution;
             }

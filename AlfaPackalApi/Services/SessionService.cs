@@ -1,13 +1,9 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Migrations;
-using Api_PACsServer.Modelos.AccessControl;
+﻿using Api_PACsServer.Modelos.AccessControl;
 using Api_PACsServer.Models.Dto.AuthDtos;
 using Api_PACsServer.Models.Dto.DicomServer;
 using Api_PACsServer.Repository.IRepository.Authentication;
 using Api_PACsServer.Services.IService;
 using AutoMapper;
-using Azure;
-using FellowOakDicom.Network;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -54,7 +50,7 @@ namespace Api_PACsServer.Services
         {
             // Validacion de IP
             var localIP = loginRequest.LocalIP;
-            var isServer = string.IsNullOrEmpty(localIP);
+            var isServer = !string.IsNullOrEmpty(localIP);
             LocalDicomServer localServer = null;
             if (isServer)
             {

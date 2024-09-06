@@ -5,6 +5,7 @@ using Api_PACsServer.Repository.DataAccess;
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Especificaciones;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Utileria.DicomValues;
 
 namespace Api_PACsServer.Repositorio.Pacs
 {
@@ -21,25 +22,13 @@ namespace Api_PACsServer.Repositorio.Pacs
 
         public PagedList<Study> GetRecentStudies(PaginationParameters parameters)
         {
-            
+
             IQueryable<Study> query = _db.Studies
             .Where(study => study.InstitutionID == parameters.InstitutionId)
             .OrderByDescending(study => study.StudyDate)
-            .Include(study => study.Series)
-            .Select(study => new Study
-            {
-                PACSStudyID = study.PACSStudyID,
-                StudyInstanceUID = study.StudyInstanceUID,
-                StudyDate = study.StudyDate,
-                StudyDescription = study.StudyDescription,
-                InstitutionID = study.InstitutionID,
-                Institution = study.Institution,
-                PatientName = study.PatientName,
-                PatientAge = study.PatientAge,
-                PatientSex = study.PatientSex,
-                StudyComments = study.StudyComments,
-                Series = study.Series,
-            });
+            .Include(study => study.Institution)
+            .Include(study => study.Series);
+
             // Get the total count of records that match the query
             var count = query.Count();
             // Apply pagination to the query

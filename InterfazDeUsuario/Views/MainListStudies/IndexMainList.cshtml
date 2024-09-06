@@ -1,6 +1,6 @@
-﻿@*@model List<InterfazDeUsuario.Models.ViewModels.StudyListVM>*@
+﻿@*@model List<InterfazDeUsuario.Models.Dtos.PacsDto.StudyDto>*@
 
-@model InterfazDeUsuario.Models.ViewModels.ListadoPrincipalVM
+@model InterfazDeUsuario.ViewModels.StudiesMainListVM
 
 @{
     ViewData["Title"] = "Listado Principal";
@@ -35,18 +35,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var estudio in Model.StudyList)
+                    @foreach (var study in Model.StudyList)
                     {
-                        <tr data-id="@estudio.Estudio.StudyInstanceUID" onclick="handleRowClick(this)">
+                        <tr data-id="@study.StudyInstanceUID" onclick="handleRowClick(this)">
                             
                             <td class="cab_patient">
-                                @estudio.Paciente.PatientName <br />
-                                ID: @estudio.Paciente.PatientID <br />
+                                @study.PatientName <br />
+                                @* ID: @study.PatientID <br />*@
                             </td>
-                            <td>@estudio.Estudio.Modality</td>
-                            <td>@estudio.DescModality</td>
-                            <td>@estudio.Estudio.StudyDescription</td>
-                            <td>@estudio.Estudio.StudyDate.ToShortDateString()</td>
+                            <td>@study.Modality</td>
+                            <td>@study.DescModality</td>
+                            <td>@study.StudyDescription</td>
+                            <td>@study.StudyDate.ToShortDateString()</td>
                             @*<td>@estudio.Estudio.BodyPartExamined</td>
                             <td>@estudio.DescBodyPart</td>*@
                         </tr>
@@ -65,16 +65,16 @@
     <i class="bi bi-skip-start-fill"></i>
 </a>
 <a asp-action="IndexMainList"
-   asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-outline-primary @Model.Previo">
+   asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-outline-primary @Model.Prev">
     Anterior
 </a>
-<span>Pagina @Model.PageNumber de @Model.TotalPaginas </span>
+<span>Pagina @Model.PageNumber de @Model.TotalPages </span>
 <a asp-action="IndexMainList"
-   asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-outline-primary @Model.Siguiente">
+   asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-outline-primary @Model.Next">
     Siguiente
 </a>
 <a asp-action="IndexMainList"
-   asp-route-pageNumber="@Model.TotalPaginas" class="btn btn-outline-primary">
+   asp-route-pageNumber="@Model.TotalPages" class="btn btn-outline-primary">
     <i class="bi bi-skip-end-fill"></i>
 </a>
 

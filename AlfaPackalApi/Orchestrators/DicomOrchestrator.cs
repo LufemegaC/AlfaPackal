@@ -1,10 +1,7 @@
 ﻿using AlfaPackalApi.Modelos;
 using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Models.Dto;
-using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Orchestrators.IOrchestrator;
-using Api_PACsServer.Services;
 using Api_PACsServer.Services.IService.Pacs;
 
 namespace Api_PACsServer.Orchestrators
@@ -15,7 +12,7 @@ namespace Api_PACsServer.Orchestrators
         private readonly ISerieService _serieService;
         private readonly IInstanceService _instanceService;
 
-        public DicomOrchestrator(IStudyService studyService, SerieService serieService,
+        public DicomOrchestrator(IStudyService studyService, ISerieService serieService,
                                     IInstanceService instanceService)
         {
             _studyService = studyService;
@@ -30,58 +27,65 @@ namespace Api_PACsServer.Orchestrators
         public async Task<string> RegisterMainEntities(MainEntitiesCreateDto mainEntitiesCreate)
         {
             //file size
-            var fileSize = mainEntitiesCreate.StudyCreate.TotalFileSizeMB;
+            var fileSize = mainEntitiesCreate.TotalFileSizeMB;
             // main UIDs
-            var studyInstanceUID = mainEntitiesCreate.StudyCreate.StudyInstanceUID;
-            var serieInstanceUID = mainEntitiesCreate.SerieCreate.SeriesInstanceUID;
-            var sopInstanceUID = mainEntitiesCreate.InstanceCreate.SOPInstanceUID;
+            var studyInstanceUID = mainEntitiesCreate.StudyInstanceUID;
+            var serieInstanceUID = mainEntitiesCreate.SeriesInstanceUID;
+            var sopInstanceUID = mainEntitiesCreate.SOPInstanceUID;
 
             // Check if entities exists
             bool studyExists = await _studyService.ExistsByUID(studyInstanceUID);
             bool seriesExists = await _serieService.ExistsByUID(serieInstanceUID);
             bool instanceExists = await _instanceService.ExistsByUID(sopInstanceUID);
+            //bool EntitiesExists = (studyExists) && (seriesExists) && (instanceExists);
 
-            // If the Study does not exist, create it
-            Study study;
-            if (!studyExists)
+            // Mapping create entitities
+            var studyCreateDto = await _studyService.MapToCreateDto(mainEntitiesCreate);
+            var serieCreateDto = await _serieService.MapToCreateDto(mainEntitiesCreate);
+            var instanceCreateDto = await _instanceService.MapToCreateDto(mainEntitiesCreate);
+
+            if(!instanceExists)
             {
-                study = await _studyService.Create(mainEntitiesCreate.StudyCreate);
-            }
-            else
-            {
-                study = await _studyService.GetByUID(studyInstanceUID);
-            }
-            // If the Series does not exist, create it
-            Serie serie;
-            if (!seriesExists)
-            {
-                mainEntitiesCreate.SerieCreate.PACSStudyID = study.PACSStudyID;
-                serie = await _serieService.Create(mainEntitiesCreate.SerieCreate);
-                if (studyExists)
+                // If the Study does not exist, create it
+                Study study;
+                if (!studyExists)
                 {
-                    await _studyService.UpdateLoadForNewSerie(study.PACSStudyID);
+                    study = await _studyService.Create(studyCreateDto);
                 }
-            }
-            else
-            {
-                serie = await _serieService.GetByUID(serieInstanceUID);
-            }
-            // If the Instance does not exist, create it
-            Instance instance;
-            if (!instanceExists)
-            {
-                mainEntitiesCreate.InstanceCreate.PACSSerieID = serie.PACSSerieID;
-                instance = await _instanceService.Create(mainEntitiesCreate.InstanceCreate);
+                else
+                {
+                    study = await _studyService.GetByUID(studyInstanceUID);
+                }
+                // If the Series does not exist, create it
+                Serie serie;
+                if (!seriesExists)
+                {
+                    //serieCreateDto.StudyID = study.StudyID;
+                    serie = await _serieService.Create(serieCreateDto);
+                    if (studyExists)
+                    {
+                        await _studyService.UpdateDetailsForNewSerie(study.StudyInstanceUID);
+                    }
+                }
+                else
+                {
+                    serie = await _serieService.GetByUID(serieInstanceUID);
+                }
+                // If the Instance does not exist, create it
+                Instance instance = await _instanceService.Create(instanceCreateDto);
                 if (studyExists)
                 {
-                    await _studyService.UpdateLoadForNewInstance(study.PACSStudyID, fileSize);
+                    await _studyService.UpdateDetailsForNewInstance(study.StudyInstanceUID, fileSize);
                 }
                 if (seriesExists)
                 {
-                    await _serieService.UpdateLoadForNewInstance(serie.PACSSerieID, fileSize);
+                    await _serieService.UpdateLoadForNewInstance(serie.SeriesInstanceUID, fileSize);
                 }
+                return "Entities registered successfully.";
             }
-            return "Entities registered successfully.";
+            {
+                return "Entities already Exists.";
+            } 
         }
     }
 }

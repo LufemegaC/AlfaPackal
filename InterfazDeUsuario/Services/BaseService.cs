@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using Utileria;
+using static InterfazDeUsuario.Utility.LocalUtility;
 
 namespace InterfazDeUsuario.Services
 {
@@ -26,7 +27,7 @@ namespace InterfazDeUsuario.Services
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
                 //Validacion de parametros de paginado
-                if (apiRequest.Parametros == null)
+                if (apiRequest.Parameters == null)
                 {
                     message.RequestUri = new Uri(apiRequest.Url);
                 }
@@ -35,29 +36,29 @@ namespace InterfazDeUsuario.Services
                     var builder = new UriBuilder(apiRequest.Url);
                     var query = HttpUtility.ParseQueryString(builder.Query);
                     //Agregar parametros
-                    query["PageNumber"] = apiRequest.Parametros.PageNumber.ToString();
-                    query["PageSize"] = apiRequest.Parametros.PageSize.ToString();
-                    query["InstitutionId"] = apiRequest.Parametros.InstitutionId.ToString();
+                    query["PageNumber"] = apiRequest.Parameters.PageNumber.ToString();
+                    query["PageSize"] = apiRequest.Parameters.PageSize.ToString();
+                    query["InstitutionId"] = apiRequest.Parameters.InstitutionId.ToString();
                     builder.Query = query.ToString();
                     string url = builder.ToString();
                     message.RequestUri = new Uri(url);
                 }
                 //Validacion de contenido
-                if (apiRequest.Datos != null)
+                if (apiRequest.RequestData != null)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Datos),
+                    message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.RequestData),
                         Encoding.UTF8, "application/json");
                 }
                 //Configuracion del tipo de solicitud a realizar
-                switch (apiRequest.APITipo)
+                switch (apiRequest.APIType)
                 {
-                    case DS.APITipo.POST:
+                    case APIType.POST:
                         message.Method = HttpMethod.Post;
                         break;
-                    case DS.APITipo.PUT:
+                    case APIType.PUT:
                         message.Method = HttpMethod.Put;
                         break;
-                    case DS.APITipo.DELETE:
+                    case APIType.DELETE:
                         message.Method = HttpMethod.Delete;
                         break;
                     default:
@@ -79,7 +80,7 @@ namespace InterfazDeUsuario.Services
                                           || apiResponse.StatusCode == HttpStatusCode.NotFound))
                     {
                         response.StatusCode = HttpStatusCode.BadRequest;
-                        response.IsExitoso = false;
+                        response.IsSuccessful = false;
                         var res = JsonConvert.SerializeObject(response);
                         var obj = JsonConvert.DeserializeObject<T>(res);
                         return obj;
@@ -99,7 +100,7 @@ namespace InterfazDeUsuario.Services
                 var dto = new APIResponse
                 {
                     ErrorsMessages = new List<string> { Convert.ToString(ex.Message) },
-                    IsExitoso = false
+                    IsSuccessful = false
                 };
                 // Conversion de respuesta
                 var res = JsonConvert.SerializeObject(dto);

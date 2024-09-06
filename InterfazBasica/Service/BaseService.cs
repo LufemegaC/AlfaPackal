@@ -3,7 +3,7 @@ using InterfazBasica.Service.IService;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
-using Utileria;
+using static InterfazBasica_DCStore.Utilities.LocalUtility;
 
 namespace InterfazBasica.Service
 {
@@ -28,21 +28,21 @@ namespace InterfazBasica.Service
                 message.Headers.Add("Accept", "application/json");
                 message.RequestUri = new Uri(apiRequest.Url);
                 //Validacion de contenido
-                if (apiRequest.Datos != null)
+                if (apiRequest.RequestData != null)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Datos),
-                        Encoding.UTF8, "application/json");
+                    message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.RequestData),
+                    Encoding.UTF8, "application/json");
                 }
                 //Configuracion del tipo de solicitud a realizar
-                switch (apiRequest.APITipo)
+                switch (apiRequest.APIType)
                 {
-                    case DS.APITipo.POST:
+                    case APIType.POST:
                         message.Method = HttpMethod.Post;
                         break;
-                    case DS.APITipo.PUT:
+                    case APIType.PUT:
                         message.Method = HttpMethod.Put;
                         break;
-                    case DS.APITipo.DELETE:
+                    case APIType.DELETE:
                         message.Method = HttpMethod.Delete;
                         break;
                     default:
@@ -64,7 +64,7 @@ namespace InterfazBasica.Service
                                           || apiResponse.StatusCode == HttpStatusCode.NotFound))
                     {
                         response.StatusCode = HttpStatusCode.BadRequest;
-                        response.IsExitoso = false;
+                        response.IsSuccessful = false;
                         var res = JsonConvert.SerializeObject(response);
                         var obj = JsonConvert.DeserializeObject<T>(res);
                         return obj;
@@ -83,8 +83,8 @@ namespace InterfazBasica.Service
             {// En caso de errores
                 var dto = new APIResponse
                 {
-                    ErrorsMessages = new List<string> { Convert.ToString(ex.Message) },
-                    IsExitoso = false
+                    ErrorsMessages = new List<string> { Convert.ToString(ex.Message)},
+                    IsSuccessful = false
                 };
                 // Conversion de respuesta
                 var res = JsonConvert.SerializeObject(dto);

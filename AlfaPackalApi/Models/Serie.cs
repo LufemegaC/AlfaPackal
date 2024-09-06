@@ -3,26 +3,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.IModels;
+using Api_PACsServer.Modelos.Load;
 
 namespace AlfaPackalApi.Modelos
 {
     public class Serie : ICreate
     {
-        // Auto-incremented internal ID generated automatically
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int PACSSerieID { get; set; } // Internal ID
-        // Internal ID of the parent Study, link to Study
+        [Key, Required]
+        public string SeriesInstanceUID { get; set; } // PK: SeriesInstanceUID
         [Required]
-        public int? PACSStudyID { get; set; }
-        [ForeignKey("PACSStudyID")]
-        public virtual Study Study { get; set; }
-        // Description
-        public string SeriesDescription { get; set; }
-        // Instance UID  
-        [Required, MaxLength(64)]
-        public string SeriesInstanceUID { get; set; }
+        public string StudyInstanceUID { get; set; } // FK hacia Study basada en StudyInstanceUID
+        [ForeignKey("StudyInstanceUID")]
+        public virtual Study Study { get; set; } // Relación con Study
+        // Relación uno a uno con InstanceDetails
+        public virtual SerieDetails SerieDetails { get; set; } // Relación uno a uno con InstanceDetails
         // Series number
-        public int? SeriesNumber { get; set; }
+        public int SeriesNumber { get; set; }
+        //Description
+        public string? SeriesDescription { get; set; }
+        // Study modality DICOM/Metadata
+        public string? Modality { get; set; }
         // Start date and time of the series
         public DateTime? SeriesDateTime { get; set; }
         // Patient Position 
@@ -31,5 +31,6 @@ namespace AlfaPackalApi.Modelos
         public virtual ICollection<Instance> Instances { get; set; }
         // Control fields
         public DateTime CreationDate { get; set; }
+        
     }
 }

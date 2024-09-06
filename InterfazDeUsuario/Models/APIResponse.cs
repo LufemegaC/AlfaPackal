@@ -5,13 +5,10 @@ namespace InterfazDeUsuario.Models
     public class APIResponse
     {
         public HttpStatusCode StatusCode { get; set; }
-        public bool IsExitoso { get; set; } = true;
+        public bool IsSuccessful { get; set; } = true;
         public List<string>? ErrorsMessages { get; set; }
-        public object? Resultado { get; set; }
-        public int PacsResourceId { get; set; } = 0;
-        public string? GeneratedServId { get; set; }
-        public string? ResultadoJson { get; set; }
-        public int TotalPaginas { get; set; }
+        public object? ResponseData { get; set; }
+        public int TotalPages { get; set; }
         public APIResponse()
         {
 
@@ -22,9 +19,9 @@ namespace InterfazDeUsuario.Models
         public APIResponse(List<string> errors = null, object resultado = null)
         {
             StatusCode = errors == null ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
-            IsExitoso = errors == null || errors.Count == 0;
+            IsSuccessful = errors == null || errors.Count == 0;
             ErrorsMessages = errors ?? new List<string>();
-            Resultado = resultado;
+            ResponseData = resultado;
         }
 
         // Si aún deseas tener un campo de solo lectura predefinido similar a NoValidEntity, podrías hacerlo de la siguiente manera

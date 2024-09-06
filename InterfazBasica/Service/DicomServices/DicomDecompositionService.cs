@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using FellowOakDicom;
-using FellowOakDicom.Network;
-using InterfazBasica.Models;
-using InterfazBasica.Models.Pacs;
-using InterfazBasica_DCStore.Models;
-using InterfazBasica_DCStore.Service.IDicomService;
-using System.Reflection;
+using InterfazBasica_DCStore.Models.Dtos.MainEntities;
+using InterfazBasica_DCStore.Service.IService.Dicom;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
@@ -17,48 +13,7 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             _mapper = mapper;
         }
 
-        public void AnonymizeDicomFile(DicomFile dicomFile)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ConvertDicomToFile(DicomFile dicomFile, string outputPath, DicomTransferSyntax transferSyntax)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<PacienteCreateDto> DecomposeDicomToPaciente(Dictionary<DicomTag, object> metadata)
-        {
-            var pacienteCreate = _mapper.Map<PacienteCreateDto>(metadata);
-            return Task.FromResult(pacienteCreate);
-        }
-        public Task<EstudioCreateDto> DecomposeDicomToEstudio(Dictionary<DicomTag, object> metadata)
-        {
-            var estudioCreate = _mapper.Map<EstudioCreateDto>(metadata);
-            //Si no tiene numero de acceso asigno uno
-            if (string.IsNullOrWhiteSpace(estudioCreate.AccessionNumber))
-            {
-                estudioCreate.AccessionNumber = GenerarAccessionNumber();
-            }
-            return Task.FromResult(estudioCreate);
-        }
-        public Task<SerieCreateDto> DecomposeDicomToSerie(Dictionary<DicomTag, object> metadata)
-        {
-            var pacienteCreate = _mapper.Map<SerieCreateDto>(metadata);
-            return Task.FromResult(pacienteCreate);
-        }
-
-        public Task<ImagenCreateDto> DecomposeDicomToImagen(Dictionary<DicomTag, object> metadata)
-        {
-            var imagenCreate = _mapper.Map<ImagenCreateDto>(metadata);
-            return Task.FromResult(imagenCreate);
-        }
-       
-        public IEnumerable<byte[]> ExtractImageFrames(DicomFile dicomFile)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<DicomTag, object> ExtractMetadata(DicomDataset dicomDataset)        
+        public Dictionary<DicomTag, object> ExtractMetadata(DicomDataset dicomDataset)
         // Método para extraer los metadatos de un DicomDataset.
         // Retorna un diccionario con las etiquetas DICOM y sus valores asociados.
         {
@@ -87,9 +42,10 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             }
         }
 
-        public static string GenerarAccessionNumber()
+        public MainEntitiesCreateDto DicomDictionaryToCreateEntities(Dictionary<DicomTag, object> metadata)
         {
-            return DateTime.Now.ToString("yyyyMMddHHmmss") + Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
+            return _mapper.Map<MainEntitiesCreateDto>(metadata);
+
         }
 
         private static object ExtractElementValue(DicomElement element)
@@ -108,26 +64,27 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             return null;
         }
 
-        public string GetDicomElementAsString(DicomDataset dicomDataset, DicomTag dicomTag)
+        public decimal GetFileSizeInMB(DicomFile dicomFile)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    // Guarda el archivo en el MemoryStream
+                    dicomFile.Save(memoryStream);
+                    // El tamaño del archivo DICOM en bytes
+                    long fileSizeInBytes = memoryStream.Length;
+                    decimal fileSizeInMB = (decimal)fileSizeInBytes / (1024 * 1024);
+                    return fileSizeInMB;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or throw it, depending on your logging strategy
+                Console.WriteLine($"Error al obtener el tamaño del archivo: {ex.Message}");
+                // Puedes lanzar la excepción nuevamente o manejarla según sea necesario
+                throw;
+            }
         }
-
-        public DateTime? GetStudyDateTime(DicomDataset dicomDataset)
-        {
-            throw new NotImplementedException();
-        }
-
-        public double GetFileSizeInMB(DicomFile dicomFile)
-        {
-            var fileInfo = new FileInfo(dicomFile.File.Name);
-            return (double)fileInfo.Length / (1024 * 1024);
-        }
-        //public void UpdatePatientData(DicomFile dicomFile, string patientName, string patientId)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        
     }
 }

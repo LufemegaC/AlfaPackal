@@ -1,14 +1,14 @@
 ﻿using InterfazDeUsuario.Models.Especificaciones;
-using static Utileria.DS;
+using static InterfazDeUsuario.Utility.LocalUtility;
 
 namespace InterfazDeUsuario.Models
 {
     public class APIRequest
     {
-        public APITipo APITipo { get; set; } = APITipo.GET;
+        public APIType APIType { get; set; } = APIType.GET;
         public string Url { get; set; }
-        public object Datos { get; set; }
+        public object RequestData { get; set; }
         public string Token { get; set; }
-        public ParametrosPag Parametros { get; set; }
+        public PaginationParameters Parameters { get; set; }
     }
 }

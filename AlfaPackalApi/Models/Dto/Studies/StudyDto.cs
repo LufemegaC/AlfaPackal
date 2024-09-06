@@ -6,18 +6,21 @@ namespace Api_PACsServer.Models.Dto.Studies
     {
         // ** Study info **//
         public string StudyInstanceUID { get; set; }
-        // Study comments
-        public string? StudyComments { get; set; }
+        // internal ID
+        public int StudyID { get; set; }
         // Study description DICOM
         public string? StudyDescription { get; set; }
         public DateTime StudyDate { get; set; }
-        public string? AccessionNumber { get; set; }
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
         // Study modality DICOM/Metadata
         public string? Modality { get; set; }
+        // Modality descripcion ( internal )
+        public string? DescModality { get; set; }
         // Body Part Examined
         public string? BodyPartExamined { get; set; }
+        // Body Part descripcion
+        public string? DescBodyPartE { get; set; }
         // ** Institution **//
         public int InstitutionID { get; set; }
         // ** Patient Information **//
@@ -35,13 +38,12 @@ namespace Api_PACsServer.Models.Dto.Studies
         // Additional fields suggested by DICOM structure
         [StringLength(64)]
         public string? IssuerOfPatientID { get; set; } // Issuer of the PatientID
-        // ** Load Info
+        // ** Details info
+        // Number of series in the study.
+        public int? NumberOfStudyRelatedInstances { get; set; }
         // Number of DICOM files related to the study.
-        public int? NumberOfFiles { get; set; }
+        public int? NumberOfStudyRelatedSeries { get; set; }
         // Total size of the study in MB.
         public decimal TotalFileSizeMB { get; set; }
-        // Number of series in the study.
-        public int? NumberOfSeries { get; set; }
-
     }
 }

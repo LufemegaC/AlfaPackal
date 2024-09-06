@@ -9,16 +9,11 @@ namespace Api_PACsServer.Models.Dto.Studies
         // UID of the study entity
         [Required]
         public string StudyInstanceUID { get; set; }
-        // Study comments
-        public string? StudyComments { get; set; }
         // Study description DICOM
         public string? StudyDescription { get; set; }
         // Date the study was performed DICOM/Metadata
         [Required]
         public DateTime StudyDate { get; set; }
-        // Accession number DICOM/Metadata
-        [MaxLength(64)]
-        public string? AccessionNumber { get; set; }
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
         // Study modality DICOM/Metadata
@@ -28,8 +23,6 @@ namespace Api_PACsServer.Models.Dto.Studies
         // ** Issuing institution (Internal control)
         [Required]
         public int InstitutionID { get; set; }
-        [ForeignKey("InstitutionID")]
-        public virtual Institution Institution { get; set; }
         // ** Patient Information **//
         // Full patient name 
         // LastName^MiddleName^FirstName(s)^Prefix^Suffix

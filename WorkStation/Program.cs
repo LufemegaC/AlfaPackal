@@ -14,7 +14,7 @@ builder.Services.AddScoped<IDicomClient>(provider =>
                GetServerPort(0), // Puerto
                false,// useTIs ( Seguridad adicional )
                "SCU", //CallingAe
-               "S05P004" //CalledAe
+               "S01P001" //CalledAe //' S05P004
            )
 );
 

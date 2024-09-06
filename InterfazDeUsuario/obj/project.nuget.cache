@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ewFwjAZxlnVzc85oP8Fi0ztmzsLAiCY1W/3aIkRQTc6TFEt/iFONLaGNXaTHWrszH5LdpHVlMCXZuqzyztUXrw==",
+  "dgSpecHash": "CXUVBsU/xkJZlS4QcJ5D1ttlxZbvdfaM2OZ2LLxsdAWqcEG0FBBmTctj+fLAt1nfx8C6t6mtsnB+8nKT0rn1Fw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\190724\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\communitytoolkit.highperformance\\8.2.0\\communitytoolkit.highperformance.8.2.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom\\5.1.1\\fo-dicom.5.1.1.nupkg.sha512",

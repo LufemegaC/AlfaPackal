@@ -1,5 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
+﻿
 namespace InterfazBasica_DCStore.Models
 {
     public class OperationResult
@@ -17,9 +16,16 @@ namespace InterfazBasica_DCStore.Models
         }
 
         // Método para agregar errores a la lista
-        public void AddError(string message, string? data)
+        public void AddError(string message, string? data = null)
         {
-            ErrorsMessages.Add(message + ":" + data);
+            if(data != null)
+            {
+                ErrorsMessages.Add(message + ":" + data);
+            }
+            else
+            {
+                ErrorsMessages.Add(message);
+            }
             Success = false;
         }
 
