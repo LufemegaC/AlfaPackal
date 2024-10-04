@@ -10,14 +10,13 @@ namespace InterfazBasica_DCStore.Service.DicomServices
     {
         // 25/01/24 Luis Felipe MG.-Dependencias
         private IDicomOrchestrator _dicomOrchestrator;
-        private DicomFile _dicomFile;
 
         private static readonly DicomTransferSyntax[] _acceptedTransferSyntaxes = new DicomTransferSyntax[]
-            {
-               DicomTransferSyntax.ExplicitVRLittleEndian,
-               DicomTransferSyntax.ExplicitVRBigEndian,
-               DicomTransferSyntax.ImplicitVRLittleEndian
-            };
+        {
+            DicomTransferSyntax.ExplicitVRLittleEndian,
+            DicomTransferSyntax.ExplicitVRBigEndian,
+            DicomTransferSyntax.ImplicitVRLittleEndian
+        };
 
         private static readonly DicomTransferSyntax[] _acceptedImageTransferSyntaxes = new DicomTransferSyntax[]
         {

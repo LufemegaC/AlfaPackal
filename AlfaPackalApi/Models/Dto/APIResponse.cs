@@ -33,6 +33,12 @@ namespace Api_PACsServer.Models.Dto
             return new APIResponse(null, resultado);
         }
 
+        public static APIResponse Convert(object resultado)
+        {
+            return new APIResponse(null, resultado);
+        }
+
+
         public static APIResponse Initial()
         {
             return new APIResponse();

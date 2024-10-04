@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {}
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
         "projectName": "Utileria",
-        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
         "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\obj\\",
+        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -44,10 +44,6 @@
             "Microsoft.AspNetCore.Http.Features": {
               "target": "Package",
               "version": "[5.0.17, )"
-            },
-            "fo-dicom": {
-              "target": "Package",
-              "version": "[5.1.1, )"
             },
             "fo-dicom.json": {
               "target": "Package",

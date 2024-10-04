@@ -35,7 +35,6 @@
           "System.Threading.Channels": "6.0.0",
           "System.Threading.Tasks.Extensions": "4.5.4",
           "System.ValueTuple": "4.5.0",
-          "Utileria": "1.0.0",
           "fo-dicom": "5.1.1",
           "fo-dicom.Codecs": "5.11.0"
         },
@@ -129,28 +128,10 @@
           }
         }
       },
-      "fo-dicom.json/5.1.0": {
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3",
-          "fo-dicom": "5.1.1"
-        },
-        "runtime": {
-          "lib/netstandard2.0/fo-dicom.json.dll": {
-            "assemblyVersion": "5.1.0.0",
-            "fileVersion": "5.1.0.0"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Http.Features/5.0.17": {
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "6.0.0",
-          "System.IO.Pipelines": "5.0.2"
-        }
-      },
       "Microsoft.AspNetCore.JsonPatch/7.0.14": {
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.3"
+          "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
           "lib/net7.0/Microsoft.AspNetCore.JsonPatch.dll": {
@@ -162,7 +143,7 @@
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.14": {
         "dependencies": {
           "Microsoft.AspNetCore.JsonPatch": "7.0.14",
-          "Newtonsoft.Json": "13.0.3",
+          "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         },
         "runtime": {
@@ -264,17 +245,17 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
-      "Newtonsoft.Json/13.0.3": {
+      "Newtonsoft.Json/13.0.1": {
         "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
             "assemblyVersion": "13.0.0.0",
-            "fileVersion": "13.0.3.27908"
+            "fileVersion": "13.0.1.25517"
           }
         }
       },
       "Newtonsoft.Json.Bson/1.0.2": {
         "dependencies": {
-          "Newtonsoft.Json": "13.0.3"
+          "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.Bson.dll": {
@@ -309,7 +290,6 @@
           }
         }
       },
-      "System.IO.Pipelines/5.0.2": {},
       "System.Memory/4.5.5": {},
       "System.Numerics.Vectors/4.5.0": {},
       "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
@@ -331,17 +311,7 @@
       },
       "System.Threading.Channels/6.0.0": {},
       "System.Threading.Tasks.Extensions/4.5.4": {},
-      "System.ValueTuple/4.5.0": {},
-      "Utileria/1.0.0": {
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "fo-dicom": "5.1.1",
-          "fo-dicom.json": "5.1.0"
-        },
-        "runtime": {
-          "Utileria.dll": {}
-        }
-      }
+      "System.ValueTuple/4.5.0": {}
     }
   },
   "libraries": {
@@ -384,20 +354,6 @@
       "sha512": "sha512-bpbUdHbHpE3YwjFKmRVlc/UxrfBflf7kSwSPxubE2UaCiZyaJV8yJ1zz4zI1iQ79IFxL+Y8HJRTy8ZU3Yzmg7A==",
       "path": "fo-dicom.codecs/5.11.0",
       "hashPath": "fo-dicom.codecs.5.11.0.nupkg.sha512"
-    },
-    "fo-dicom.json/5.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-LOfCb0tSgTGRnJ+vddd0ffhASvLJsQgdAnNqEfNUl23zEdK6w8YbPGX3qcz6qqNgj8TS5eilVI1KalC6FUQF7g==",
-      "path": "fo-dicom.json/5.1.0",
-      "hashPath": "fo-dicom.json.5.1.0.nupkg.sha512"
-    },
-    "Microsoft.AspNetCore.Http.Features/5.0.17": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-3jG2xS+dx8DDCGV/F+STdPTg89lX3ao3dF/VEPvJaz3wzBIjuadipTtYNEXDIVuOPZwb6jdmhrX9jkzOIBm5cw==",
-      "path": "microsoft.aspnetcore.http.features/5.0.17",
-      "hashPath": "microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512"
     },
     "Microsoft.AspNetCore.JsonPatch/7.0.14": {
       "type": "package",
@@ -518,12 +474,12 @@
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
     },
-    "Newtonsoft.Json/13.0.3": {
+    "Newtonsoft.Json/13.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
-      "path": "newtonsoft.json/13.0.3",
-      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
+      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "path": "newtonsoft.json/13.0.1",
+      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
     },
     "Newtonsoft.Json.Bson/1.0.2": {
       "type": "package",
@@ -559,13 +515,6 @@
       "sha512": "sha512-LIuEbv/kFpuw00yI/mPu+T9NAVdH/u7Y5ChCGzYQQeCg9Pft2C7HFWuO/P+Z7c2RcySNjVk1FmuAheKjYIbOkw==",
       "path": "system.identitymodel.tokens.jwt/7.6.0",
       "hashPath": "system.identitymodel.tokens.jwt.7.6.0.nupkg.sha512"
-    },
-    "System.IO.Pipelines/5.0.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Iew+dfa6FFiyvWBdRmXApixRY1db+beyutpIck4SOSe0NLM8FD/7AD54MscqVLhvfSMLHO7KadjTRT7fqxOGTA==",
-      "path": "system.io.pipelines/5.0.2",
-      "hashPath": "system.io.pipelines.5.0.2.nupkg.sha512"
     },
     "System.Memory/4.5.5": {
       "type": "package",
@@ -629,11 +578,6 @@
       "sha512": "sha512-okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
-    },
-    "Utileria/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

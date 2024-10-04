@@ -4,8 +4,7 @@ using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Repository.DataAccess;
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Especificaciones;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Utileria.DicomValues;
+
 
 namespace Api_PACsServer.Repositorio.Pacs
 {

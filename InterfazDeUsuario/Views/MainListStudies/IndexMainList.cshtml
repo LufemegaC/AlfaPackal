@@ -24,6 +24,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th class="header-cell">Detalles<span class="icon-arrow">&UpArrow; </span> </th>
                         <th class="header-cell cab_patient">Paciente<span class="icon-arrow">&UpArrow; </span> </th>
                         <th class="header-cell cab_modality">Modalidad<span class="icon-arrow">&UpArrow; </span> </th>
                         <th class="header-cell cab_DescModal">Descripcion<span class="icon-arrow">&UpArrow; </span> </th>
@@ -37,8 +38,10 @@
                 <tbody>
                     @foreach (var study in Model.StudyList)
                     {
-                        <tr data-id="@study.StudyInstanceUID" onclick="handleRowClick(this)">
-                            
+                        <tr>
+                            <td>
+                                <a asp-controller="MainListStudies" asp-action="SendStudyInfoToOHIF" asp-route-studyInstanceUID="@study.StudyInstanceUID" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                            </td>
                             <td class="cab_patient">
                                 @study.PatientName <br />
                                 @* ID: @study.PatientID <br />*@
@@ -47,10 +50,8 @@
                             <td>@study.DescModality</td>
                             <td>@study.StudyDescription</td>
                             <td>@study.StudyDate.ToShortDateString()</td>
-                            @*<td>@estudio.Estudio.BodyPartExamined</td>
-                            <td>@estudio.DescBodyPart</td>*@
+                            
                         </tr>
-                            @*<td>@estudio.Estudio.InstitutionName</td>*@
                     }
                 </tbody>
             </table>

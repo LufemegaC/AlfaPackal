@@ -6,6 +6,6 @@
 
         Task<T> GetMainListPaginado<T>(string token, int institutionId, int pageNumber = 1, int pageSize = 4);
 
-        
+        Task<T> GetInfoStudy<T>(string token, string studyInstanceUID);
     }
 }

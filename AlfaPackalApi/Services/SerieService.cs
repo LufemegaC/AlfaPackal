@@ -2,8 +2,10 @@
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Load;
 using Api_PACsServer.Models.Dto;
+using Api_PACsServer.Models.Dto.Instances;
 using Api_PACsServer.Models.Dto.Series;
 using Api_PACsServer.Models.Dto.Studies;
+using Api_PACsServer.Models.OHIFVisor;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Services.IService.Pacs;
@@ -72,12 +74,12 @@ namespace Api_PACsServer.Services
             return await _serieRepo.Exists(s => s.SeriesInstanceUID == serieInstacenUID);
         }
 
-        public async Task<IEnumerable<SerieDto>> GetAllByStudyUID(string studyInstanceUID)
+        public async Task<IEnumerable<OHIFSerie>> GetAllByStudyUID(string studyInstanceUID)
         {
             if (string.IsNullOrEmpty(studyInstanceUID))
                 throw new ArgumentException("Invalid study UID value.");
             IEnumerable<Serie> serieList = await _serieRepo.GetAll(v => v.StudyInstanceUID == studyInstanceUID);
-            return _mapper.Map<IEnumerable<SerieDto>>(serieList);                
+            return _mapper.Map<IEnumerable<OHIFSerie>>(serieList);
         }
 
         public async Task<SerieDetails> UpdateLoadForNewInstance(string seriesInstanceUID, decimal totalSizeFile)
@@ -95,5 +97,11 @@ namespace Api_PACsServer.Services
         {
             return _mapper.Map<SerieCreateDto>(metadata);
         }
+
+        public async Task<SerieCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
+        {
+            return _mapper.Map<SerieCreateDto>(metadata);
+        }
+
     }
 }

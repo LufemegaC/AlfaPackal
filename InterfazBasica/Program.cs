@@ -19,7 +19,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpContextAccessor();
 //***  Servicios de BDs y API ***//
 // Servicios generales, mas de un repositorio
-builder.Services.AddSingleton<IServiceAPI, ServiceAPI>(); // Inyeccion de dependencia para estudio
+builder.Services.AddSingleton<IDicomWebService, DicomWebService>(); // Inyeccion de dependencia para estudio
 //Usuario 
 builder.Services.AddHttpClient<IUserService, UserService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -35,6 +35,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // Servicios de administracion DICOM
 builder.Services.AddSingleton<IDicomValidationService, DicomValidationService>(); // Inyeccion de dependencia para Validacion Dicom
 builder.Services.AddSingleton<IDicomDecompositionService,DicomDecompositionService>(); // Inyeccion de dependencia para Decomposicion Dicom
+builder.Services.AddSingleton<IDicomWebService,DicomWebService> ();
 builder.Services.AddSingleton<IDicomOrchestrator, DicomOrchestrator>(); // Inyeccion de dependencia orchestador
 //builder.Services.AddSingleton<IDicomImageFinderService, DicomImageFinderService>(); // Inyeccion de dependencia orchestador
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

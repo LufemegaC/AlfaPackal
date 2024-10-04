@@ -2,7 +2,10 @@
 using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Modelos.Load;
 using Api_PACsServer.Models.Dto;
+using Api_PACsServer.Models.Dto.Instances;
+using Api_PACsServer.Models.Dto.Series;
 using Api_PACsServer.Models.Dto.Studies;
+using Api_PACsServer.Models.OHIFVisor;
 
 namespace Api_PACsServer.Services.IService.Pacs
 {
@@ -31,6 +34,9 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// <param name="studyInstanceUID">The UID of the Study to be retrieved.</param>
         /// <returns>The task result contains the Study entity.</returns>
         Task<Study> GetByUID(string studyInstanceUID);
+
+
+        Task<OHIFStudy> GetOHIFByUID(string studyInstanceUID);
 
         /// <summary>
         /// Checks if a Study entity exists by its UID.
@@ -72,5 +78,15 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// A StudyCreateDto object mapped from the provided metadata, ready to be used for creating a new Study entity.
         /// </returns>
         Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
+
+        /// <summary>
+        /// Maps the provided DICOM metadata to an InstanceCreateDto object.
+        /// </summary>
+        /// <param name="metadata">The metadata containing the main entities and DICOM information required to create an Instance.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains an InstanceCreateDto object
+        /// mapped from the provided metadata, ready to be used for creating a new Instance entity.
+        /// </returns>
+        Task<StudyCreateDto> MapMetadataToCreateDto(MetadataDto metadata);
     }
 }

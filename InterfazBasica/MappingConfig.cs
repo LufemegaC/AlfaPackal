@@ -32,7 +32,7 @@ namespace InterfazBasica_DCStore
                 SOPInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SOPInstanceUID, out object sopInstanceUidValue) ? sopInstanceUidValue as string : string.Empty,
                 SeriesInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.SeriesInstanceUID, out object seriesInstanceUidValue) ? seriesInstanceUidValue as string : string.Empty,
                 StudyInstanceUID = dicomTagDictionary.TryGetValue(DicomTag.StudyInstanceUID, out object studyInstanceUidValue) ? studyInstanceUidValue as string : string.Empty,
-                TransferSyntax = dicomTagDictionary.TryGetValue(DicomTag.TransferSyntaxUID, out object transferSyntaxValue) ? transferSyntaxValue as string : string.Empty,
+                TransferSyntaxUID = dicomTagDictionary.TryGetValue(DicomTag.TransferSyntaxUID, out object transferSyntaxValue) ? transferSyntaxValue as string : string.Empty,
 
                 // Información de la Instancia
                 ImageComments = dicomTagDictionary.TryGetValue(DicomTag.ImageComments, out object imageCommentsValue) ? imageCommentsValue as string : string.Empty,
@@ -42,6 +42,8 @@ namespace InterfazBasica_DCStore
                 Columns = dicomTagDictionary.TryGetValue(DicomTag.Columns, out object columnsValue) ? Convert.ToInt32(columnsValue) : 0,
                 PixelSpacing = dicomTagDictionary.TryGetValue(DicomTag.PixelSpacing, out object pixelSpacingValue) ? pixelSpacingValue as string : string.Empty,
                 NumberOfFrames = dicomTagDictionary.TryGetValue(DicomTag.NumberOfFrames, out object numberOfFramesValue) ? Convert.ToInt32(numberOfFramesValue) : (int?)null,
+                ImagePositionPatient = dicomTagDictionary.TryGetValue(DicomTag.ImagePositionPatient, out object imagePositionValue)? imagePositionValue as string: string.Empty,
+                ImageOrientationPatient = dicomTagDictionary.TryGetValue(DicomTag.ImageOrientationPatient, out object imageOrientationValue)? imageOrientationValue as string: string.Empty,
 
                 // Información de la Serie
                 SeriesDescription = dicomTagDictionary.TryGetValue(DicomTag.SeriesDescription, out object seriesDescriptionValue) ? seriesDescriptionValue as string : string.Empty,
@@ -54,6 +56,10 @@ namespace InterfazBasica_DCStore
                 AccessionNumber = dicomTagDictionary.TryGetValue(DicomTag.AccessionNumber, out object accessionNumberValue) ? accessionNumberValue as string : string.Empty,
                 InstitutionName = dicomTagDictionary.TryGetValue(DicomTag.InstitutionName, out object institutionNameValue) ? institutionNameValue as string : string.Empty,
                 BodyPartExamined = dicomTagDictionary.TryGetValue(DicomTag.BodyPartExamined, out object bodyPartExaminedValue) ? bodyPartExaminedValue as string : string.Empty,
+                StudyTime = dicomTagDictionary.TryGetValue(DicomTag.StudyTime, out object studyTimeValue)? TimeSpan.TryParseExact(studyTimeValue as string, "hhmmss", null, out var parsedStudyTime)
+                            ? parsedStudyTime: TimeSpan.Zero: TimeSpan.Zero,
+                PatientBirthDate = dicomTagDictionary.TryGetValue(DicomTag.PatientBirthDate, out object birthDateValue)? DateTime.TryParseExact(birthDateValue as string, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var parsedBirthDate)
+                            ? parsedBirthDate: DateTime.MinValue: DateTime.MinValue,
 
                 // Información del Paciente
                 PatientName = dicomTagDictionary.TryGetValue(DicomTag.PatientName, out object patientNameValue) ? patientNameValue as string : string.Empty,

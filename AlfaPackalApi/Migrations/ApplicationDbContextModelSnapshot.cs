@@ -251,6 +251,12 @@ namespace Api_PACsServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageOrientationPatient")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePositionPatient")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("InstanceNumber")
                         .HasColumnType("int");
 
@@ -276,6 +282,9 @@ namespace Api_PACsServer.Migrations
                     b.Property<string>("SeriesInstanceUID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TransferSyntaxUID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SOPInstanceUID");
 
@@ -383,6 +392,9 @@ namespace Api_PACsServer.Migrations
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 
+                    b.Property<DateTime?>("PatientBirthDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PatientName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -405,6 +417,9 @@ namespace Api_PACsServer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudyID"));
+
+                    b.Property<TimeSpan?>("StudyTime")
+                        .HasColumnType("time");
 
                     b.HasKey("StudyInstanceUID");
 

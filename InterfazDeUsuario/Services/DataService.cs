@@ -1,8 +1,6 @@
 ﻿using InterfazDeUsuario.Models;
 using InterfazDeUsuario.Models.Especificaciones;
 using InterfazDeUsuario.Services.IServices;
-using System.Net.Http;
-using Utileria;
 using static InterfazDeUsuario.Utility.LocalUtility;
 
 namespace InterfazDeUsuario.Services
@@ -18,6 +16,17 @@ namespace InterfazDeUsuario.Services
             _httpClient = httpClient;
             _validateUrl = configuration.GetValue<string>("ServiceUrls:API_URL");
         }
+
+        public Task<T> GetInfoStudy<T>(string token, string studyInstanceUID)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                APIType = APIType.GET,
+                Url = _validateUrl + "/api/physician/GetInfoStudy/" + studyInstanceUID,
+                Token = token
+            });
+        }
+
         public Task<T> GetMainList<T>(string token, int institutionId)
         {
             return SendAsync<T>(new APIRequest()
@@ -43,6 +52,11 @@ namespace InterfazDeUsuario.Services
                 }
             });
         }
+
+
+
+
+
 
         // Método para realizar la llamada al WadoUriController
         public async Task<HttpResponseMessage> GetStudyInstancesAsync(string token, string requestType, string studyUID, string seriesUID, string objectUID, string contentType = null, string charset = null, string transferSyntax = null, string anonymize = null)

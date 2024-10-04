@@ -2,106 +2,52 @@
 using FellowOakDicom;
 using FellowOakDicom.Network.Client;
 using Microsoft.AspNetCore.Mvc;
+using WorkStation.Models;
 using WorkStation.Models.ViewModels;
-using static Utileria.GeneralFunctions;
-using System.Security.Cryptography;
+using Newtonsoft.Json;
 
 namespace WorkStation.Controllers
 {
     public class WorkstationController : Controller
     {
         private readonly ILogger<WorkstationController> _logger;
-        [BindProperty]
-        private IDicomClient _client { get; set; }
-        private DicomClienteVM _viewModelClient { get; set; }
+        private readonly ModalitySCU _modalityScu;
 
         private const int BatchSize = 1; // Tamaño del lote
-        public WorkstationController(IDicomClient client, ILogger<WorkstationController> logger)
+        public WorkstationController(ILogger<WorkstationController> logger, ModalitySCU modalityScu)
         {
-            _client = client;
-            _viewModelClient = new DicomClienteVM
-            {
-                Host = _client.Host,
-                Port = _client.Port, // Puerto
-                Aet = _client.CallingAe, // AETitle Client
-                CalledAe = _client.CalledAe
-            };
+            _modalityScu = modalityScu;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View(_viewModelClient);
+            // Construir el ViewModel usando la información de ModalitySCU
+            var modalityVm = new ModalityVM
+            {
+                DicomClient = new DicomClientDto
+                {
+                    IP = _modalityScu.IPAddress,
+                    Port = _modalityScu.Port,
+                    AETitle = _modalityScu.CallingAe,
+                    CalledAE = _modalityScu.CalledAe
+                }
+            };
+            // Almacenar un objeto en la sesión (serializado a JSON)
+            HttpContext.Session.SetString("ModalityVM", JsonConvert.SerializeObject(modalityVm));
+            return View(modalityVm);
         }
 
-        [HttpPost] 
+        [HttpPost]
         public async Task<IActionResult> SendDicomFile(IFormFile dicomFile)
         {
-            //if (dicomFile != null && dicomFile.Length > 0)
-            //{
-            //    try
-            //    {
-            //        _client.NegotiateAsyncOps();
-            //        await _client.AddRequestAsync(new DicomCEchoRequest());
-            //        string errorMessage = "Proceso correcto";
-            //        // Event handler para manejar la respuesta de C-STORE
-            //        async Task OnCStoreResponseReceived(DicomCStoreRequest request, DicomCStoreResponse response)
-            //        {
-            //            // Aquí puedes verificar el estado de la respuesta
-
-            //            if (response.Status == DicomStatus.DuplicateSOPInstance)
-            //            {
-            //                // Establece el mensaje correspondiente a duplicado
-            //                errorMessage = "La imagen DICOM ya está registrada.";
-
-            //            }
-            //            else if (response.Status == DicomStatus.Success)
-            //            {
-            //                // Establece el mensaje de éxito
-            //                errorMessage = "Archivo DICOM enviado con éxito.";
-            //            }
-            //            else
-            //            {
-            //                // Otros casos, puedes usar response.Status.Description para obtener una descripción del estado
-            //                errorMessage = $"El servidor respondió con estado: {response.Status.Description}";
-            //            }
-
-            //            // Puedes usar este mensaje para actualizar el ViewBag o gestionar la respuesta
-            //            // Ten en cuenta que necesitas manejar el contexto de sincronización ya que estás dentro de un callback asincrónico
-            //        }
-
-            //        using (var stream = dicomFile.OpenReadStream())
-            //        {
-            //            var dicomImage = DicomFile.Open(stream);
-            //            //Codigo original
-            //            //await _client.AddRequestAsync(new DicomCStoreRequest(dicomImage));
-            //            //Codigo de pruebas
-            //            var dicomCSToreRequest = new DicomCStoreRequest(dicomImage);
-            //            await _client.AddRequestAsync(dicomCSToreRequest);
-            //            //
-            //            await _client.SendAsync();
-            //        }
-
-            //        ViewBag.Message = errorMessage;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        // Manejar excepción
-            //        ViewBag.Message = $"Error: {ex.Message}";
-            //    }
-            //}
-            //else
-            //{
-            //    ViewBag.Message = "Debe seleccionar un archivo DICOM";
-            //}
-            //return View("Index", _viewModelClient);
-            /////////
-            ///
+            // Recuperar el ModalityVM desde la sesión
+            var modalityVm = JsonConvert.DeserializeObject<ModalityVM>(HttpContext.Session.GetString("ModalityVM"));
             if (dicomFile != null && dicomFile.Length > 0)
             {
                 using (var stream = dicomFile.OpenReadStream())
                 {
-                    var resultMessage = await ProcessDicomFile(stream, dicomFile.FileName);
+                    var resultMessage = await ProcessDicomFile(stream);
                     ViewBag.Message = resultMessage;
                 }
             }
@@ -109,21 +55,22 @@ namespace WorkStation.Controllers
             {
                 ViewBag.Message = "Debe seleccionar un archivo DICOM";
             }
-            return View("Index", _viewModelClient);
+            return View("Index", modalityVm);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> SendCdmFiles(string folderPath)
         {
+            // Recuperar el ModalityVM desde la sesión
+            var modalityVm = JsonConvert.DeserializeObject<ModalityVM>(HttpContext.Session.GetString("ModalityVM"));
+
             if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
             {
                 ViewBag.Message = "Debe seleccionar una carpeta válida con archivos DICOM";
-                return View("Index", _viewModelClient);
+                return View("Index", modalityVm);
             }
             try
             {
-                // Obtener todos los archivos .dcm en la carpeta y sus subcarpetas
                 var dicomFiles = GetDicomFromDirectory(folderPath);
                 foreach (var filePath in dicomFiles)
                 {
@@ -131,14 +78,14 @@ namespace WorkStation.Controllers
                     {
                         using (var stream = System.IO.File.OpenRead(filePath))
                         {
-                            var resultMessage = await ProcessDicomFile(stream, Path.GetFileName(filePath));
+                            var resultMessage = await ProcessDicomFile(stream);
                             _logger.LogInformation(resultMessage);
                         }
                     }
                     catch (Exception ex)
                     {
-                        // Registrar el error y continuar con el siguiente archivo
                         _logger.LogError(ex, $"Error procesando el archivo {filePath}");
+                        //dicomStatusList.Add(new DicomStatus { Description = $"Error en archivo {filePath}: {ex.Message}" });
                     }
                 }
             }
@@ -148,7 +95,7 @@ namespace WorkStation.Controllers
                 _logger.LogError(ex, "Error en el procesamiento de archivos DICOM.");
             }
 
-            return View("Index", _viewModelClient);
+            return View("Index", modalityVm);
         }
 
 
@@ -156,23 +103,17 @@ namespace WorkStation.Controllers
         {
             try
             {
-                _client.NegotiateAsyncOps();
-                // Agrega diez solicitudes C-ECHO al cliente para solicitar coneccion
-                for (int i = 0; i < 5; i++)
-                {
-                    await _client.AddRequestAsync(new DicomCEchoRequest());
-                }
-                await _client.SendAsync();
-                foreach (DicomPresentationContext ctr in _client.AdditionalPresentationContexts)
-                {
-                    Console.WriteLine("PresentationContext: " + ctr.AbstractSyntax + " Result: " + ctr.Result);
-                }
+                // Recuperar el ModalityVM desde la sesión
+                var modalityVm = JsonConvert.DeserializeObject<ModalityVM>(HttpContext.Session.GetString("ModalityVM"));
+                await _modalityScu.SendEcho();
+                return View("Index", modalityVm);
             }
             catch (Exception ex)
             {
                 ViewBag.Message = $"Error al conectar: {ex.Message}";
+                return View("Index", null);
             }
-            return View("Index", _viewModelClient);
+            
         }
 
         public async Task<IActionResult> Disconnect()
@@ -194,16 +135,13 @@ namespace WorkStation.Controllers
             return View("Index");
         }
 
-        
+
         // Funcion de almacenamiento 
-        private async Task<string> ProcessDicomFile(Stream dicomFileStream, string fileName)
+        private async Task<string> ProcessDicomFile(Stream dicomFileStream)
         {
             try
             {
-                _client.NegotiateAsyncOps();
-                await _client.AddRequestAsync(new DicomCEchoRequest());
                 string errorMessage = "Proceso correcto";
-
                 async Task OnCStoreResponseReceived(DicomCStoreRequest request, DicomCStoreResponse response)
                 {
                     if (response.Status == DicomStatus.DuplicateSOPInstance)
@@ -222,8 +160,7 @@ namespace WorkStation.Controllers
 
                 var dicomImage = DicomFile.Open(dicomFileStream);
                 var dicomCStoreRequest = new DicomCStoreRequest(dicomImage);
-                await _client.AddRequestAsync(dicomCStoreRequest);
-                await _client.SendAsync();
+                await _modalityScu.SendAsync(dicomCStoreRequest);
 
                 return errorMessage;
             }
@@ -232,6 +169,7 @@ namespace WorkStation.Controllers
                 return $"Error: {ex.Message}";
             }
         }
+
 
         static List<string> GetDicomFromDirectory(string path)
         {

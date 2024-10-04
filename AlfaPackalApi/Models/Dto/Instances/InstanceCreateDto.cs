@@ -17,14 +17,16 @@ namespace Api_PACsServer.Models.Dto.Instances
         // SOP Class UID 
         [Required, MaxLength(64)]
         public string SOPClassUID { get; set; }
-        // URL of the Instance location
-        public string? FileLocation { get; set; } // e.g., the URL of the image in Azure        
+        public string? TransferSyntaxUID { get; set; }
         // Photometric Interpretation for image color interpretation
         [MaxLength(16)]
         public string PhotometricInterpretation { get; set; }
         // Image dimensions
         public int Rows { get; set; }
         public int Columns { get; set; }
+        // orientation
+        public string? ImagePositionPatient { get; set; }
+        public string? ImageOrientationPatient { get; set; }
         // Pixel Spacing for the physical spacing of pixels in the image
         public string? PixelSpacing { get; set; }
         // Number of frames in the image

@@ -67,36 +67,6 @@
           }
         }
       },
-      "fo-dicom.json/5.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3",
-          "fo-dicom": "5.1.0"
-        },
-        "compile": {
-          "lib/netstandard2.0/fo-dicom.json.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/fo-dicom.json.dll": {}
-        }
-      },
-      "Microsoft.AspNetCore.Http.Features/5.0.17": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "5.0.1",
-          "System.IO.Pipelines": "5.0.2"
-        },
-        "compile": {
-          "lib/net5.0/Microsoft.AspNetCore.Http.Features.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net5.0/Microsoft.AspNetCore.Http.Features.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
         "compile": {
@@ -311,19 +281,6 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
-      "System.IO.Pipelines/5.0.2": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/System.IO.Pipelines.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netcoreapp3.0/System.IO.Pipelines.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Memory/4.5.5": {
         "type": "package",
         "compile": {
@@ -461,21 +418,6 @@
         "runtime": {
           "lib/netcoreapp2.0/_._": {}
         }
-      },
-      "Utileria/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v7.0",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "fo-dicom": "5.1.1",
-          "fo-dicom.json": "5.1.0"
-        },
-        "compile": {
-          "bin/placeholder/Utileria.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Utileria.dll": {}
-        }
       }
     }
   },
@@ -534,39 +476,6 @@
         "runtimes/osx-arm64/native/Dicom.Native.dylib",
         "runtimes/osx-x64/native/Dicom.Native.dylib",
         "runtimes/win-x64/native/Dicom.Native.dll"
-      ]
-    },
-    "fo-dicom.json/5.1.0": {
-      "sha512": "LOfCb0tSgTGRnJ+vddd0ffhASvLJsQgdAnNqEfNUl23zEdK6w8YbPGX3qcz6qqNgj8TS5eilVI1KalC6FUQF7g==",
-      "type": "package",
-      "path": "fo-dicom.json/5.1.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "FellowOakSquareTransp.png",
-        "fo-dicom.json.5.1.0.nupkg.sha512",
-        "fo-dicom.json.nuspec",
-        "lib/netstandard2.0/FO-DICOM.Json.xml",
-        "lib/netstandard2.0/fo-dicom.json.dll"
-      ]
-    },
-    "Microsoft.AspNetCore.Http.Features/5.0.17": {
-      "sha512": "3jG2xS+dx8DDCGV/F+STdPTg89lX3ao3dF/VEPvJaz3wzBIjuadipTtYNEXDIVuOPZwb6jdmhrX9jkzOIBm5cw==",
-      "type": "package",
-      "path": "microsoft.aspnetcore.http.features/5.0.17",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net461/Microsoft.AspNetCore.Http.Features.dll",
-        "lib/net461/Microsoft.AspNetCore.Http.Features.xml",
-        "lib/net5.0/Microsoft.AspNetCore.Http.Features.dll",
-        "lib/net5.0/Microsoft.AspNetCore.Http.Features.xml",
-        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll",
-        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.xml",
-        "microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
-        "microsoft.aspnetcore.http.features.nuspec"
       ]
     },
     "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
@@ -1043,32 +952,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.IO.Pipelines/5.0.2": {
-      "sha512": "Iew+dfa6FFiyvWBdRmXApixRY1db+beyutpIck4SOSe0NLM8FD/7AD54MscqVLhvfSMLHO7KadjTRT7fqxOGTA==",
-      "type": "package",
-      "path": "system.io.pipelines/5.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net461/System.IO.Pipelines.dll",
-        "lib/net461/System.IO.Pipelines.xml",
-        "lib/netcoreapp3.0/System.IO.Pipelines.dll",
-        "lib/netcoreapp3.0/System.IO.Pipelines.xml",
-        "lib/netstandard1.3/System.IO.Pipelines.dll",
-        "lib/netstandard1.3/System.IO.Pipelines.xml",
-        "lib/netstandard2.0/System.IO.Pipelines.dll",
-        "lib/netstandard2.0/System.IO.Pipelines.xml",
-        "ref/netcoreapp2.0/System.IO.Pipelines.dll",
-        "ref/netcoreapp2.0/System.IO.Pipelines.xml",
-        "system.io.pipelines.5.0.2.nupkg.sha512",
-        "system.io.pipelines.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
-      ]
-    },
     "System.Memory/4.5.5": {
       "sha512": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
       "type": "package",
@@ -1391,11 +1274,6 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
-    },
-    "Utileria/1.0.0": {
-      "type": "project",
-      "path": "../Utileria/Utileria.csproj",
-      "msbuildProject": "../Utileria/Utileria.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -1411,6 +1289,7 @@
       "Microsoft.Extensions.Primitives >= 6.0.0",
       "Microsoft.NETCore.Platforms >= 1.1.0",
       "NETStandard.Library >= 2.0.3",
+      "Newtonsoft.Json >= 13.0.3",
       "System.Buffers >= 4.5.1",
       "System.ComponentModel.Composition >= 8.0.0",
       "System.Diagnostics.DiagnosticSource >= 6.0.0",
@@ -1423,7 +1302,6 @@
       "System.Threading.Channels >= 6.0.0",
       "System.Threading.Tasks.Extensions >= 4.5.4",
       "System.ValueTuple >= 4.5.0",
-      "Utileria >= 1.0.0",
       "fo-dicom >= 5.1.1",
       "fo-dicom.Codecs >= 5.11.0"
     ]
@@ -1434,11 +1312,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
+      "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
       "projectName": "WorkStation",
-      "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
+      "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
       "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\WorkStation\\obj\\",
+      "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\WorkStation\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -1455,11 +1333,7 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {
-            "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj": {
-              "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {
@@ -1515,6 +1389,10 @@
           "NETStandard.Library": {
             "target": "Package",
             "version": "[2.0.3, )"
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[13.0.3, )"
           },
           "System.Buffers": {
             "target": "Package",

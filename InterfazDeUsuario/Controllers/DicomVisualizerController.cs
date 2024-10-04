@@ -1,7 +1,6 @@
 ﻿using InterfazDeUsuario.Services.IServices;
+using InterfazDeUsuario.Utility;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using Utileria;
 
 namespace InterfazDeUsuario.Controllers
 {
@@ -30,7 +29,7 @@ namespace InterfazDeUsuario.Controllers
             {
                 if (string.IsNullOrEmpty(_token))
                 {
-                    _token = HttpContext.Session.GetString(DS.SessionToken);
+                    _token = HttpContext.Session.GetString(LocalUtility.SessionToken);
                 }
                 return _token;
             }

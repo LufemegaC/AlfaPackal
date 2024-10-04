@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KGtgFWKWor2OG5rcjISUOvRu+RRuZmHYPcJncvFLaaAGX7VugxgzmgOxXEgUA3Ii73eXx3FqFG/OWJ5RrQ/skg==",
+  "dgSpecHash": "Y5MK7guiUQNoGJUbraH47KsxcKh/k77XShIndo3TLP2kS2JRtlSufGpZurriIrsKivPds6wqKYdbSX4Y95BmfA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\ServidorWADO\\ServidorWADO.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\ServidorWADO\\ServidorWADO.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\communitytoolkit.highperformance\\8.2.2\\communitytoolkit.highperformance.8.2.2.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom\\5.1.3\\fo-dicom.5.1.3.nupkg.sha512",

@@ -4,7 +4,9 @@ using FellowOakDicom.Network;
 using InterfazBasica_DCStore.Service.IService;
 using InterfazBasica_DCStore.Service.IService.Dicom;
 using InterfazBasica_DCStore.Utilities;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace InterfazBasica_DCStore.Service
 {
@@ -12,7 +14,7 @@ namespace InterfazBasica_DCStore.Service
     {
         private readonly IDicomValidationService _validationService;
         private readonly IDicomDecompositionService _decompositionService;
-        private readonly IServiceAPI _serviceAPI;
+        private readonly IDicomWebService _dicomWebService;
         private string _rootPath;
         private int _institutionID; //Token de autorizacion
                                //private readonly IDicomImageFinderService _dicomImageFinderService;
@@ -21,12 +23,12 @@ namespace InterfazBasica_DCStore.Service
         public DicomOrchestrator(
             IDicomValidationService validationService,
             IDicomDecompositionService decompositionService,
-            IServiceAPI serviceAPI,
+            IDicomWebService dicomWebService,
             IConfiguration configuration)
         {
             _validationService = validationService;
             _decompositionService = decompositionService;
-            _serviceAPI = serviceAPI;
+            _dicomWebService = dicomWebService;
             _rootPath = configuration.GetValue<string>("DicomSettings:StoragePath");
             //services.Configure<DicomSettings>(Configuration.GetSection("DicomSettings"));
 
@@ -34,28 +36,58 @@ namespace InterfazBasica_DCStore.Service
 
         public async Task<DicomStatus> StoreDicomData(DicomFile dicomFile)
         {
-            // Validación inicial del archivo DICOM.
-            var dicomStatus = _validationService.IsValidDicomFile(dicomFile);
-            if (dicomStatus != DicomStatus.Success)
-                return dicomStatus;
-            var fileSizeMb = _decompositionService.GetFileSizeInMB(dicomFile);
-            var metadataDictionary = _decompositionService.ExtractMetadata(dicomFile.Dataset);
-            var createEntities = _decompositionService.DicomDictionaryToCreateEntities(metadataDictionary);
-            createEntities.TotalFileSizeMB = fileSizeMb;
-            createEntities.InstitutionID = LocalUtility.InstitutionId;
-            var validationResult =  _validationService.ValidateCreateDtos(createEntities);
-            if(validationResult != null && validationResult == DicomStatus.Success)
+            try
             {
-                var result = await _serviceAPI.RegisterMainEntities(createEntities);
-                if(result != null)
+                // Validación inicial del archivo DICOM.
+                var dicomStatus = _validationService.IsValidDicomFile(dicomFile);
+                if (dicomStatus != DicomStatus.Success)
+                    return dicomStatus;
+                var fileSizeMb = _decompositionService.GetFileSizeInMB(dicomFile);
+                // Preparar el contenido multipart/form-data
+                var content = new MultipartFormDataContent();
+
+                // Convertir el DicomFile a un arreglo de bytes
+                byte[] dicomFileBytes;
+                using (var memoryStream = new MemoryStream())
                 {
-
+                    dicomFile.Save(memoryStream);
+                    dicomFileBytes = memoryStream.ToArray();
                 }
-            }
 
-            
-            //Proceso correcto
-            return DicomStatus.Success;
+                // Crear el contenido del archivo DICOM
+                var dicomFileContent = new ByteArrayContent(dicomFileBytes);
+                dicomFileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/dicom");
+                content.Add(dicomFileContent, "dicomFile", "instance.dcm");
+
+                var metadataDictionary = _decompositionService.ExtractMetadata(dicomFile.Dataset);
+                var metadataDto = _decompositionService.DicomDictionaryToCreateEntities(metadataDictionary);
+                metadataDto.TotalFileSizeMB = fileSizeMb;
+                metadataDto.InstitutionID = LocalUtility.InstitutionId;
+                var validationResult = _validationService.ValidateCreateDtos(metadataDto);
+                if (validationResult != DicomStatus.Success)
+                    return dicomStatus;
+
+                var metadataJson = JsonConvert.SerializeObject(metadataDto);
+
+                var metadataContent = new StringContent(metadataJson, Encoding.UTF8, "application/dicom+json");
+                content.Add(metadataContent, "metadata");
+
+                var apiResult = await _dicomWebService.RegisterInstances(content);
+                
+                // ** Pendiente manejo de error.
+                //if (apiResult != null && apiResult.IsSuccessful == false)
+                //{
+                //    return LocalUtility.TranslateApiResponseToDicomStatus(apiResult);
+                //}
+
+
+                return DicomStatus.Success;
+            }
+            catch (Exception ex)
+            {
+                return new DicomStatus("A90E", DicomState.Failure, "Local server error:"+ ex.Message);
+            }
+           
         }
 
         public async Task<DicomStatus> StoreDicomFile(DicomFile dicomFile)

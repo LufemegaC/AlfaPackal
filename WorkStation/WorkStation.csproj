@@ -19,6 +19,7 @@
 		<PackageReference Include="Microsoft.Extensions.Primitives" version="6.0.0" />
 		<PackageReference Include="Microsoft.NETCore.Platforms" version="1.1.0" />
 		<PackageReference Include="NETStandard.Library" version="2.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.Buffers" version="4.5.1" />
 		<PackageReference Include="System.ComponentModel.Composition" version="8.0.0" />
 		<PackageReference Include="System.Diagnostics.DiagnosticSource" version="6.0.0" />
@@ -31,9 +32,5 @@
 		<PackageReference Include="System.Threading.Channels" version="6.0.0" />
 		<PackageReference Include="System.Threading.Tasks.Extensions" version="4.5.4" />
 		<PackageReference Include="System.ValueTuple" version="4.5.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Utileria\Utileria.csproj" />
 	</ItemGroup>
 </Project>

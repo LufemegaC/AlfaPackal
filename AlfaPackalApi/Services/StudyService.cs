@@ -4,6 +4,7 @@ using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Modelos.Load;
 using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Models.Dto.Studies;
+using Api_PACsServer.Models.OHIFVisor;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Services.IService.Pacs;
@@ -73,6 +74,16 @@ namespace Api_PACsServer.Services
             if (study == null)
                 throw new KeyNotFoundException("Study not found.");
             return study;            
+        } 
+        
+        public async Task<OHIFStudy> GetOHIFByUID(string studyInstanceUID)
+        {
+            // Retrieve the Study by StudyInstanceUID and validate
+            var study = await _studyRepo.Get(v => v.StudyInstanceUID == studyInstanceUID);
+            if (study == null)
+                throw new KeyNotFoundException("Study not found.");
+            // Utiliza AutoMapper para convertir la entidad 'Instance' a 'OHIFInstance'
+            return _mapper.Map<OHIFStudy>(study);           
         }
 
         public async Task<bool> ExistsByUID(string studyInstanceUID)
@@ -115,6 +126,11 @@ namespace Api_PACsServer.Services
         }
 
         public async Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
+        {
+            return _mapper.Map<StudyCreateDto>(metadata);
+        }
+
+        public async Task<StudyCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {
             return _mapper.Map<StudyCreateDto>(metadata);
         }

@@ -1,4 +1,8 @@
-﻿namespace InterfazBasica_DCStore.Utilities
+﻿using FellowOakDicom.Network;
+using InterfazBasica.Models;
+using System.Net;
+
+namespace InterfazBasica_DCStore.Utilities
 {
     public static class LocalUtility
     {
@@ -9,6 +13,33 @@
             POST,
             PUT,
             DELETE
+        }
+
+        public static DicomStatus TranslateApiResponseToDicomStatus(APIResponse apiResponse)
+        {
+            // Caso de éxito
+            if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.IsSuccessful)
+            {
+                return DicomStatus.Success;
+            }
+
+            switch (apiResponse.StatusCode)
+            {
+                case HttpStatusCode.BadRequest:
+                    return DicomStatus.InvalidArgumentValue;
+                case HttpStatusCode.NotFound:
+                    return DicomStatus.NoSuchObjectInstance;
+                case HttpStatusCode.InternalServerError:
+                    return DicomStatus.ProcessingFailure;
+                case HttpStatusCode.ServiceUnavailable:
+                    return DicomStatus.ResourceLimitation;
+                case HttpStatusCode.Accepted:
+                    return DicomStatus.Warning;
+
+                default:
+                    // Un mapeo genérico para otros casos
+                    return DicomStatus.ProcessingFailure;
+            }
         }
 
         public static string GetLocalIPAddress()

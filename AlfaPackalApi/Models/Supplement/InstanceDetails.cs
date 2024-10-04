@@ -14,6 +14,8 @@ namespace Api_PACsServer.Modelos.Load
         // Foreign Key 
         [Required, ForeignKey("SOPInstanceUID")]
         public virtual Instance Instance { get; set; }
+        // URL of the Instance location
+        public string? FileLocation { get; set; } // e.g., the URL of the image in Azure
         // Total size of the instance in MB
         public decimal TotalFileSizeMB { get; set; }
         // Audit fields

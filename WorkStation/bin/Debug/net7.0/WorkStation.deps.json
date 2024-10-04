@@ -19,6 +19,7 @@
           "Microsoft.Extensions.Primitives": "6.0.0",
           "Microsoft.NETCore.Platforms": "1.1.0",
           "NETStandard.Library": "2.0.3",
+          "Newtonsoft.Json": "13.0.3",
           "System.Buffers": "4.5.1",
           "System.ComponentModel.Composition": "8.0.0",
           "System.Diagnostics.DiagnosticSource": "6.0.0",
@@ -31,7 +32,6 @@
           "System.Threading.Channels": "6.0.0",
           "System.Threading.Tasks.Extensions": "4.5.4",
           "System.ValueTuple": "4.5.0",
-          "Utileria": "1.0.0",
           "fo-dicom": "5.1.1",
           "fo-dicom.Codecs": "5.11.0"
         },
@@ -100,24 +100,6 @@
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
-        }
-      },
-      "fo-dicom.json/5.1.0": {
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3",
-          "fo-dicom": "5.1.1"
-        },
-        "runtime": {
-          "lib/netstandard2.0/fo-dicom.json.dll": {
-            "assemblyVersion": "5.1.0.0",
-            "fileVersion": "5.1.0.0"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Http.Features/5.0.17": {
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "6.0.0",
-          "System.IO.Pipelines": "5.0.2"
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
@@ -192,7 +174,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
-      "System.IO.Pipelines/5.0.2": {},
       "System.Memory/4.5.5": {},
       "System.Numerics.Vectors/4.5.0": {},
       "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
@@ -214,17 +195,7 @@
       },
       "System.Threading.Channels/6.0.0": {},
       "System.Threading.Tasks.Extensions/4.5.4": {},
-      "System.ValueTuple/4.5.0": {},
-      "Utileria/1.0.0": {
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "fo-dicom": "5.1.1",
-          "fo-dicom.json": "5.1.0"
-        },
-        "runtime": {
-          "Utileria.dll": {}
-        }
-      }
+      "System.ValueTuple/4.5.0": {}
     }
   },
   "libraries": {
@@ -253,20 +224,6 @@
       "sha512": "sha512-bpbUdHbHpE3YwjFKmRVlc/UxrfBflf7kSwSPxubE2UaCiZyaJV8yJ1zz4zI1iQ79IFxL+Y8HJRTy8ZU3Yzmg7A==",
       "path": "fo-dicom.codecs/5.11.0",
       "hashPath": "fo-dicom.codecs.5.11.0.nupkg.sha512"
-    },
-    "fo-dicom.json/5.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-LOfCb0tSgTGRnJ+vddd0ffhASvLJsQgdAnNqEfNUl23zEdK6w8YbPGX3qcz6qqNgj8TS5eilVI1KalC6FUQF7g==",
-      "path": "fo-dicom.json/5.1.0",
-      "hashPath": "fo-dicom.json.5.1.0.nupkg.sha512"
-    },
-    "Microsoft.AspNetCore.Http.Features/5.0.17": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-3jG2xS+dx8DDCGV/F+STdPTg89lX3ao3dF/VEPvJaz3wzBIjuadipTtYNEXDIVuOPZwb6jdmhrX9jkzOIBm5cw==",
-      "path": "microsoft.aspnetcore.http.features/5.0.17",
-      "hashPath": "microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
       "type": "package",
@@ -366,13 +323,6 @@
       "path": "system.diagnostics.diagnosticsource/6.0.0",
       "hashPath": "system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512"
     },
-    "System.IO.Pipelines/5.0.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Iew+dfa6FFiyvWBdRmXApixRY1db+beyutpIck4SOSe0NLM8FD/7AD54MscqVLhvfSMLHO7KadjTRT7fqxOGTA==",
-      "path": "system.io.pipelines/5.0.2",
-      "hashPath": "system.io.pipelines.5.0.2.nupkg.sha512"
-    },
     "System.Memory/4.5.5": {
       "type": "package",
       "serviceable": true,
@@ -435,11 +385,6 @@
       "sha512": "sha512-okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
-    },
-    "Utileria/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

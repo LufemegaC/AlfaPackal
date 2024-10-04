@@ -21,7 +21,7 @@ namespace Api_PACsServer.Models.Dto
         public string StudyInstanceUID { get; set; }
         // Transfer Syntax UID
         [MaxLength(64)]
-        public string TransferSyntax { get; set; }
+        public string? TransferSyntaxUID { get; set; }
 
         // -- Instance information -- //
         // Image description
@@ -41,6 +41,8 @@ namespace Api_PACsServer.Models.Dto
         public string? PixelSpacing { get; set; }
         // Number of frames in the image
         public int? NumberOfFrames { get; set; }
+        public string? ImagePositionPatient { get; set; }
+        public string? ImageOrientationPatient { get; set; }
         // -- Serie Information -- //
         // Description
         public string SeriesDescription { get; set; }
@@ -49,6 +51,7 @@ namespace Api_PACsServer.Models.Dto
         public string? Modality { get; set; }
         // Start date and time of the series
         public DateTime? SeriesDateTime { get; set; }
+
         // Patient Position.
         [MaxLength(16)]
         public string? PatientPosition { get; set; }
@@ -60,6 +63,7 @@ namespace Api_PACsServer.Models.Dto
         // Date the study was performed DICOM/Metadata
         [Required]
         public DateTime StudyDate { get; set; }
+        public TimeSpan StudyTime { get; set; }
         // Accession number DICOM/Metadata
         [MaxLength(64)]
         public string? AccessionNumber { get; set; }
@@ -84,6 +88,7 @@ namespace Api_PACsServer.Models.Dto
         // Patient weight
         [RegularExpression(@"\d{1,3}(\.\d{1})?")] // Format for weight in kg with one decimal
         public string? PatientWeight { get; set; }
+        public DateTime? PatientBirthDate { get; set; }
         // Additional fields suggested by DICOM structure
         [StringLength(64)]
         public string? IssuerOfPatientID { get; set; } // Issuer of the PatientID

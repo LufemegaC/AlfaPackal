@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "BHyrSGgCv+bpLKxulaUXTqg4CYreck3ph/HTizCwY5kRRt2izXI5nq7ta2qLg5N5ZxUvmcBe+9J0AGnLgyMOUw==",
+  "dgSpecHash": "2BBHMihG9IC5PzNTX409w04AjuAahKb3MD6ThVEqjEQpakKo082j5D6Jrgvju83qKfK1ruXtMh3HZ8v48AiicA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\communitytoolkit.highperformance\\8.2.0\\communitytoolkit.highperformance.8.2.0.nupkg.sha512",
-    "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom\\5.1.1\\fo-dicom.5.1.1.nupkg.sha512",
+    "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom\\5.1.0\\fo-dicom.5.1.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\fo-dicom.json\\5.1.0\\fo-dicom.json.5.1.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

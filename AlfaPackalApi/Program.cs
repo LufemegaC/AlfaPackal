@@ -11,6 +11,7 @@ using Api_PACsServer.Repository.Authentication;
 using Api_PACsServer.Repository.IRepository.Authentication;
 using Api_PACsServer.Services;
 using Api_PACsServer.Services.IService;
+using Api_PACsServer.Services.IService.Dicom;
 using Api_PACsServer.Services.IService.Pacs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -101,13 +102,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IStudyService, StudyService>();
 builder.Services.AddScoped<ISerieService, SerieService>();
 builder.Services.AddScoped<IInstanceService, InstanceService>();
+// services
+builder.Services.AddScoped<IDicomFileService, AzureDicomFileService>();
 // Session 
 builder.Services.AddScoped<ISessionService, SessionService>();
 // Orchestrator
 builder.Services.AddScoped<IDicomOrchestrator, DicomOrchestrator>();
 builder.Services.AddScoped<IAuthOrchestrator, AuthOrchestrator>();
-builder.Services.AddScoped<IUserOchestrator, UserOchestrator>();
-
 
 var app = builder.Build();
 

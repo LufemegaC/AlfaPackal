@@ -1,4 +1,4 @@
-﻿@model WorkStation.Models.ViewModels.DicomClienteVM
+﻿@model WorkStation.Models.ViewModels.ModalityVM
 
 <form method="post" asp-controller="Workstation" enctype="multipart/form-data">
     <!-- Tarjeta de Cliente DICOM -->
@@ -11,16 +11,20 @@
                 <!-- Información del Cliente -->
                 <div class="col-md-6">
                     <div class="form-group">
+                        <label for="CallingAe" class="form-label">SCP AEtile:</label>
+                        <input asp-for="DicomClient.CalledAE" type="text" id="CalledAE" class="form-control" value="@Model.DicomClient.CalledAE" readonly />
+                    </div>
+                    <div class="form-group">
                         <label for="CallingAe" class="form-label">AE Title:</label>
-                        <input asp-for="Aet" type="text" id="CallingAe" class="form-control" value="@Model.Aet" readonly />
+                        <input asp-for="DicomClient.AETitle" type="text" id="AETitle" class="form-control" value="@Model.DicomClient.AETitle" readonly />
                     </div>
                     <div class="form-group">
                         <label for="Port" class="form-label">Puerto:</label>
-                        <input asp-for="Port" type="text" id="Port" class="form-control" value="@Model.Port" readonly />
+                        <input asp-for="DicomClient.Port" type="text" id="Port" class="form-control" value="@Model.DicomClient.Port" readonly />
                     </div>
                     <div class="form-group">
                         <label for="Host" class="form-label">IP:</label>
-                        <input asp-for="Host" type="text" id="Host" class="form-control" value="@Model.Host" readonly />
+                        <input asp-for="DicomClient.IP" type="text" id="IP" class="form-control" value="@Model.DicomClient.IP" readonly />
                     </div>
                 </div>
 
@@ -43,7 +47,6 @@
                     </div>
                     <div class="form-group">
                         <button type="submit" asp-action="SendDicomFile" class="btn btn-primary" id="sendButton">Enviar Archivo</button>
-                        @*<button type="submit" asp-action="SendDicomFile" class="btn btn-primary">Enviar Archivo</button>*@
                     </div>
                 </div>
             </div>

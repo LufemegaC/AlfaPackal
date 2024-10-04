@@ -16,11 +16,11 @@ namespace Api_PACsServer.Repositorio.Pacs
             _db = db;
         }
 
-        public async Task<IEnumerable<Instance>> GetAllBySerieInstanceUID(string serieInstanceUID)
-        {
-            return await _db.Instances
-                            .Where(s => s.Serie.SeriesInstanceUID == serieInstanceUID)
-                            .ToListAsync();
-        }
+        //public async Task<IEnumerable<Instance>> GetAllBySerieInstanceUID(string serieInstanceUID)
+        //{
+        //    return await _db.Instances
+        //                    .Where(s => s.Serie.SeriesInstanceUID == serieInstanceUID)
+        //                    .ToListAsync();
+        //}
     }
 }

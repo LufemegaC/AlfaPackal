@@ -25,7 +25,9 @@ namespace Api_PACsServer.Modelos
         public string? StudyDescription { get; set; }
         // Date the study was performed DICOM/Metadata
         [Required]
-        public DateTime StudyDate { get; set; }    
+        public DateTime StudyDate { get; set; }
+
+        public TimeSpan? StudyTime { get; set; }
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
         // Study modality DICOM/Metadata
@@ -53,6 +55,7 @@ namespace Api_PACsServer.Modelos
         // Patient weight
         [RegularExpression(@"\d{1,3}(\.\d{1})?")] // Format for weight in kg with one decimal
         public string? PatientWeight { get; set; }
+        public DateTime? PatientBirthDate { get; set; }
         // Additional fields suggested by DICOM structure
         [StringLength(64)]
         public string? IssuerOfPatientID { get; set; } // Issuer of the PatientID

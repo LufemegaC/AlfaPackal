@@ -15,7 +15,7 @@
           }
         }
       },
-      "fo-dicom/5.1.1": {
+      "fo-dicom/5.1.0": {
         "type": "package",
         "dependencies": {
           "CommunityToolkit.HighPerformance": "8.2.0",
@@ -384,15 +384,15 @@
         "lib/netstandard2.1/CommunityToolkit.HighPerformance.xml"
       ]
     },
-    "fo-dicom/5.1.1": {
-      "sha512": "YraR81u9XuTN7l+pt6HzT0KvuhgWVZ9LCuHMH3zgFfAtv4peT1y+nYMSGwF9YqNP+oZnzh0s0PJ+vJMsTDpGIw==",
+    "fo-dicom/5.1.0": {
+      "sha512": "S2eh+KCkYC6XYtbiOjAaV8UZyR5YtGp+4u45ALFAcNTsH3iN8Bgg+zVPVsJf+aAJRrLtIWSY1gbp73Y8Sgvrzw==",
       "type": "package",
-      "path": "fo-dicom/5.1.1",
+      "path": "fo-dicom/5.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "FellowOakSquareTransp.png",
-        "fo-dicom.5.1.1.nupkg.sha512",
+        "fo-dicom.5.1.0.nupkg.sha512",
         "fo-dicom.nuspec",
         "lib/netstandard2.0/FO-DICOM.Core.xml",
         "lib/netstandard2.0/fo-dicom.core.dll"
@@ -937,7 +937,6 @@
   "projectFileDependencyGroups": {
     "net7.0": [
       "Microsoft.AspNetCore.Http.Features >= 5.0.17",
-      "fo-dicom >= 5.1.1",
       "fo-dicom.json >= 5.1.0"
     ]
   },
@@ -947,11 +946,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+      "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
       "projectName": "Utileria",
-      "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
+      "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\Utileria.csproj",
       "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\080824\\AlfaPackal - Omega\\Utileria\\obj\\",
+      "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\180924\\AlfaPackal - Omega\\Utileria\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -984,10 +983,6 @@
           "Microsoft.AspNetCore.Http.Features": {
             "target": "Package",
             "version": "[5.0.17, )"
-          },
-          "fo-dicom": {
-            "target": "Package",
-            "version": "[5.1.1, )"
           },
           "fo-dicom.json": {
             "target": "Package",

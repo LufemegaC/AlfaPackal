@@ -38,8 +38,4 @@
 	<PackageReference Include="System.ValueTuple" version="4.5.0" /> 
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Utileria\Utileria.csproj" />
-  </ItemGroup>
-
 </Project>

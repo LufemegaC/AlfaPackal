@@ -1,24 +1,29 @@
 ﻿using InterfazDeUsuario.Models;
 using InterfazDeUsuario.Models.Dtos.PacsDto;
+using InterfazDeUsuario.Models.visorOHIF;
 using InterfazDeUsuario.Services.IServices;
 using InterfazDeUsuario.Utility;
 using InterfazDeUsuario.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace InterfazDeUsuario.Controllers
 {
     public class MainListStudiesController : Controller
     {
         private readonly IDataService _dataService;
+        private readonly IOHIFService _OHIFService;
+         
         private string _token;
         private int _institution;
 
-        public MainListStudiesController(IDataService dataService)
+        public MainListStudiesController(IDataService dataService, IOHIFService OHIFService)
         {
             _dataService = dataService;
+            _OHIFService = OHIFService;
         }
-
+        // API SERVICEE
         public async Task<IActionResult> IndexMainList(int pageNumber = 1)
         {
             //ListadoPrincipalVM mainList = new();
@@ -43,25 +48,41 @@ namespace InterfazDeUsuario.Controllers
 
         }
 
-        [HttpPost]
-        public IActionResult GetStudy([FromBody] dynamic data)
+        // OHIF
+        public async Task<IActionResult> SendStudyInfoToOHIF(string studyInstanceUID)
         {
-            try
+            string tokenV = Token;
+            var response = await _dataService.GetInfoStudy<APIResponse>(tokenV, studyInstanceUID);
+            if (response != null && response.IsSuccessful)
             {
-                string studyUID = data.id;
-                // Lógica para manejar la ejecución del método
-                // Puedes utilizar los datos recibidos (en este caso, el ID) según sea necesario
+                // Serialize the ResponseData back to a JSON string
+                var jsonString = JsonConvert.SerializeObject(response.ResponseData);
 
-                // Ejemplo: Llamar a un servicio para procesar el ID
-                //_wadoUriService.AlgunMetodo(id);
-                TempData["studyUID"] = studyUID;
-                return RedirectToAction("MainVisualizer", "DicomVisualizer");
-                //return Json(new { success = true, message = "Método ejecutado correctamente." });
+                // Configure serializer settings to handle camelCase property names
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    }
+                };
+
+                // Deserialize the JSON string into the OHIFStudy model
+                var studyInfo = JsonConvert.DeserializeObject<OHIFStudy>(jsonString, settings);
+
+                return View(studyInfo);  // Pass the model to the view
             }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
+            return NotFound();
+        }
+
+        //* POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendStudyInfoToOHIF(OHIFStudy studyInfo)
+        {
+            // Envía la información en formato JSON al visor OHIF
+            await _OHIFService.SendStudyDataAsync(studyInfo);
+            return View();
         }
 
         public string Token

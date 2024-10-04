@@ -11,6 +11,9 @@ builder.Services.AddHttpContextAccessor();
 // Registro de IHttpClientFactory
 builder.Services.AddHttpClient<IDataService,DataService>();
 builder.Services.AddSingleton<IDataService, DataService>();
+//
+builder.Services.AddSingleton<IOHIFService, OHIFService>();
+
 // Registro de IHttpClientFactory
 builder.Services.AddHttpClient<IWadoUriService, WadoUriService>();
 builder.Services.AddSingleton<IWadoUriService, WadoUriService>();

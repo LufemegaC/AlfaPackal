@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api_PACsServer", "AlfaPackalApi\Api_PACsServer.csproj", "{27B62557-CB93-4567-AF64-91EBA118A683}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18} = {7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utileria", "Utileria\Utileria.csproj", "{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfazBasica_DCStore", "InterfazBasica\InterfazBasica_DCStore.csproj", "{0497C1CB-6018-406E-BBF4-52BCD3351181}"
 EndProject
@@ -45,18 +40,6 @@ Global
 		{27B62557-CB93-4567-AF64-91EBA118A683}.Release|x64.Build.0 = Release|Any CPU
 		{27B62557-CB93-4567-AF64-91EBA118A683}.Release|x86.ActiveCfg = Release|Any CPU
 		{27B62557-CB93-4567-AF64-91EBA118A683}.Release|x86.Build.0 = Release|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Debug|x64.Build.0 = Debug|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Debug|x86.Build.0 = Debug|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Release|x64.ActiveCfg = Release|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Release|x64.Build.0 = Release|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Release|x86.ActiveCfg = Release|Any CPU
-		{7D9287A7-1C2C-4B73-8618-9DA8CCF41D18}.Release|x86.Build.0 = Release|Any CPU
 		{0497C1CB-6018-406E-BBF4-52BCD3351181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0497C1CB-6018-406E-BBF4-52BCD3351181}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0497C1CB-6018-406E-BBF4-52BCD3351181}.Debug|x64.ActiveCfg = Debug|Any CPU

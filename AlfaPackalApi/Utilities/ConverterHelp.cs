@@ -1,9 +1,10 @@
-﻿using Api_PACsServer.Models.Dto;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.Dto;
 using System.Net;
 
 namespace Api_PACsServer.Utilities
 {
-    public class ConverterHelp
+    public static class ConverterHelp
     {
         public static string GetDescModality(string modality)
         {
@@ -58,6 +59,35 @@ namespace Api_PACsServer.Utilities
                 ResponseData = result,
                 ErrorsMessages = errors ?? new List<string>()
             };
+        }
+
+        public static APIResponse ConvertToApiResponse(OperationResult operationResult)
+        {
+            var apiResponse = new APIResponse();
+
+            if (operationResult.IsSuccess)
+            {
+                if (string.IsNullOrEmpty(operationResult.ErrorMessage))
+                {
+                    apiResponse.StatusCode = HttpStatusCode.OK;
+                    apiResponse.IsSuccessful = true;
+                    apiResponse.ResponseData = operationResult.ResponseData; // O lo que corresponda
+                }
+                else
+                {
+                    apiResponse.StatusCode = HttpStatusCode.Accepted;
+                    apiResponse.IsSuccessful = false;
+                    apiResponse.ResponseData = operationResult.ResponseData; // O lo que corresponda
+                }  
+            }
+            else
+            {
+                apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                apiResponse.IsSuccessful = false;
+                apiResponse.ErrorsMessages = new List<string> { operationResult.ErrorMessage };
+            }
+
+            return apiResponse;
         }
     }
 }

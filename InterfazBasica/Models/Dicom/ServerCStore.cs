@@ -17,6 +17,8 @@ namespace InterfazBasica_DCStore.Models.DicomServers
             Aetitle = AETitle;
             _dicomServer = DicomServerFactory.Create<CStoreSCP>(port);
         }
+
+
         public static void Stop()
         {
             _dicomServer?.Dispose();

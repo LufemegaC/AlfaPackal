@@ -1,4 +1,4 @@
-﻿@using Utileria;
+﻿@using InterfazDeUsuario.Utility;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAcc
 
 <!DOCTYPE html>
@@ -31,8 +31,8 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">Conocenos</a>
                     </li>
                     @* Valido session para mostrar login o logout *@
-                    @if (httpContextAcc.HttpContext.Session.GetString(DS.SessionToken) != null &&
-                    httpContextAcc.HttpContext.Session.GetString(DS.SessionToken).ToString().Length > 0)
+                    @if (httpContextAcc.HttpContext.Session.GetString(LocalUtility.SessionToken) != null &&
+                    httpContextAcc.HttpContext.Session.GetString(LocalUtility.SessionToken).ToString().Length > 0)
                     {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="logout">Logout</a>

@@ -31,6 +31,8 @@ namespace InterfazBasica_DCStore.Utilities
         public static readonly DicomStatus InstanceCreateInvalidDimension = new DicomStatus("A90C", DicomState.Failure, "Invalid dimension information");
         // Internal Error
         public static readonly DicomStatus ServerInternalError = new DicomStatus("A90D", DicomState.Failure, "Internal error");
+        // A90E APARTO LUGAR PARA Exceptions
+        //public static readonly DicomStatus ServerInternalError = new DicomStatus("A90E", DicomState.Failure, "Internal error");
 
         public static string PatientIDGenerator()
         // 17/03/24.- Funcion estatica para generar PatienteID

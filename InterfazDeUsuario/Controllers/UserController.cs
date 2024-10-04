@@ -4,12 +4,10 @@ using InterfazDeUsuario.Services.IServices;
 using InterfazDeUsuario.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Utileria;
 
 namespace InterfazDeUsuario.Controllers
 {

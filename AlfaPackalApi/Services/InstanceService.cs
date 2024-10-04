@@ -1,7 +1,9 @@
-﻿using Api_PACsServer.Modelos;
+﻿using AlfaPackalApi.Modelos;
+using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Load;
 using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Models.Dto.Instances;
+using Api_PACsServer.Models.OHIFVisor;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Services.IService.Pacs;
@@ -73,7 +75,7 @@ namespace Api_PACsServer.Services
             return await _instanceRepo.Exists(s => s.SOPInstanceUID == serieInstanceUID);
         }
 
-        public async Task<IEnumerable<InstanceDto>> GetAllBySerieUID(string seriesIntanceUID)
+        public async Task<IEnumerable<OHIFInstance>> GetAllBySerieUID(string seriesIntanceUID)
         {
             // Validate the series ID
             if (string.IsNullOrEmpty(seriesIntanceUID))
@@ -84,10 +86,15 @@ namespace Api_PACsServer.Services
             if (instanceList == null)
                 throw new KeyNotFoundException("Instances not found.");
             // Map the instances to the corresponding DTOs and return them
-            return _mapper.Map<IEnumerable<InstanceDto>>(instanceList);
+            return _mapper.Map<IEnumerable<OHIFInstance>>(instanceList);
+        }
+         
+        public async Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
+        {
+            return _mapper.Map<InstanceCreateDto>(metadata);
         }
 
-        public async Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
+        public async Task<InstanceCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {
             return _mapper.Map<InstanceCreateDto>(metadata);
         }

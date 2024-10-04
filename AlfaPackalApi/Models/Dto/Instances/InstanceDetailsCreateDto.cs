@@ -13,8 +13,6 @@ namespace Api_PACsServer.Models.Dto.Instances
             CreationDate = DateTime.UtcNow;
             UpdateDate = DateTime.UtcNow;
         }
-
-        // Auto-generated primary key
         [Required]
         public string SOPInstanceUID { get; set; }
         // Total size of the instance in MB
