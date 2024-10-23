@@ -89,10 +89,10 @@ namespace Api_PACsServer.Services
             return _mapper.Map<IEnumerable<OHIFInstance>>(instanceList);
         }
          
-        public async Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
-        {
-            return _mapper.Map<InstanceCreateDto>(metadata);
-        }
+        //public async Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
+        //{
+        //    return _mapper.Map<InstanceCreateDto>(metadata);
+        //}
 
         public async Task<InstanceCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {

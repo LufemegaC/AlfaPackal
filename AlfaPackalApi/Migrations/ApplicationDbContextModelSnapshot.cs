@@ -59,29 +59,6 @@ namespace Api_PACsServer.Migrations
                     b.ToTable("Series");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.Institution", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssignedInstitutionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CityID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityID");
-
-                    b.ToTable("Institutions");
-                });
-
             modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.LocalDicomServer", b =>
                 {
                     b.Property<int>("Id")
@@ -105,9 +82,6 @@ namespace Api_PACsServer.Migrations
                         .HasMaxLength(39)
                         .HasColumnType("nvarchar(39)");
 
-                    b.Property<int>("InstitutionId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -115,8 +89,6 @@ namespace Api_PACsServer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InstitutionId");
 
                     b.ToTable("LocalDicomServers");
                 });
@@ -143,9 +115,6 @@ namespace Api_PACsServer.Migrations
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InstitutionId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -185,8 +154,6 @@ namespace Api_PACsServer.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InstitutionId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -244,11 +211,7 @@ namespace Api_PACsServer.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FileLocation")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageComments")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageOrientationPatient")
@@ -264,7 +227,6 @@ namespace Api_PACsServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PhotometricInterpretation")
-                        .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("nvarchar(16)");
 
@@ -282,6 +244,10 @@ namespace Api_PACsServer.Migrations
                     b.Property<string>("SeriesInstanceUID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TransactionUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransferSyntaxUID")
                         .HasColumnType("nvarchar(max)");
@@ -301,6 +267,9 @@ namespace Api_PACsServer.Migrations
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FileLocation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalFileSizeMB")
                         .HasColumnType("decimal(18,2)");
@@ -375,9 +344,6 @@ namespace Api_PACsServer.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InstitutionID")
-                        .HasColumnType("int");
-
                     b.Property<string>("InstitutionName")
                         .HasColumnType("nvarchar(max)");
 
@@ -423,8 +389,6 @@ namespace Api_PACsServer.Migrations
 
                     b.HasKey("StudyInstanceUID");
 
-                    b.HasIndex("InstitutionID");
-
                     b.HasIndex("PatientName")
                         .HasDatabaseName("IX_Study_PatientName");
 
@@ -445,9 +409,6 @@ namespace Api_PACsServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("InstitutionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Names")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -465,8 +426,6 @@ namespace Api_PACsServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InstitutionId");
 
                     b.ToTable("Users");
                 });
@@ -615,39 +574,6 @@ namespace Api_PACsServer.Migrations
                     b.Navigation("Study");
                 });
 
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.Institution", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.Geography.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.LocalDicomServer", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
-                        .WithMany()
-                        .HasForeignKey("InstitutionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Institution");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.AccessControl.SystemUser", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
-                        .WithMany()
-                        .HasForeignKey("InstitutionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Institution");
-                });
-
             modelBuilder.Entity("Api_PACsServer.Modelos.Geography.City", b =>
                 {
                     b.HasOne("Api_PACsServer.Modelos.Geography.State", "State")
@@ -701,28 +627,6 @@ namespace Api_PACsServer.Migrations
                         .IsRequired();
 
                     b.Navigation("Study");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.Study", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
-                        .WithMany()
-                        .HasForeignKey("InstitutionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Institution");
-                });
-
-            modelBuilder.Entity("Api_PACsServer.Modelos.User", b =>
-                {
-                    b.HasOne("Api_PACsServer.Modelos.AccessControl.Institution", "Institution")
-                        .WithMany()
-                        .HasForeignKey("InstitutionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Institution");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

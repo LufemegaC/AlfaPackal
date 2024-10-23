@@ -4,6 +4,8 @@ namespace Api_PACsServer.Models.Dto
 {
     public class MetadataDto
     {
+        // -- Main information -- //
+
         // SOP Class UID 
         [Required, MaxLength(64)]
         public string SOPClassUID { get; set; }
@@ -22,7 +24,7 @@ namespace Api_PACsServer.Models.Dto
 
         // -- Instance information -- //
         // Image description
-        public string ImageComments { get; set; }
+        public string? ImageComments { get; set; }
         // image number within the series
         [Required]
         public int InstanceNumber { get; set; }
@@ -69,8 +71,8 @@ namespace Api_PACsServer.Models.Dto
         // Body Part Examined
         public string? BodyPartExamined { get; set; }
         // Issuing institution (Internal control)
-        [Required]
-        public int InstitutionID { get; set; }
+        //[Required]
+        //public int InstitutionID { get; set; }
         // ** Patient Information **//
         // Full patient name 
         // LastName^MiddleName^FirstName(s)^Prefix^Suffix
@@ -89,7 +91,12 @@ namespace Api_PACsServer.Models.Dto
         // Additional fields suggested by DICOM structure
         [StringLength(64)]
         public string? IssuerOfPatientID { get; set; } // Issuer of the PatientID
-        //** Load Section **//
+        //-- Transaction --//
+        // Transaction UID
+        public string? TransactionUID { get; set; }
+        // Transaction Status
+        public string? TransactionStatus { get; set; }
+        //** Load Section - INTERNAL USE **//
         // Total size of the study in MB.
         public decimal TotalFileSizeMB { get; set; }
 

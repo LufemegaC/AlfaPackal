@@ -15,6 +15,13 @@ namespace InterfazBasica_DCStore.Utilities
             DELETE
         }
 
+        public enum StorageLocation
+        {
+            Permanent,   // Para almacenar de manera permanente (rootPath)
+            Temporary,    // Para almacenamiento temporal (requestPath)
+            Failed
+        }
+
         public static DicomStatus TranslateApiResponseToDicomStatus(APIResponse apiResponse)
         {
             // Caso de éxito
@@ -35,7 +42,6 @@ namespace InterfazBasica_DCStore.Utilities
                     return DicomStatus.ResourceLimitation;
                 case HttpStatusCode.Accepted:
                     return DicomStatus.Warning;
-
                 default:
                     // Un mapeo genérico para otros casos
                     return DicomStatus.ProcessingFailure;

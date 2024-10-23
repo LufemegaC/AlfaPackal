@@ -50,15 +50,15 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// </returns>
         Task<IEnumerable<OHIFInstance>> GetAllBySerieUID(string seriesIntanceUID);
 
-        /// <summary>
-        /// Maps the provided DICOM metadata to an InstanceCreateDto object.
-        /// </summary>
-        /// <param name="metadata">The metadata containing the main entities and DICOM information required to create an Instance.</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains an InstanceCreateDto object
-        /// mapped from the provided metadata, ready to be used for creating a new Instance entity.
-        /// </returns>
-        Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
+        ///// <summary>
+        ///// Maps the provided DICOM metadata to an InstanceCreateDto object.
+        ///// </summary>
+        ///// <param name="metadata">The metadata containing the main entities and DICOM information required to create an Instance.</param>
+        ///// <returns>
+        ///// A task that represents the asynchronous operation. The task result contains an InstanceCreateDto object
+        ///// mapped from the provided metadata, ready to be used for creating a new Instance entity.
+        ///// </returns>
+        //Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
         
         /// <summary>
         /// Maps the provided DICOM metadata to an InstanceCreateDto object.

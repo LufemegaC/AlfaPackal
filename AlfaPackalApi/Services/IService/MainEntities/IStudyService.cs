@@ -70,14 +70,14 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// </returns>
         UserStudiesListDto GetRecentStudies(PaginationParameters parameters);
 
-        /// <summary>
-        /// Maps the provided metadata from DICOM to a StudyCreateDto object.
-        /// </summary>
-        /// <param name="metadata">The metadata containing the main entities required for creating a Study entity.</param>
-        /// <returns>
-        /// A StudyCreateDto object mapped from the provided metadata, ready to be used for creating a new Study entity.
-        /// </returns>
-        Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
+        ///// <summary>
+        ///// Maps the provided metadata from DICOM to a StudyCreateDto object.
+        ///// </summary>
+        ///// <param name="metadata">The metadata containing the main entities required for creating a Study entity.</param>
+        ///// <returns>
+        ///// A StudyCreateDto object mapped from the provided metadata, ready to be used for creating a new Study entity.
+        ///// </returns>
+        //Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
 
         /// <summary>
         /// Maps the provided DICOM metadata to an InstanceCreateDto object.

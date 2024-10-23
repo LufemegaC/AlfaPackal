@@ -43,7 +43,7 @@ public class DicomValidationService : IDicomValidationService
         return DicomStatus.Success;
     }
 
-    public DicomStatus ValidateCreateDtos(MainEntitiesCreateDto mainEntitiesDto)
+    public DicomStatus ValidateCreateDtos(MetadataDto mainEntitiesDto)
     {
         DicomStatus status = DicomStatus.Success;
         try
@@ -63,7 +63,7 @@ public class DicomValidationService : IDicomValidationService
 
     // *** Intenal metods ***//
 
-    internal ushort ValidateMainEntitiesCreate(MainEntitiesCreateDto mainEntitiesDto)
+    internal ushort ValidateMainEntitiesCreate(MetadataDto mainEntitiesDto)
     {
         // Validación de PatientName
         if (string.IsNullOrWhiteSpace(mainEntitiesDto.PatientName))

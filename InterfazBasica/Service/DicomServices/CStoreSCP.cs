@@ -91,8 +91,8 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         public async Task<DicomCStoreResponse> OnCStoreRequestAsync(DicomCStoreRequest request)
         {
             try
-            {
-                // DicomFile apartir de DataSet
+            {              
+                // DicomFile from DataSet
                 DicomFile dicomFile = new DicomFile(request.Dataset);
                 // Se entrega al orchestrator para registro de entidades PACS
                 var resultStoreDicomData = await _dicomOrchestrator.StoreDicomData(dicomFile);

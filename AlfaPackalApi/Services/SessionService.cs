@@ -19,7 +19,7 @@ namespace Api_PACsServer.Services
         // Repositories
         private readonly IUserRepository _userRepository;
         private readonly ILocalDicomServerRepostory _localDicomServerRepository;
-        private readonly IInstitutionRespository _institutionRepository;
+        //private readonly IInstitutionRespository _institutionRepository;
 
         // Mapping
         private readonly IMapper _mapper;
@@ -90,7 +90,7 @@ namespace Api_PACsServer.Services
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
-                    new Claim("InstitutionId", user.InstitutionId.ToString()) // Agrega el Id de la institución del usuario como un 'Claim' personalizado
+                    //new Claim("InstitutionId", user.InstitutionId.ToString()) // Agrega el Id de la institución del usuario como un 'Claim' personalizado
                 }),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };

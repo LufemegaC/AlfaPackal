@@ -96,7 +96,7 @@ builder.Services.AddScoped<ISerieRepository, SerieRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
 // Repositories for access
 builder.Services.AddScoped<ILocalDicomServerRepostory, LocalDicomServerRepostory>();
-builder.Services.AddScoped<IInstitutionRespository, InstitutionRespository>();
+//builder.Services.AddScoped<IInstitutionRespository, InstitutionRespository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Service for entities
 builder.Services.AddScoped<IStudyService, StudyService>();

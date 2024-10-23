@@ -16,10 +16,10 @@ namespace Api_PACsServer.Modelos
 
         public string Rol { get; set; }
 
-        [Required]
-        public int InstitutionId { get; set; }
-        [ForeignKey("InstitutionId")]
-        public virtual Institution Institution { get; set; }
+        //[Required]
+        //public int InstitutionId { get; set; }
+        //[ForeignKey("InstitutionId")]
+        //public virtual Institution Institution { get; set; }
 
     }
 }

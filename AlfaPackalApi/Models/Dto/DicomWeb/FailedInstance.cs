@@ -11,6 +11,7 @@ namespace Api_PACsServer.Models.Dto.DicomWeb
             SeriesInstanceUID = result.SeriesInstanceUID;
             SOPInstanceUID = result.SOPInstanceUID;
             FailureReason = result.FailureReason ?? 272;
+            ErrorMessage = result.ErrorMessage;
         }
         [JsonProperty("StudyInstanceUID")]
         public string StudyInstanceUID { get; set; }
@@ -23,5 +24,7 @@ namespace Api_PACsServer.Models.Dto.DicomWeb
 
         [JsonProperty("FailureReason")]
         public int FailureReason { get; set; } // DICOM standard failure codes
+        [JsonProperty("ErrorMessage")]
+        public string ErrorMessage { get; set; }
     }
 }

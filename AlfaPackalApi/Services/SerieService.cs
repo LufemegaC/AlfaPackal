@@ -93,10 +93,10 @@ namespace Api_PACsServer.Services
             return await _serieDetailsRepo.Update(serieDetails);
         }
 
-        public async Task<SerieCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
-        {
-            return _mapper.Map<SerieCreateDto>(metadata);
-        }
+        //public async Task<SerieCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
+        //{
+        //    return _mapper.Map<SerieCreateDto>(metadata);
+        //}
 
         public async Task<SerieCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {

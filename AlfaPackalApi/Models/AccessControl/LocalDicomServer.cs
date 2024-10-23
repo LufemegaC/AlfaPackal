@@ -31,10 +31,10 @@ namespace Api_PACsServer.Modelos.AccessControl
         [Required]
         public bool IsActive { get; set; }
 
-        // foreign key to the institution.
-        public int InstitutionId { get; set; }
-        [ForeignKey("InstitutionId")]
-        public virtual Institution Institution { get; set; }
+        //// foreign key to the institution.
+        //public int InstitutionId { get; set; }
+        //[ForeignKey("InstitutionId")]
+        //public virtual Institution Institution { get; set; }
         
 
     }

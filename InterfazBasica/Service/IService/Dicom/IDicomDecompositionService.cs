@@ -17,7 +17,7 @@ namespace InterfazBasica_DCStore.Service.IService.Dicom
         /// </summary>
         /// <param name="metadata">The dictionary of DICOM metadata.</param>
         /// <returns> contains the DTO for creating the main entities.</returns>
-        MainEntitiesCreateDto DicomDictionaryToCreateEntities(Dictionary<DicomTag, object> metadata);
+        MetadataDto DicomDictionaryToCreateEntities(Dictionary<DicomTag, object> metadata);
         
         /// <summary>
         /// Calculates the file size of a DICOM file in megabytes (MB).

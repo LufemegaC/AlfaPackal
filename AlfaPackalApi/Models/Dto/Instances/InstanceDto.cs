@@ -10,12 +10,11 @@ namespace Api_PACsServer.Models.Dto.Instances
         // Photometric Interpretation for image color interpretation
         public int InstanceNumber { get; set; }
         // Image description
-        public string ImageComments { get; set; }
+        public string? ImageComments { get; set; }
         // SOP Class UID 
         [MaxLength(64)]
         public string SOPClassUID { get; set; }
-        // SOP Instance UID
-        
+        // PhotometricInterpretation
         [MaxLength(16)]
         public string PhotometricInterpretation { get; set; }
         // Image dimensions
@@ -25,5 +24,6 @@ namespace Api_PACsServer.Models.Dto.Instances
         public string? PixelSpacing { get; set; }
         // Number of frames in the image
         public int? NumberOfFrames { get; set; }
+        public string TransactionUID { get; set; }
     }
 }

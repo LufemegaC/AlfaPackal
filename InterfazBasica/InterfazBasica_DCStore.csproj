@@ -38,4 +38,8 @@
 	<PackageReference Include="System.ValueTuple" version="4.5.0" /> 
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\jsonTemplates\" />
+  </ItemGroup>
+
 </Project>

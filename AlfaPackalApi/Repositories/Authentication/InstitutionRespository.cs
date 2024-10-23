@@ -1,18 +1,19 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Repository.DataAccess;
-using Api_PACsServer.Repository.IRepository.Authentication;
+﻿//using AlfaPackalApi.Datos;
+//using Api_PACsServer.Modelos.AccessControl;
+//using Api_PACsServer.Repository.DataAccess;
+//using Api_PACsServer.Repository.IRepository.Authentication;
 
 
 namespace Api_PACsServer.Repository.Authentication
 {
-    public class InstitutionRespository: ReadRepository<Institution>,  IInstitutionRespository
-    {
+    // CLASS DELETED 08/10/24
+    //public class InstitutionRespository: ReadRepository<Institution>,  IInstitutionRespository
+    //{
 
-        public InstitutionRespository(ApplicationDbContext db) : base(db)
-        {
+    //    public InstitutionRespository(ApplicationDbContext db) : base(db)
+    //    {
 
-        }
+    //    }
 
-    }
+    //}
 }

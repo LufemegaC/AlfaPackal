@@ -1,20 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FellowOakDicom;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api_PACsServer.Models.Dto.DicomWeb
 {
     public class StowRsRequestDto
     {
 
-        /// <summary>
-        /// The DICOM file uploaded.
-        /// </summary>
-        [Required]
-        public IFormFile DicomFile { get; set; }
+        public List<DicomFilePackage> DicomFilesPackage { get; set; }
 
-        /// <summary>
-        /// The metadata associated with the DICOM file.
-        /// </summary>
-        public MetadataDto Metadata { get; set; }
-
+        public string TransactionUID { get; set; }
     }
 }

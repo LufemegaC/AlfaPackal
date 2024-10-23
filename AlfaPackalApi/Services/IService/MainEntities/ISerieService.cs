@@ -60,15 +60,15 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// <returns>The task result contains the updated Series entity.</returns>
         Task<SerieDetails> UpdateLoadForNewInstance(string seriesInstanceUID, decimal totalSizeFile);
 
-        /// <summary>
-        /// Maps the provided DICOM metadata to a SerieCreateDto object.
-        /// </summary>
-        /// <param name="metadata">The metadata containing the main entities and DICOM information required to create a Series.</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains a SerieCreateDto object 
-        /// mapped from the provided metadata, ready to be used for creating a new Series entity.
-        /// </returns>
-        Task<SerieCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
+        ///// <summary>
+        ///// Maps the provided DICOM metadata to a SerieCreateDto object.
+        ///// </summary>
+        ///// <param name="metadata">The metadata containing the main entities and DICOM information required to create a Series.</param>
+        ///// <returns>
+        ///// A task that represents the asynchronous operation. The task result contains a SerieCreateDto object 
+        ///// mapped from the provided metadata, ready to be used for creating a new Series entity.
+        ///// </returns>
+        //Task<SerieCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
 
         /// <summary>
         /// Maps the provided DICOM metadata to an InstanceCreateDto object.

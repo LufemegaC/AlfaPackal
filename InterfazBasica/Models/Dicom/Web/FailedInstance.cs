@@ -15,5 +15,9 @@ namespace InterfazBasica_DCStore.Models.Dicom.Web
 
         [JsonProperty("FailureReason")]
         public int FailureReason { get; set; } // DICOM standard failure codes
+
+        [JsonProperty("ErrorMessage")]
+        public string ErrorMessage { get; set; }
+
     }
 }

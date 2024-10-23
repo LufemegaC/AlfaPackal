@@ -3,8 +3,8 @@ using Api_PACsServer.Repository.IRepository.RepositoryBase;
 
 namespace Api_PACsServer.Repository.IRepository.Authentication
 {
-    public interface IInstitutionRespository : IReadRepository<Institution>
-    {
+    //public interface IInstitutionRespository : IReadRepository<Institution>
+    //{
 
-    }
+    //}
 }

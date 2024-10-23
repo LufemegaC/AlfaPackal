@@ -9,7 +9,7 @@ namespace InterfazBasica_DCStore.Service.IService.Dicom
     {
         DicomStatus IsValidDicomFile(DicomFile dicomFile);
 
-        DicomStatus ValidateCreateDtos(MainEntitiesCreateDto mainEntitiesDto);
+        DicomStatus ValidateCreateDtos(MetadataDto mainEntitiesDto);
         
     }
 }

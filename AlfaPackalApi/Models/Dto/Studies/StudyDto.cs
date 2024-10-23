@@ -22,7 +22,7 @@ namespace Api_PACsServer.Models.Dto.Studies
         // Body Part descripcion
         public string? DescBodyPartE { get; set; }
         // ** Institution **//
-        public int InstitutionID { get; set; }
+        //public int InstitutionID { get; set; }
         // ** Patient Information **//
         // Non internal control institution added
         public string? PatientName { get; set; }

@@ -23,8 +23,8 @@ namespace Api_PACsServer.Models.Dto.Studies
         // Body Part Examined
         public string? BodyPartExamined { get; set; }
         // ** Issuing institution (Internal control)
-        [Required]
-        public int InstitutionID { get; set; }
+        //[Required]
+        //public int InstitutionID { get; set; }
         // ** Patient Information **//
         // Full patient name 
         // LastName^MiddleName^FirstName(s)^Prefix^Suffix

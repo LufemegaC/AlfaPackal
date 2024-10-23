@@ -23,11 +23,11 @@ namespace Api_PACsServer.Modelos
         public string SOPClassUID { get; set; }
         public string? TransferSyntaxUID { get; set; }
         // Image description
-        public string ImageComments { get; set; }
+        public string? ImageComments { get; set; }
         
         // Photometric Interpretation for image color interpretation
         [MaxLength(16)]
-        public string PhotometricInterpretation { get; set; }
+        public string? PhotometricInterpretation { get; set; }
         // Image dimensions
         public int Rows { get; set; }
         public int Columns { get; set; }
@@ -39,6 +39,10 @@ namespace Api_PACsServer.Modelos
 
         // Number of frames in the image
         public int? NumberOfFrames { get; set; }
+        //-- Transaction --//
+        // Transaction UID
+        [Required]
+        public string TransactionUID { get; set; }
 
         // Control fields
         public DateTime CreationDate { get; set; }

@@ -29,7 +29,7 @@ namespace AlfaPackalApi.Datos
         //public DbSet<AllowedIPs> AllowedIPs { get; set; }
         public DbSet<LocalDicomServer> LocalDicomServers { get; set; }
         // Internal control
-        public DbSet<Institution> Institutions { get; set; }
+        //public DbSet<Institution> Institutions { get; set; }
         public DbSet<State> States{ get; set; }
         public DbSet<City> Cities { get; set; }
         

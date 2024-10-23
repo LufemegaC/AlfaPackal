@@ -23,9 +23,9 @@ namespace Api_PACsServer.Repositorio.Pacs
         {
 
             IQueryable<Study> query = _db.Studies
-            .Where(study => study.InstitutionID == parameters.InstitutionId)
+            //.Where(study => study.InstitutionID == parameters.InstitutionId)
             .OrderByDescending(study => study.StudyDate)
-            .Include(study => study.Institution)
+            //.Include(study => study.Institution)
             .Include(study => study.Series);
 
             // Get the total count of records that match the query

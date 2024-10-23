@@ -1,4 +1,4 @@
-﻿using AlfaPackalApi.Modelos;
+﻿
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Modelos.Load;
@@ -40,8 +40,8 @@ namespace Api_PACsServer.Services
             if (CreateDto.StudyDate > DateTime.Today)
                 throw new ArgumentException("StudyDate cannot be in the future.");
             // Validate InstitutionID
-            if (CreateDto.InstitutionID == 0)
-                throw new ArgumentException("The Institution ID is required.");
+            ////if (CreateDto.InstitutionID == 0)
+            ////    throw new ArgumentException("The Institution ID is required.");
             // Map the DTO to the Study entity
             var study = _mapper.Map<Study>(CreateDto);
             study.CreationDate = DateTime.UtcNow;
@@ -125,10 +125,10 @@ namespace Api_PACsServer.Services
             };
         }
 
-        public async Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
-        {
-            return _mapper.Map<StudyCreateDto>(metadata);
-        }
+        //public async Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
+        //{
+        //    return _mapper.Map<StudyCreateDto>(metadata);
+        //}
 
         public async Task<StudyCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {

@@ -35,10 +35,10 @@ namespace Api_PACsServer.Modelos
         // Body Part Examined
         public string? BodyPartExamined { get; set; }
         // ** Issuing institution (Internal control)
-        [Required]
-        public int InstitutionID { get; set; }
-        [ForeignKey("InstitutionID")]
-        public virtual Institution Institution { get; set; }
+        //[Required]
+        //public int InstitutionID { get; set; }
+        //[ForeignKey("InstitutionID")]
+        //public virtual Institution Institution { get; set; }
         // ** Collection of Series
         public virtual ICollection<Serie> Series { get; set; }
         // ** Patient Information **//

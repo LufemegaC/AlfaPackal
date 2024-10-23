@@ -1,0 +1,211 @@
+﻿// METODO DE ALMACENAMIENTO
+// PENDIENTES VARIOS PROCESOS
+// 03/10/24
+
+/// <summary>
+        /// ** NEW VERSION FOR REGISTER DICOM OBJECT
+        /// </summary>
+        /// <param name="RequestDto"></param>
+        /// <returns></returns>
+        public async Task<List<DicomOperationResult>> RegisterDicomInstances(List<StowRsRequestDto> requestsDto, string StudyUID = null)
+        {
+            var operationResults = new List<DicomOperationResult>();
+
+            foreach (var requestDto in requestsDto)
+            {
+                DicomFile dicomFile = null; // Declare dicomFile here to access it in the catch block
+                try
+                {
+                    //** Read DICOM file
+                    try
+                    {
+
+                        using (var stream = requestDto.DicomFile.OpenReadStream())
+                        {
+                            dicomFile = DicomFile.Open(stream);
+                        }
+                    }
+                    catch (DicomFileException ex)
+                    {
+                        operationResults.Add(DicomOperationResult.Failure(
+                            "Cannot parse DICOM file.",
+                            null, null, null,
+                            49152 // Cannot Understand
+                        ));
+                        continue;
+                    }
+                    // the study uid is unknown
+                    if (string.IsNullOrEmpty(StudyUID))
+                    {
+                        // Extract UIDs
+                        var extractedStudyInstanceUID = dicomFile.Dataset.GetString(DicomTag.StudyInstanceUID);
+                        var extractedSeriesInstanceUID = dicomFile.Dataset.GetString(DicomTag.SeriesInstanceUID);
+                        var extractedSOPInstanceUID = dicomFile.Dataset.GetString(DicomTag.SOPInstanceUID);
+                        // Flags
+                        bool dataCoerced = false;
+                        // Validate UIDs
+                        if (requestDto.Metadata.StudyInstanceUID != extractedStudyInstanceUID ||
+                            requestDto.Metadata.SeriesInstanceUID != extractedSeriesInstanceUID ||
+                            requestDto.Metadata.SOPInstanceUID != extractedSOPInstanceUID)
+                        {
+                            // Add failure result due to UID mismatch
+                            AddFailureResult(operationResults,
+                                "The provided UIDs do not match those in the DICOM file.",
+                                extractedStudyInstanceUID,
+                                extractedSeriesInstanceUID,
+                                extractedSOPInstanceUID);
+                            continue; // Skip to the next instance
+                        }
+                    }
+                    // ** PENDIENTE IMPLEMENTACION - VALIDAR ESPACIO DISPONIBLE
+                    //var storageResult = await _azureDicomFileService.(requestDto.Metadata.TotalFileSizeMB); );
+                    //if (!storageResult.IsSuccess)
+                    //{
+                    //    // Add failure result due to storage error
+                    //    AddFailureResult(operationResults,
+                    //        storageResult.ErrorMessage,
+                    //        extractedStudyInstanceUID,
+                    //        extractedSeriesInstanceUID,
+                    //        extractedSOPInstanceUID,
+                    //        42752); // Out of Resources);
+                    //    continue; // Skip to the next instance
+                    //}
+
+                    // ** PENSIENTE IMPLEMENTACION - VALIDACION DE SOPORTE DE SOPCLASSUID
+                    // Validate SOP Class UID
+                    //var sopClassUID = dicomFile.Dataset.GetString(DicomTag.SOPClassUID);
+                    //// Check if SOP Class is supported
+                    //if (!SupportedSopClasses.Contains(sopClassUID))
+                    //{
+                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //        "Unsupported SOP Class.",
+                    //        extractedStudyInstanceUID,
+                    //        extractedSeriesInstanceUID,
+                    //        extractedSOPInstanceUID,
+                    //        43264 // Data Set Does Not Match SOP Class
+                    //    ));
+                    //    continue;
+                    //}
+
+                    // ** PENSIENTE IMPLEMENTACION - VALIDACION DE ATRIBUTOS SOPCLASSUID
+                    // Validate required attributes for the SOP Class
+                    //if (!AreRequiredAttributesPresent(dicomFile.Dataset, sopClassUID))
+                    //{
+                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //        "Missing required attributes for the SOP Class.",
+                    //        extractedStudyInstanceUID,
+                    //        extractedSeriesInstanceUID,
+                    //        extractedSOPInstanceUID,
+                    //        43264 // Data Set Does Not Match SOP Class
+                    //    ));
+                    //    continue;
+                    //}
+
+                    // ** PENDIENTE IMPLEMENTACION - VALIDACION SOPORTE TRANSFER SYNTAX UID
+                    // Validate Transfer Syntax
+                    //var transferSyntaxUID = dicomFile.FileMetaInfo.TransferSyntaxUID.UID;
+                    //if (!SupportedTransferSyntaxes.Contains(transferSyntaxUID))
+                    //{
+                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //        "Referenced Transfer Syntax not supported.",
+                    //        extractedStudyInstanceUID,
+                    //        extractedSeriesInstanceUID,
+                    //        extractedSOPInstanceUID,
+                    //        290 // Referenced Transfer Syntax Not Supported
+                    //    ));
+                    //    continue;
+                    //}
+
+                    // ** PENDIENTE IMPLEMENTACION - VALIDA SI ES NECESARIO AJUSTAR METADATOS
+                    //if (NeedsModification(dicomFile.Dataset))
+                    //{
+                    //    CoerceDataElements(dicomFile.Dataset);
+                    //    dataCoerced = true;
+                    //}
+
+
+                    // Storage Metadata
+                    var metadataResult = await RegisterMetadata(requestDto.Metadata);
+
+                    if (!metadataResult.IsSuccess)
+                    {
+                        // PENDIENTE 
+                        //if (dataCoerced)  
+
+                       // Add failure result due to metadata registration error
+                        AddFailureResult(operationResults,
+                            metadataResult.ErrorMessage,
+                            extractedStudyInstanceUID,
+                            extractedSeriesInstanceUID,
+                            extractedSOPInstanceUID);
+                        continue; // Skip to the next instance
+                    }
+
+                    // Storage File
+                    var storageResult = await _azureDicomFileService.StoreDicomFileAsync(
+                        requestDto.DicomFile,
+                        extractedStudyInstanceUID,
+                        extractedSeriesInstanceUID,
+                        extractedSOPInstanceUID
+                    );
+
+                    if (!storageResult.IsSuccess)
+                    {
+                        // Add failure result due to storage error
+                        AddFailureResult(operationResults,
+                            storageResult.ErrorMessage,
+                            extractedStudyInstanceUID,
+                            extractedSeriesInstanceUID,
+                            extractedSOPInstanceUID);
+                        continue; // Skip to the next instance
+                    }
+
+                    // Add success result
+                    operationResults.Add(DicomOperationResult.Success(
+                        studyInstanceUID: extractedStudyInstanceUID,
+                        seriesInstanceUID: extractedSeriesInstanceUID,
+                        sopInstanceUID: extractedSOPInstanceUID
+                    ));
+                }
+                catch (DicomFileException ex)
+                {
+                    AddFailureResult(operationResults,
+                        $"Invalid DICOM file: {ex.Message}",
+                        null, null, null,
+                        failureReason: 49152 // Cannot Understand
+                    );
+                }
+                catch (Exception ex)
+                {
+                    // Extract UIDs if possible
+                    string studyInstanceUID = null;
+                    string seriesInstanceUID = null;
+                    string sopInstanceUID = null;
+
+                    try
+                    {
+                        studyInstanceUID = dicomFile?.Dataset.GetString(DicomTag.StudyInstanceUID);
+                        seriesInstanceUID = dicomFile?.Dataset.GetString(DicomTag.SeriesInstanceUID);
+                        sopInstanceUID = dicomFile?.Dataset.GetString(DicomTag.SOPInstanceUID);
+                    }
+                    catch
+                    {
+                        // Ignore exceptions during UID extraction
+                    }
+
+                    AddFailureResult(operationResults,
+                     $"Error during registration: {ex.Message}",
+                     studyInstanceUID,
+                     seriesInstanceUID,
+                     sopInstanceUID);
+                    continue;
+                    
+                }
+            }
+
+            // Return the list of operation results
+            return operationResults;
+        }
+
+
+// TERMINA METODO

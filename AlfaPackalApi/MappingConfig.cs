@@ -20,7 +20,7 @@ namespace AlfaPackalApi
         public MappingConfig() {
             // Studies
             CreateMap<Study, StudyCreateDto>().ReverseMap();
-            CreateMap<StudyCreateDto, MainEntitiesCreateDto>().ReverseMap();
+            CreateMap<StudyCreateDto, MetadataDto>().ReverseMap();
             CreateMap<Study, StudyDto>()
              .ForMember(dest => dest.DescModality, opt => opt.MapFrom(src => ConverterHelp.GetDescModality(src.Modality)))
              .ForMember(dest => dest.DescBodyPartE, opt => opt.MapFrom(src => ConverterHelp.GetDescBodyPart(src.BodyPartExamined)))
@@ -31,7 +31,7 @@ namespace AlfaPackalApi
              .ConvertUsing(src => MapStudyToOHIFStudy(src));
             // Serie
             CreateMap<Serie, SerieCreateDto>().ReverseMap();
-            CreateMap<SerieCreateDto, MainEntitiesCreateDto>().ReverseMap();
+            CreateMap<SerieCreateDto, MetadataDto>().ReverseMap();
             CreateMap<SerieDetails, SerieDetailsCreateDto>().ReverseMap();
             CreateMap<SerieDetails, SerieDetailsUpdateDto>().ReverseMap();
             CreateMap<Serie, OHIFSerie>()
@@ -39,7 +39,7 @@ namespace AlfaPackalApi
 
             // Instances
             CreateMap<Instance, InstanceCreateDto>().ReverseMap();
-            CreateMap<InstanceCreateDto, MainEntitiesCreateDto>().ReverseMap();
+            CreateMap<InstanceCreateDto, MetadataDto>().ReverseMap();
             CreateMap<Instance, InstanceDto>().ReverseMap();
             CreateMap<InstanceDetails, InstanceDetailsCreateDto>().ReverseMap();
             CreateMap<Instance, OHIFInstance>()
@@ -60,7 +60,7 @@ namespace AlfaPackalApi
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
                 NormalizedEmail = registerRequest.Email.ToUpper(),
-                InstitutionId = registerRequest.InstitutionId,
+                //InstitutionId = registerRequest.InstitutionId,
                 Rol = registerRequest.Rol,
             };
         }

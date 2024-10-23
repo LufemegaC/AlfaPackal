@@ -44,11 +44,22 @@ namespace InterfazBasica_DCStore.Service.DicomServices
                     message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
                 }
 
-                // Handle multipart content for STOW-RS
                 if (apiRequest.RequestData is MultipartContent multipartContent)
                 {
-                    // Set the Content-Type for the multipart content
-                    multipartContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/related; type=\"application/dicom\"");
+                    // Obtener el valor actual del boundary
+                    var boundary = multipartContent.Headers.ContentType.Parameters.FirstOrDefault(p => p.Name == "boundary")?.Value;
+
+                    // Asegúrate de que el boundary esté configurado antes de sobrescribir el Content-Type
+                    if (!string.IsNullOrEmpty(boundary))
+                    {
+                        multipartContent.Headers.ContentType = MediaTypeHeaderValue.Parse($"multipart/related; boundary={boundary}; type=\"application/dicom\"");
+                    }
+                    else
+                    {
+                        // Manejar el caso donde el boundary no está presente
+                        multipartContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/related; type=\"application/dicom\"");
+                    }
+
                     message.Content = multipartContent;
                 }
                 else

@@ -20,18 +20,18 @@ namespace InterfazBasica_DCStore.Service
             _httpClient = httpClient;
         }
         
-        public Task<StowRsResponse> RegisterInstances(MultipartFormDataContent content)
+        public Task<StowRsResponse> RegisterInstances(MultipartContent content)
         {
             return RegisterInstancesAPI<StowRsResponse>(content, Token);
         }
         // ** METODOS DE REGISTRO DE ENTIDADES ** //
-        internal Task<T> RegisterInstancesAPI<T>(MultipartFormDataContent content, string token)
+        internal Task<T> RegisterInstancesAPI<T>(MultipartContent content, string token)
         {
             return DicomSendAsync<T>(new DicomAPIRequest()
             {
                 APIType = APIType.POST,
                 RequestData = content,
-                Url = _APIUrl + "/api/gateway/studies",
+                Url = _APIUrl + "/api/Study/studies",
                 Token = token
             });
         }

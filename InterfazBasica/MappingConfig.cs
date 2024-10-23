@@ -2,6 +2,7 @@
 using FellowOakDicom;
 using InterfazBasica_DCStore.Models.Dtos.MainEntities;
 using System.Globalization;
+using System.Transactions;
 using static InterfazBasica_DCStore.Utilities.DicomUtility;
 
 namespace InterfazBasica_DCStore
@@ -18,14 +19,14 @@ namespace InterfazBasica_DCStore
 
             //** Mapeo de Diccionario de metadatos a entidades de creacion Dto
             // Mapeo de Diccionario de metadatos a MainEntitiesCreateDto
-            CreateMap<Dictionary<DicomTag, object>, MainEntitiesCreateDto>()
+            CreateMap<Dictionary<DicomTag, object>, MetadataDto>()
                 .ConvertUsing(src => MapDictionaryToMainEntitiesCreateDto(src));
 
         }
 
-        private static MainEntitiesCreateDto MapDictionaryToMainEntitiesCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
+        private static MetadataDto MapDictionaryToMainEntitiesCreateDto(Dictionary<DicomTag, object> dicomTagDictionary)
         {
-            var mainEntitiesDto = new MainEntitiesCreateDto
+            var mainEntitiesDto = new MetadataDto
             {
                 // Mapeo de propiedades comunes en Estudio, Serie e Instancia
                 SOPClassUID = dicomTagDictionary.TryGetValue(DicomTag.SOPClassUID, out object sopClassUidValue) ? sopClassUidValue as string : string.Empty,
@@ -44,6 +45,11 @@ namespace InterfazBasica_DCStore
                 NumberOfFrames = dicomTagDictionary.TryGetValue(DicomTag.NumberOfFrames, out object numberOfFramesValue) ? Convert.ToInt32(numberOfFramesValue) : (int?)null,
                 ImagePositionPatient = dicomTagDictionary.TryGetValue(DicomTag.ImagePositionPatient, out object imagePositionValue)? imagePositionValue as string: string.Empty,
                 ImageOrientationPatient = dicomTagDictionary.TryGetValue(DicomTag.ImageOrientationPatient, out object imageOrientationValue)? imageOrientationValue as string: string.Empty,
+                
+                // Transaction info 
+                TransactionUID = dicomTagDictionary.TryGetValue(DicomTag.TransactionUID, out object transactionUID) ? transactionUID as string : string.Empty,
+                TransactionStatus = dicomTagDictionary.TryGetValue(DicomTag.TransactionStatus, out object transactionStatus) ? transactionStatus as string : string.Empty,
+                TransactionStatusComment = dicomTagDictionary.TryGetValue(DicomTag.TransactionStatusComment, out object transactionStatusComment) ? transactionStatusComment as string : string.Empty,
 
                 // Información de la Serie
                 SeriesDescription = dicomTagDictionary.TryGetValue(DicomTag.SeriesDescription, out object seriesDescriptionValue) ? seriesDescriptionValue as string : string.Empty,

@@ -8,8 +8,6 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Api_PACsServer.Modelos.AccessControl;
-using AutoMapper;
-using Api_PACsServer.Models.Dto.AuthDtos;
 using Api_PACsServer.Repository.DataAccess;
 using Api_PACsServer.Repository.IRepository.Authentication;
 

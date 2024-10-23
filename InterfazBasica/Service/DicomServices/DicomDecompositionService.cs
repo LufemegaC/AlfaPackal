@@ -42,9 +42,9 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             }
         }
 
-        public MainEntitiesCreateDto DicomDictionaryToCreateEntities(Dictionary<DicomTag, object> metadata)
+        public MetadataDto DicomDictionaryToCreateEntities(Dictionary<DicomTag, object> metadata)
         {
-            return _mapper.Map<MainEntitiesCreateDto>(metadata);
+            return _mapper.Map<MetadataDto>(metadata);
 
         }
 

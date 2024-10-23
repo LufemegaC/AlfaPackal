@@ -8,6 +8,8 @@ using Api_PACsServer.Orchestrators.IOrchestrator;
 using Api_PACsServer.Services.IService.Dicom;
 using Api_PACsServer.Services.IService.Pacs;
 using FellowOakDicom;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api_PACsServer.Orchestrators
 {
@@ -26,83 +28,6 @@ namespace Api_PACsServer.Orchestrators
             _serieService = serieService;
             _instanceService = instanceService;
             _azureDicomFileService = azureDicomFileService;
-        }
-
-
-        /// <remarks>
-        /// Pendiente :
-        /// 1.- Cambiar el retorno de las main por solo el PACSId ( cancelado )
-        /// </remarks>
-        public async Task<OperationResult> RegisterMainEntities(MainEntitiesCreateDto mainEntitiesCreate)
-        {
-            try
-            {
-                //file size
-                var fileSize = mainEntitiesCreate.TotalFileSizeMB;
-                // main UIDs
-                var studyInstanceUID = mainEntitiesCreate.StudyInstanceUID;
-                var serieInstanceUID = mainEntitiesCreate.SeriesInstanceUID;
-                var sopInstanceUID = mainEntitiesCreate.SOPInstanceUID;
-
-                // Check if entities exists
-                bool studyExists = await _studyService.ExistsByUID(studyInstanceUID);
-                bool seriesExists = await _serieService.ExistsByUID(serieInstanceUID);
-                bool instanceExists = await _instanceService.ExistsByUID(sopInstanceUID);
-
-                // Mapping create entitities
-                var studyCreateDto = await _studyService.MapToCreateDto(mainEntitiesCreate);
-                var serieCreateDto = await _serieService.MapToCreateDto(mainEntitiesCreate);
-                var instanceCreateDto = await _instanceService.MapToCreateDto(mainEntitiesCreate);
-               
-                //**
-                if (!instanceExists)
-                {
-                    // If the Study does not exist, create it
-                    Study study;
-                    if (!studyExists)
-                    {
-                        study = await _studyService.Create(studyCreateDto);
-                    }
-                    else
-                    {
-                        study = await _studyService.GetByUID(studyInstanceUID);
-                    }
-                    // If the Series does not exist, create it
-                    Serie serie;
-                    if (!seriesExists)
-                    {
-                        //serieCreateDto.StudyID = study.StudyID;
-                        serie = await _serieService.Create(serieCreateDto);
-                        if (studyExists)
-                        {
-                            await _studyService.UpdateDetailsForNewSerie(study.StudyInstanceUID);
-                        }
-                    }
-                    else
-                    {
-                        serie = await _serieService.GetByUID(serieInstanceUID);
-                    }
-                    // If the Instance does not exist, create it
-                    Instance instance = await _instanceService.Create(instanceCreateDto);
-                    if (studyExists)
-                    {
-                        await _studyService.UpdateDetailsForNewInstance(study.StudyInstanceUID, fileSize);
-                    }
-                    if (seriesExists)
-                    {
-                        await _serieService.UpdateLoadForNewInstance(serie.SeriesInstanceUID, fileSize);
-                    }
-                    return OperationResult.Success();
-                }
-                {
-                    return OperationResult.Warning("SOP Instance UID already exists.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failure($"Error during registration: {ex.Message}");
-            }
-            
         }
 
         public UserStudiesListDto GetRecentStudies(PaginationParameters parameters)
@@ -147,134 +72,77 @@ namespace Api_PACsServer.Orchestrators
         /// <summary>
         /// ** NEW VERSION FOR REGISTER DICOM OBJECT
         /// </summary>
-        /// <param name="RequestDto"></param>
+        /// <param name="dicomFilesPackages"></param>
         /// <returns></returns>
-        public async Task<List<DicomOperationResult>> RegisterDicomInstances(List<StowRsRequestDto> requestsDto)
+        public async Task<List<DicomOperationResult>> RegisterDicomInstances(List<DicomFilePackage> dicomFilesPackages, string ReferencedStudyUID = null)
         {
             var operationResults = new List<DicomOperationResult>();
 
-            foreach (var requestDto in requestsDto)
+            foreach (var dicomPackage in dicomFilesPackages)
             {
-                DicomFile dicomFile = null; // Declare dicomFile here to access it in the catch block
-
+                //DicomFile dicomFile = null; // Declare dicomFile here to access it in the catch block
                 try
                 {
-                    //** Read DICOM file
-                    try
-                    {
-                        
-                        using (var stream = requestDto.DicomFile.OpenReadStream())
-                        {
-                            dicomFile = DicomFile.Open(stream);
-                        }
-                    }
-                    catch (DicomFileException ex)
-                    {
-                        operationResults.Add(DicomOperationResult.Failure(
-                            "Cannot parse DICOM file.",
-                            null, null, null,
-                            49152 // Cannot Understand
-                        ));
-                        continue;
-                    }
+                    ////** Read DICOM file
+                    //try
+                    //{
+                    //    dicomPackage.DicomFile.Position = 0;
+
+                    //    dicomPackage.DicomFile.
+
+                    //    if (dicomPackage.DicomFile == null || dicomPackage.DicomFile.Length == 0)
+                    //    {
+                    //        operationResults.Add(DicomOperationResult.Failure(
+                    //            "DICOM file is missing or empty.",
+                    //            null, null, null,
+                    //            49152 // Cannot Understand
+                    //        ));
+                    //        continue;
+                    //    }
+
+                    //    using (var memoryStream = new MemoryStream())
+                    //    {
+                    //        await dicomPackage.DicomFile.CopyToAsync(memoryStream);
+                    //        memoryStream.Position = 0; // Reiniciar la posición para la lectura
+
+                    //        dicomFile = DicomFile.Open(memoryStream);
+                    //    }
+                    //}
+                    //catch (DicomFileException ex)
+                    //{
+                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //        "Cannot parse DICOM file.",
+                    //        null, null, null,
+                    //        49152 // Cannot Understand
+                    //    ));
+                    //    continue;
+                    //}
 
                     // Extract UIDs
-                    var extractedStudyInstanceUID = dicomFile.Dataset.GetString(DicomTag.StudyInstanceUID);
-                    var extractedSeriesInstanceUID = dicomFile.Dataset.GetString(DicomTag.SeriesInstanceUID);
-                    var extractedSOPInstanceUID = dicomFile.Dataset.GetString(DicomTag.SOPInstanceUID);
+                    var extractedStudyInstanceUID = dicomPackage.DicomFile.Dataset.GetString(DicomTag.StudyInstanceUID);
+                    var extractedSeriesInstanceUID = dicomPackage.DicomFile.Dataset.GetString(DicomTag.SeriesInstanceUID);
+                    var extractedSOPInstanceUID = dicomPackage.DicomFile.Dataset.GetString(DicomTag.SOPInstanceUID);
                     // Flags
                     bool dataCoerced = false;
-
                     // Validate UIDs
-                    if (requestDto.Metadata.StudyInstanceUID != extractedStudyInstanceUID ||
-                        requestDto.Metadata.SeriesInstanceUID != extractedSeriesInstanceUID ||
-                        requestDto.Metadata.SOPInstanceUID != extractedSOPInstanceUID)
+                    if (dicomPackage.Metadata.StudyInstanceUID != extractedStudyInstanceUID ||
+                        dicomPackage.Metadata.SeriesInstanceUID != extractedSeriesInstanceUID ||
+                        dicomPackage.Metadata.SOPInstanceUID != extractedSOPInstanceUID)
                     {
                         // Add failure result due to UID mismatch
                         AddFailureResult(operationResults,
-                            "The provided UIDs do not match those in the DICOM file.",
-                            extractedStudyInstanceUID,
-                            extractedSeriesInstanceUID,
-                            extractedSOPInstanceUID);
+                                "The provided UIDs do not match those in the DICOM file.",
+                                extractedStudyInstanceUID,
+                                extractedSeriesInstanceUID,
+                                extractedSOPInstanceUID);
                         continue; // Skip to the next instance
                     }
-
-                    // ** PENDIENTE IMPLEMENTACION - VALIDAR ESPACIO DISPONIBLE
-                    //var storageResult = await _azureDicomFileService.(requestDto.Metadata.TotalFileSizeMB); );
-                    //if (!storageResult.IsSuccess)
-                    //{
-                    //    // Add failure result due to storage error
-                    //    AddFailureResult(operationResults,
-                    //        storageResult.ErrorMessage,
-                    //        extractedStudyInstanceUID,
-                    //        extractedSeriesInstanceUID,
-                    //        extractedSOPInstanceUID,
-                    //        42752); // Out of Resources);
-                    //    continue; // Skip to the next instance
-                    //}
-
-                    // ** PENSIENTE IMPLEMENTACION - VALIDACION DE SOPORTE DE SOPCLASSUID
-                    // Validate SOP Class UID
-                    //var sopClassUID = dicomFile.Dataset.GetString(DicomTag.SOPClassUID);
-                    //// Check if SOP Class is supported
-                    //if (!SupportedSopClasses.Contains(sopClassUID))
-                    //{
-                    //    operationResults.Add(DicomOperationResult.Failure(
-                    //        "Unsupported SOP Class.",
-                    //        extractedStudyInstanceUID,
-                    //        extractedSeriesInstanceUID,
-                    //        extractedSOPInstanceUID,
-                    //        43264 // Data Set Does Not Match SOP Class
-                    //    ));
-                    //    continue;
-                    //}
-
-                    // ** PENSIENTE IMPLEMENTACION - VALIDACION DE ATRIBUTOS SOPCLASSUID
-                    // Validate required attributes for the SOP Class
-                    //if (!AreRequiredAttributesPresent(dicomFile.Dataset, sopClassUID))
-                    //{
-                    //    operationResults.Add(DicomOperationResult.Failure(
-                    //        "Missing required attributes for the SOP Class.",
-                    //        extractedStudyInstanceUID,
-                    //        extractedSeriesInstanceUID,
-                    //        extractedSOPInstanceUID,
-                    //        43264 // Data Set Does Not Match SOP Class
-                    //    ));
-                    //    continue;
-                    //}
-
-                    // ** PENDIENTE IMPLEMENTACION - VALIDACION SOPORTE TRANSFER SYNTAX UID
-                    // Validate Transfer Syntax
-                    //var transferSyntaxUID = dicomFile.FileMetaInfo.TransferSyntaxUID.UID;
-                    //if (!SupportedTransferSyntaxes.Contains(transferSyntaxUID))
-                    //{
-                    //    operationResults.Add(DicomOperationResult.Failure(
-                    //        "Referenced Transfer Syntax not supported.",
-                    //        extractedStudyInstanceUID,
-                    //        extractedSeriesInstanceUID,
-                    //        extractedSOPInstanceUID,
-                    //        290 // Referenced Transfer Syntax Not Supported
-                    //    ));
-                    //    continue;
-                    //}
-
-                    // ** PENDIENTE IMPLEMENTACION - VALIDA SI ES NECESARIO AJUSTAR METADATOS
-                    //if (NeedsModification(dicomFile.Dataset))
-                    //{
-                    //    CoerceDataElements(dicomFile.Dataset);
-                    //    dataCoerced = true;
-                    //}
-
-
                     // Storage Metadata
-                    var metadataResult = await RegisterMetadata(requestDto.Metadata);
+                    var metadataResult = await RegisterMetadata(dicomPackage.Metadata, ReferencedStudyUID);
 
                     if (!metadataResult.IsSuccess)
                     {
-                        // PENDIENTE 
-                        //if (dataCoerced)  
-
-                       // Add failure result due to metadata registration error
+                        // Add failure result due to metadata registration error
                         AddFailureResult(operationResults,
                             metadataResult.ErrorMessage,
                             extractedStudyInstanceUID,
@@ -284,23 +152,24 @@ namespace Api_PACsServer.Orchestrators
                     }
 
                     // Storage File
-                    var storageResult = await _azureDicomFileService.StoreDicomFileAsync(
-                        requestDto.DicomFile,
-                        extractedStudyInstanceUID,
-                        extractedSeriesInstanceUID,
-                        extractedSOPInstanceUID
-                    );
+                    // NOT DELETE
+                    //var storageResult = await _azureDicomFileService.StoreDicomFileAsync(
+                    //    dicomPackage.DicomFile,
+                    //    extractedStudyInstanceUID,
+                    //    extractedSeriesInstanceUID,
+                    //    extractedSOPInstanceUID
+                    //);
 
-                    if (!storageResult.IsSuccess)
-                    {
-                        // Add failure result due to storage error
-                        AddFailureResult(operationResults,
-                            storageResult.ErrorMessage,
-                            extractedStudyInstanceUID,
-                            extractedSeriesInstanceUID,
-                            extractedSOPInstanceUID);
-                        continue; // Skip to the next instance
-                    }
+                    //if (!storageResult.IsSuccess)
+                    //{
+                    //    // Add failure result due to storage error
+                    //    AddFailureResult(operationResults,
+                    //        storageResult.ErrorMessage,
+                    //        extractedStudyInstanceUID,
+                    //        extractedSeriesInstanceUID,
+                    //        extractedSOPInstanceUID);
+                    //    continue; // Skip to the next instance
+                    //}
 
                     // Add success result
                     operationResults.Add(DicomOperationResult.Success(
@@ -326,9 +195,9 @@ namespace Api_PACsServer.Orchestrators
 
                     try
                     {
-                        studyInstanceUID = dicomFile?.Dataset.GetString(DicomTag.StudyInstanceUID);
-                        seriesInstanceUID = dicomFile?.Dataset.GetString(DicomTag.SeriesInstanceUID);
-                        sopInstanceUID = dicomFile?.Dataset.GetString(DicomTag.SOPInstanceUID);
+                        studyInstanceUID = dicomPackage.DicomFile.Dataset.GetString(DicomTag.StudyInstanceUID);
+                        seriesInstanceUID = dicomPackage.DicomFile?.Dataset.GetString(DicomTag.SeriesInstanceUID);
+                        sopInstanceUID = dicomPackage.DicomFile?.Dataset.GetString(DicomTag.SOPInstanceUID);
                     }
                     catch
                     {
@@ -336,12 +205,12 @@ namespace Api_PACsServer.Orchestrators
                     }
 
                     AddFailureResult(operationResults,
-                     $"Error during registration: {ex.Message}",
-                     studyInstanceUID,
-                     seriesInstanceUID,
-                     sopInstanceUID);
+                        $"Error during registration: {ex.Message}",
+                        studyInstanceUID,
+                        seriesInstanceUID,
+                        sopInstanceUID);
                     continue;
-                    
+
                 }
             }
 
@@ -349,26 +218,30 @@ namespace Api_PACsServer.Orchestrators
             return operationResults;
         }
 
-        internal async Task<OperationResult> RegisterMetadata(MetadataDto mainEntitiesCreate)
+        internal async Task<OperationResult> RegisterMetadata(MetadataDto metadataDto, string referencedStudyUID)
         {
             try
             {
                 //file size
-                var fileSize = mainEntitiesCreate.TotalFileSizeMB;
+                var fileSize = metadataDto.TotalFileSizeMB;
                 // main UIDs
-                var studyInstanceUID = mainEntitiesCreate.StudyInstanceUID;
-                var serieInstanceUID = mainEntitiesCreate.SeriesInstanceUID;
-                var sopInstanceUID = mainEntitiesCreate.SOPInstanceUID;
-
-                // Check if entities exists
-                bool studyExists = await _studyService.ExistsByUID(studyInstanceUID);
+                var studyInstanceUID = metadataDto.StudyInstanceUID;
+                var serieInstanceUID = metadataDto.SeriesInstanceUID;
+                var sopInstanceUID = metadataDto.SOPInstanceUID;
+                // Llamamos a ValidateStudyUIDs y desempaquetamos los resultados
+                (ValidationResult validationResult, bool studyExists) = await ValidateStudyUIDs(studyInstanceUID, referencedStudyUID);
+                // Si la validación falla, retornamos un fallo
+                if (validationResult != ValidationResult.Success)
+                {
+                    return OperationResult.Failure(validationResult.ErrorMessage);
+                }
                 bool seriesExists = await _serieService.ExistsByUID(serieInstanceUID);
                 bool instanceExists = await _instanceService.ExistsByUID(sopInstanceUID);
 
                 // Mapping create entitities
-                var studyCreateDto = await _studyService.MapMetadataToCreateDto(mainEntitiesCreate);
-                var serieCreateDto = await _serieService.MapMetadataToCreateDto(mainEntitiesCreate);
-                var instanceCreateDto = await _instanceService.MapMetadataToCreateDto(mainEntitiesCreate);
+                var studyCreateDto = await _studyService.MapMetadataToCreateDto(metadataDto);
+                var serieCreateDto = await _serieService.MapMetadataToCreateDto(metadataDto);
+                var instanceCreateDto = await _instanceService.MapMetadataToCreateDto(metadataDto);
 
                 //**
                 if (!instanceExists)
@@ -389,10 +262,6 @@ namespace Api_PACsServer.Orchestrators
                     {
                         //serieCreateDto.StudyID = study.StudyID;
                         serie = await _serieService.Create(serieCreateDto);
-                        if (studyExists)
-                        {
-                            await _studyService.UpdateDetailsForNewSerie(study.StudyInstanceUID);
-                        }
                     }
                     else
                     {
@@ -400,14 +269,7 @@ namespace Api_PACsServer.Orchestrators
                     }
                     // If the Instance does not exist, create it
                     Instance instance = await _instanceService.Create(instanceCreateDto);
-                    if (studyExists)
-                    {
-                        await _studyService.UpdateDetailsForNewInstance(study.StudyInstanceUID, fileSize);
-                    }
-                    if (seriesExists)
-                    {
-                        await _serieService.UpdateLoadForNewInstance(serie.SeriesInstanceUID, fileSize);
-                    }
+                    await UpdateStudyAndSeriesDetails(study, serie, fileSize);
                     return OperationResult.Success();
                 }
                 {
@@ -422,13 +284,8 @@ namespace Api_PACsServer.Orchestrators
         }
 
         // Add error instance to List
-        private void AddFailureResult(
-            List<DicomOperationResult> operationResults,
-            string errorMessage,
-            string studyInstanceUID,
-            string seriesInstanceUID,
-            string sopInstanceUID,
-            int failureReason = 272)
+        private void AddFailureResult(List<DicomOperationResult> operationResults, string errorMessage,
+             string studyInstanceUID, string seriesInstanceUID, string sopInstanceUID, int failureReason = 272)
         {
             operationResults.Add(DicomOperationResult.Failure(
                 errorMessage: errorMessage,
@@ -437,6 +294,56 @@ namespace Api_PACsServer.Orchestrators
                 sopInstanceUID: sopInstanceUID,
                 failureReason: failureReason
             ));
+        }
+
+
+        /// <summary>
+        /// Validates the provided StudyInstanceUID against the ReferencedStudyInstanceUID, if provided.
+        /// If the ReferencedStudyInstanceUID is not null or empty, it ensures that it matches the StudyInstanceUID.
+        /// Additionally, it checks whether the StudyInstanceUID exists in the system.
+        /// </summary>
+        /// <param name="studyInstanceUID">The StudyInstanceUID of the DICOM instance being processed.</param>
+        /// <param name="referencedStudyUID">The optional ReferencedStudyInstanceUID that should match the StudyInstanceUID if provided.</param>
+        /// <returns>
+        /// A <see cref="Tuple{ValidationResult, bool}"/> where the first value is a <see cref="ValidationResult"/> indicating success or failure,
+        /// and the second value is a boolean indicating whether the StudyInstanceUID exists in the system.
+        /// If the ReferencedStudyInstanceUID is provided and does not match the StudyInstanceUID, the method returns a failure message.
+        /// If the StudyInstanceUID exists, it returns success along with true. If it does not exist, and the ReferencedStudyInstanceUID is provided,
+        /// it returns a failure message. Otherwise, it returns success with false.
+        /// </returns>
+        private async Task<Tuple<ValidationResult, bool>> ValidateStudyUIDs(string studyInstanceUID, string referencedStudyUID)
+        {
+            bool IsReferenced = !string.IsNullOrEmpty(referencedStudyUID);
+            if (IsReferenced && (studyInstanceUID != referencedStudyUID) )
+            {
+                return Tuple.Create(new ValidationResult("Referenced StudyInstanceUID does not match the instance's StudyInstanceUID."), false);
+            }
+
+            if(await _studyService.ExistsByUID(studyInstanceUID))
+            {
+                return Tuple.Create(ValidationResult.Success, true);
+            }
+            else if (IsReferenced)
+            {
+                return Tuple.Create(new ValidationResult("Referenced StudyInstanceUID not found."), false);
+            }
+            else
+            {
+                return Tuple.Create(ValidationResult.Success, false);
+            }
+        }
+
+
+        private async Task UpdateStudyAndSeriesDetails(Study study, Serie serie, decimal fileSize)
+        {
+            if (study != null)
+            {
+                await _studyService.UpdateDetailsForNewInstance(study.StudyInstanceUID, fileSize);
+            }
+            if (serie != null)
+            {
+                await _serieService.UpdateLoadForNewInstance(serie.SeriesInstanceUID, fileSize);
+            }
         }
     }
 }
