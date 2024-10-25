@@ -10,7 +10,6 @@ using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Services.IService.Pacs;
 using AutoMapper;
 
-
 namespace Api_PACsServer.Services
 {
     public class StudyService : IStudyService
@@ -113,17 +112,17 @@ namespace Api_PACsServer.Services
             return await _studyDetailsRepo.Update(studyDetails);
         }
 
-        public UserStudiesListDto GetRecentStudies(PaginationParameters parameters)
-        {
-            var studiesList = _studyRepo.GetRecentStudies(parameters);
-            // Usar AutoMapper para mapear la lista de Study a StudyDto, incluyendo los campos adicionales
-            var studiesDtoList = _mapper.Map<IEnumerable<StudyDto>>(studiesList);
-            return new UserStudiesListDto
-            {
-                Studies = studiesDtoList,
-                TotalPages = studiesList.MetaData.TotalCount
-            };
-        }
+        //public UserStudiesListDto GetRecentStudies(PaginationParameters parameters)
+        //{
+        //    var studiesList = _studyRepo.GetRecentStudies(parameters);
+        //    // Usar AutoMapper para mapear la lista de Study a StudyDto, incluyendo los campos adicionales
+        //    var studiesDtoList = _mapper.Map<IEnumerable<StudyDto>>(studiesList);
+        //    return new UserStudiesListDto
+        //    {
+        //        Studies = studiesDtoList,
+        //        TotalPages = studiesList.MetaData.TotalCount
+        //    };
+        //}
 
         //public async Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata)
         //{
@@ -133,6 +132,12 @@ namespace Api_PACsServer.Services
         public async Task<StudyCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {
             return _mapper.Map<StudyCreateDto>(metadata);
+        }
+
+        public async Task<List<StudyDto>> AllStudiesByControlParams(ControlQueryParametersDto parameters)
+        {
+            var studiesList = _studyRepo.GetStudies(int.Parse(parameters.Page),int.Parse(parameters.PageSize));
+            return _mapper.Map<List<StudyDto>>(studiesList);
         }
     }
 }

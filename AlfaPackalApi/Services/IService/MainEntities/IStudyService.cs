@@ -48,14 +48,14 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// <summary>
         /// Updates the load information of a Study entity for a new series.
         /// </summary>
-        /// <param name="serieInstanceUID">The UID of the Study to be updated.</param>
+        /// <param name="studyInstanceUID">The UID of the Study to be updated.</param>
         /// <returns>The task result contains the updated StudyLoad entity.</returns>
         Task<StudyDetails> UpdateDetailsForNewSerie(string studyInstanceUID);
 
         /// <summary>
         /// Updates the load information of a Study entity for a new instance.
         /// </summary>
-        /// <param name="serieInstanceUID">The UID of the Study to be updated.</param>
+        /// <param name="studyInstanceUID">The UID of the Study to be updated.</param>
         /// <param name="totalSizeFile">The total size of the file in MB.</param>
         /// <returns>The task result contains the updated StudyLoad entity.</returns>
         Task<StudyDetails> UpdateDetailsForNewInstance(string studyInstanceUID, decimal totalSizeFile);
@@ -68,7 +68,7 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// A task result containing a list of StudyDto objects representing the recent studies,
         /// paginated according to the provided parameters.
         /// </returns>
-        UserStudiesListDto GetRecentStudies(PaginationParameters parameters);
+        Task<List<StudyDto>> AllStudiesByControlParams (ControlQueryParametersDto parameters);
 
         ///// <summary>
         ///// Maps the provided metadata from DICOM to a StudyCreateDto object.

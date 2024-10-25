@@ -6,6 +6,7 @@
 
         public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
+            if (pageSize <= 0) throw new ArgumentException("Page size must be greater than zero.");
             MetaData = new MetaData
             {
                 TotalCount = count,

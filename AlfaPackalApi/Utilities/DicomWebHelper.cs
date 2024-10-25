@@ -237,14 +237,14 @@ namespace Api_PACsServer.Utilities
                     }
                 }
             }
-
             return (controlParamsDto, studyParamsDto);
         }
+
         // List of known control parameters (not part of DICOM tags)
         internal static List<string>  controlParameters = new List<string> 
         { 
             "limit", 
-            "order", 
+            "orderby", 
             "offset", 
             "includeFields", 
             "format", 
@@ -286,6 +286,93 @@ namespace Api_PACsServer.Utilities
             { "ImageOrientationPatient", "00200037" }
         };
 
+        /// <summary>
+        /// Converts a list of StudyDto objects to a DICOM JSON string for QIDO-RS response.
+        /// Only essential study attributes are included: PatientName, PatientAge, PatientSex, StudyDate, Modality, BodyPartExamined.
+        /// </summary>
+        /// <param name="studyDtos">List of StudyDto containing the study metadata.</param>
+        /// <returns>A JSON string representing the combined DICOM JSON structure.</returns>
+        public static string ConvertStudiesToDicomJsonString(List<StudyDto> studyDtos)
+        {
+            var dicomJsonArray = new JArray();
+
+            foreach (var study in studyDtos)
+            {
+                var dicomJson = new JObject();
+
+                // Patient's Name
+                if (!string.IsNullOrEmpty(study.PatientName))
+                {
+                    dicomJson["00100010"] = new JObject
+                    {
+                        ["vr"] = "PN",
+                        ["Value"] = new JArray(study.PatientName)
+                    };
+                }
+
+                // Patient's Age
+                if (!string.IsNullOrEmpty(study.PatientAge))
+                {
+                    dicomJson["00101010"] = new JObject
+                    {
+                        ["vr"] = "AS",
+                        ["Value"] = new JArray(study.PatientAge)
+                    };
+                }
+
+                // Patient's Sex
+                if (!string.IsNullOrEmpty(study.PatientSex))
+                {
+                    dicomJson["00100040"] = new JObject
+                    {
+                        ["vr"] = "CS",
+                        ["Value"] = new JArray(study.PatientSex)
+                    };
+                }
+
+                // Study Date
+                if (study.StudyDate != DateTime.MinValue)
+                {
+                    dicomJson["00080020"] = new JObject
+                    {
+                        ["vr"] = "DA",
+                        ["Value"] = new JArray(study.StudyDate.ToString("yyyyMMdd"))
+                    };
+                }
+
+                // Modality
+                if (!string.IsNullOrEmpty(study.Modality))
+                {
+                    dicomJson["00080060"] = new JObject
+                    {
+                        ["vr"] = "CS",
+                        ["Value"] = new JArray(study.Modality)
+                    };
+                }
+
+                // Body Part Examined
+                if (!string.IsNullOrEmpty(study.BodyPartExamined))
+                {
+                    dicomJson["00180015"] = new JObject
+                    {
+                        ["vr"] = "CS",
+                        ["Value"] = new JArray(study.BodyPartExamined)
+                    };
+                }
+
+                dicomJsonArray.Add(dicomJson);
+            }
+
+            var result = new JObject
+            {
+                ["Studies"] = dicomJsonArray
+            };
+
+            // Convert the JObject to a JSON string
+            return JsonConvert.SerializeObject(result);
+        }
+        /// *** QIDO-RS SECCION : ENDS *** ///
+
         // --- CONVERTER ZONE --- //
         private static readonly HashSet<string> SupportedSopClasses = new HashSet<string>
         {
@@ -315,7 +402,7 @@ namespace Api_PACsServer.Utilities
 
 
 
-        // PENDIENTES DEFINIS SU POSICION :
+        // PENDIENTES DEFINIR SU POSICION :
 
         /// <summary>
         /// Converts a DICOM JSON structure into a MainEntitiesCreateDto object.

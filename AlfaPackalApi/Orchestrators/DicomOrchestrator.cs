@@ -4,6 +4,7 @@ using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Models;
 using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Orchestrators.IOrchestrator;
 using Api_PACsServer.Services.IService.Dicom;
 using Api_PACsServer.Services.IService.Pacs;
@@ -30,44 +31,45 @@ namespace Api_PACsServer.Orchestrators
             _azureDicomFileService = azureDicomFileService;
         }
 
-        public UserStudiesListDto GetRecentStudies(PaginationParameters parameters)
+        //  *** QIDO-RS *** //
+
+
+        public async Task<List<StudyDto>> GetInfoStudy(StudyQueryParametersDto studyQuery, ControlQueryParametersDto controlQuery)
         {
-            return _studyService.GetRecentStudies(parameters);
+            // Evaluar si se debe ejecutar una consulta de paginación estándar
+            if (IsPaginationOnlyQuery(studyQuery, controlQuery))
+            {
+                var studies = await _studyService.AllStudiesByControlParams(controlQuery);
+                return studies;
+            }
+            throw new NotImplementedException();
         }
 
-        public async Task<OperationResult> GetInfoStudy(string studyInstanceUID)
-        {
-            try
-            {
-                var studyExists = await _studyService.ExistsByUID(studyInstanceUID);
-                //**
-                if (!studyExists)
-                {
-                    return OperationResult.Failure("Study not found by UID.");
-                }
-                // Retrieve the study mapped as an OHIFStudy object
-                var studyOHIF = await _studyService.GetOHIFByUID(studyInstanceUID);
-                // Retrieve all series associated with the study
-                //var serie01 = await _serieService.GetAllByStudyUID("1.2.392.200036.9125.2.100010611365144.6578282807.3956157");
-                var seriesList = await _serieService.GetAllByStudyUID(studyInstanceUID);
-                // Convert the series collection from IEnumerable to List and assign to OHIFStudy
-                studyOHIF.Series = seriesList.ToList();
-                // Loop through each series to retrieve its associated instances
-                foreach (var serie in studyOHIF.Series)
-                {
-                    var instanceList = await _instanceService.GetAllBySerieUID(serie.SeriesInstanceUID);
-                    // Convert the instance collection from IEnumerable to List and assign to the corresponding series
-                    serie.Instances = instanceList.ToList();
-                }
-                // Return the fully populated study with its series and instances
-                return OperationResult.Success(studyOHIF);
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failure($"Error during registration: {ex.Message}");
-            }
 
+        private bool IsPaginationOnlyQuery(StudyQueryParametersDto studyParamsDto, ControlQueryParametersDto controlParamsDto)
+        {
+            // validate atributes
+            bool hasStudySpecificParams = !string.IsNullOrEmpty(studyParamsDto.PatientName) ||
+                                          !string.IsNullOrEmpty(studyParamsDto.StudyDate) ||
+                                          !string.IsNullOrEmpty(studyParamsDto.AccessionNumber);
+
+            bool hasPaginationParams = !string.IsNullOrEmpty(controlParamsDto.Page) && !string.IsNullOrEmpty(controlParamsDto.PageSize) &&
+                                       !string.IsNullOrEmpty(controlParamsDto.Order);
+            
+            // check values
+            if (int.Parse(controlParamsDto.Page) <= 0)
+                throw new ArgumentException("Page number must be greater than zero.");
+            
+            if (int.Parse(controlParamsDto.PageSize) <= 0)
+                throw new ArgumentException("Page size must be greater than zero.");
+
+            // Si no hay parámetros específicos del estudio y hay parámetros de paginación, entonces es una consulta estándar de paginación
+            return !hasStudySpecificParams && hasPaginationParams;
         }
+
+        //  *** QIDO-RS *** //
+
+        //  *** STOW-RS *** //
 
         /// <summary>
         /// ** NEW VERSION FOR REGISTER DICOM OBJECT
@@ -345,5 +347,11 @@ namespace Api_PACsServer.Orchestrators
                 await _serieService.UpdateLoadForNewInstance(serie.SeriesInstanceUID, fileSize);
             }
         }
+
+        //  *** STOW-RS *** //
+
+
+
+
     }
 }

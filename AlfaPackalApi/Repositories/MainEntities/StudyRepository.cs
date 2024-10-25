@@ -19,24 +19,20 @@ namespace Api_PACsServer.Repositorio.Pacs
             _pageSize = 15; 
         }
 
-        public PagedList<Study> GetRecentStudies(PaginationParameters parameters)
-        {
-
+        public PagedList<Study> GetStudies(int pageNumber, int pageSize)
+        {     
             IQueryable<Study> query = _db.Studies
             //.Where(study => study.InstitutionID == parameters.InstitutionId)
-            .OrderByDescending(study => study.StudyDate)
-            //.Include(study => study.Institution)
-            .Include(study => study.Series);
+            .OrderByDescending(study => study.StudyDate);
 
             // Get the total count of records that match the query
             var count = query.Count();
             // Apply pagination to the query
-            var items = query.Skip((parameters.PageNumber - 1) * _pageSize)
-                                   .Take(_pageSize)
+            var items = query.Skip((pageNumber - 1) * pageSize)
+                                   .Take(pageSize)
                                    .ToList();
             // Return the paginated list of studies
-            return new PagedList<Study>(items, count, parameters.PageNumber, _pageSize);
+            return new PagedList<Study>(items, count, pageNumber, pageSize);
         }
-
     }
 }

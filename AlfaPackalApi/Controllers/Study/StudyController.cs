@@ -97,18 +97,11 @@ namespace Api_PACsServer.Controllers.GatewayData
                 // Dividir los parámetros en DTOs correspondientes
                 var (controlParamsDto, studyParamsDto) = DicomWebHelper.MapQueryParamsToDtos(queryParams);
 
+                var studyDtos = await _orchestrator.GetInfoStudy(studyParamsDto, controlParamsDto);
 
-                // Aquí se procesaría la solicitud con base en los parámetros recibidos
-                // Por ejemplo, podrías crear una lógica para buscar en tu base de datos o interactuar con otro servicio
+                var jsonResponse = DicomWebHelper.ConvertStudiesToDicomJsonString(studyDtos);
 
-                // Este es un ejemplo de respuesta simulada
-                var responseData = new List<object>
-                {
-                    new { StudyInstanceUID = "1.2.840.113619.2.55.3.604688084.233.1566038400.467", Parameters = requestData }
-                };
-
-                //return Json(responseData);
-                return null;
+                return Content(jsonResponse, "application/dicom+json");
             }
             catch (Exception ex)
             {

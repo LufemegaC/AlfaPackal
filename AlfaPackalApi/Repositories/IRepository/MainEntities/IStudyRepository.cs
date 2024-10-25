@@ -12,10 +12,11 @@ namespace Api_PACsServer.Repositorio.IRepositorio.Pacs
     public interface IStudyRepository : IWriteRepository<Study>, IReadRepository<Study>
     {
         /// <summary>
-        /// Gets the most recent studies for a specific institution.
+        /// Gets the most recent studies for a specific institution with pagination options.
         /// </summary>
-        /// <param name="institutionId">The ID of the institution to filter studies by.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains a list of recent Study entities.</returns>
-        PagedList<Study> GetRecentStudies(PaginationParameters parameters);
+        /// <param name="pageNumber">The page number for pagination.</param>
+        /// <param name="pageSize">The size of each page to be returned.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains
+        PagedList<Study> GetStudies(int pageNumber, int pageSize);
     }
 }

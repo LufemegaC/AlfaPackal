@@ -1,14 +1,8 @@
-﻿using Api_PACsServer.Models;
-using Api_PACsServer.Models.Dto;
-using Api_PACsServer.Models.Dto.DicomWeb;
+﻿using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Orchestrators.IOrchestrator;
-using Api_PACsServer.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net;
 
 namespace Api_PACsServer.Controllers
 {
