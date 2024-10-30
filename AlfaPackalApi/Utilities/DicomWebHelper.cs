@@ -6,6 +6,7 @@ using FellowOakDicom;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static Api_PACsServer.Utilities.QueryOperators;
 
 namespace Api_PACsServer.Utilities
 {
@@ -179,230 +180,6 @@ namespace Api_PACsServer.Utilities
             }
             return null;
         }
-
-
-
-        /// *** STOW-RS SECCION : ENDS *** ///
-
-        /// *** QIDO-RS SECCION : BEGINS *** ///
-
-        /// <summary>
-        /// Maps the query parameters to ControlQueryParametersDto and StudyQueryParametersDto.
-        /// </summary>
-        /// <param name="queryParams">Dictionary containing query parameters from the request.</param>
-        /// <returns>Tuple containing ControlQueryParametersDto and StudyQueryParametersDto.</returns>
-        public static (ControlQueryParametersDto, StudyQueryParametersDto) MapQueryParamsToDtos(Dictionary<string, string> queryParams)
-        {
-            var controlParamsDto = new ControlQueryParametersDto();
-            var studyParamsDto = new StudyQueryParametersDto();
-
-            foreach (var param in queryParams)
-            {
-                // Si el parámetro es un parámetro de control, asignarlo al ControlQueryParametersDto
-                if (controlParameters.Contains(param.Key.ToLower()))
-                {
-                    switch (param.Key.ToLower())
-                    {
-                        case "limit":
-                            controlParamsDto.Limit = param.Value;
-                            break;
-                        case "order":
-                            controlParamsDto.Order = param.Value;
-                            break;
-                        case "offset":
-                            controlParamsDto.Offset = param.Value;
-                            break;
-                        case "includefields":
-                            controlParamsDto.IncludeFields.AddRange(param.Value.Split(',').Select(field => field.Trim()));
-                            break;
-                        case "format":
-                            controlParamsDto.Format = param.Value;
-                            break;
-                        case "page":
-                            controlParamsDto.Page = param.Value;
-                            break;
-                        case "pagesize":
-                            controlParamsDto.PageSize = param.Value;
-                            break;
-                    }
-                }
-                // Si el parámetro es un atributo DICOM, asignarlo al StudyQueryParametersDto
-                else if (DicomTagToDto.ContainsKey(param.Key) || DicomTagToDto.ContainsValue(param.Key))
-                {
-                    var propertyKey = DicomTagToDto.ContainsKey(param.Key) ? param.Key : DicomTagToDto.FirstOrDefault(x => x.Value == param.Key).Key;
-                    var propertyInfo = studyParamsDto.GetType().GetProperty(propertyKey);
-                    if (propertyInfo != null)
-                    {
-                        propertyInfo.SetValue(studyParamsDto, param.Value);
-                    }
-                }
-            }
-            return (controlParamsDto, studyParamsDto);
-        }
-
-        // List of known control parameters (not part of DICOM tags)
-        internal static List<string>  controlParameters = new List<string> 
-        { 
-            "limit", 
-            "orderby", 
-            "offset", 
-            "includeFields", 
-            "format", 
-            "page",
-            "pageSize" 
-        
-        };
-
-        internal static Dictionary<string, string> DicomTagToDto = new Dictionary<string, string>
-        {
-            // Study-level attributes
-            { "PatientID", "00100020" },
-            { "StudyDate", "00080020" },
-            { "AccessionNumber", "00080050" },
-            { "StudyInstanceUID", "0020000D" },
-            { "PatientName", "00100010" },
-            { "PatientAge", "00101010" },
-            { "PatientSex", "00100040" },
-            { "InstitutionName", "00080080" },
-            { "BodyPartExamined", "00180015" },
-
-            // Series-level attributes
-            { "SeriesInstanceUID", "0020000E" },
-            { "SeriesNumber", "00200011" },
-            { "Modality", "00080060" },
-            { "SeriesDateTime", "00080031" },
-            { "PatientPosition", "00185100" },
-
-            // Instance-level attributes
-            { "SOPInstanceUID", "00080018" },
-            { "SOPClassUID", "00080016" },
-            { "TransferSyntaxUID", "00020010" },
-            { "InstanceNumber", "00200013" },
-            { "ImageComments", "00204000" },
-            { "PhotometricInterpretation", "00280004" },
-            { "PixelSpacing", "00280030" },
-            { "NumberOfFrames", "00280008" },
-            { "ImagePositionPatient", "00200032" },
-            { "ImageOrientationPatient", "00200037" }
-        };
-
-        /// <summary>
-        /// Converts a list of StudyDto objects to a DICOM JSON string for QIDO-RS response.
-        /// Only essential study attributes are included: PatientName, PatientAge, PatientSex, StudyDate, Modality, BodyPartExamined.
-        /// </summary>
-        /// <param name="studyDtos">List of StudyDto containing the study metadata.</param>
-        /// <returns>A JSON string representing the combined DICOM JSON structure.</returns>
-        public static string ConvertStudiesToDicomJsonString(List<StudyDto> studyDtos)
-        {
-            var dicomJsonArray = new JArray();
-
-            foreach (var study in studyDtos)
-            {
-                var dicomJson = new JObject();
-
-                // Patient's Name
-                if (!string.IsNullOrEmpty(study.PatientName))
-                {
-                    dicomJson["00100010"] = new JObject
-                    {
-                        ["vr"] = "PN",
-                        ["Value"] = new JArray(study.PatientName)
-                    };
-                }
-
-                // Patient's Age
-                if (!string.IsNullOrEmpty(study.PatientAge))
-                {
-                    dicomJson["00101010"] = new JObject
-                    {
-                        ["vr"] = "AS",
-                        ["Value"] = new JArray(study.PatientAge)
-                    };
-                }
-
-                // Patient's Sex
-                if (!string.IsNullOrEmpty(study.PatientSex))
-                {
-                    dicomJson["00100040"] = new JObject
-                    {
-                        ["vr"] = "CS",
-                        ["Value"] = new JArray(study.PatientSex)
-                    };
-                }
-
-                // Study Date
-                if (study.StudyDate != DateTime.MinValue)
-                {
-                    dicomJson["00080020"] = new JObject
-                    {
-                        ["vr"] = "DA",
-                        ["Value"] = new JArray(study.StudyDate.ToString("yyyyMMdd"))
-                    };
-                }
-
-                // Modality
-                if (!string.IsNullOrEmpty(study.Modality))
-                {
-                    dicomJson["00080060"] = new JObject
-                    {
-                        ["vr"] = "CS",
-                        ["Value"] = new JArray(study.Modality)
-                    };
-                }
-
-                // Body Part Examined
-                if (!string.IsNullOrEmpty(study.BodyPartExamined))
-                {
-                    dicomJson["00180015"] = new JObject
-                    {
-                        ["vr"] = "CS",
-                        ["Value"] = new JArray(study.BodyPartExamined)
-                    };
-                }
-
-                dicomJsonArray.Add(dicomJson);
-            }
-
-            var result = new JObject
-            {
-                ["Studies"] = dicomJsonArray
-            };
-
-            // Convert the JObject to a JSON string
-            return JsonConvert.SerializeObject(result);
-        }
-        /// *** QIDO-RS SECCION : ENDS *** ///
-
-        // --- CONVERTER ZONE --- //
-        private static readonly HashSet<string> SupportedSopClasses = new HashSet<string>
-        {
-            DicomUID.CTImageStorage.UID,                         // Tomografía Computarizada
-            DicomUID.MRImageStorage.UID,                         // Resonancia Magnética
-            DicomUID.RTImageStorage.UID,
-            DicomUID.UltrasoundImageStorage.UID,                 // Ultrasonido
-            DicomUID.SecondaryCaptureImageStorage.UID,           // Captura Secundaria
-            DicomUID.DigitalXRayImageStorageForPresentation.UID, // Radiografía Digital para Presentación
-            DicomUID.DigitalMammographyXRayImageStorageForPresentation.UID, // Mamografía Digital para Presentación
-            DicomUID.NuclearMedicineImageStorage.UID,            // Medicina Nuclear
-            DicomUID.EnhancedCTImageStorage.UID,                 // Imágenes CT Mejoradas
-            DicomUID.EnhancedMRImageStorage.UID,                 // Imágenes MR Mejoradas
-            DicomUID.EnhancedUSVolumeStorage.UID                // Volumen de Ultrasonido Mejorado
-        };
-
-        private static readonly HashSet<string> SupportedTransferSyntaxes = new HashSet<string>
-        {
-            DicomUID.ExplicitVRLittleEndian.UID,
-            //DicomUID.ExplicitVRBigEndian.UID, //RETIRED
-            DicomUID.ImplicitVRLittleEndian.UID,
-            // Add other supported Transfer Syntaxes
-        };
-
-
-        
-
-
-
-        // PENDIENTES DEFINIR SU POSICION :
 
         /// <summary>
         /// Converts a DICOM JSON structure into a MainEntitiesCreateDto object.
@@ -596,10 +373,308 @@ namespace Api_PACsServer.Utilities
             {
                 dto.TransactionStatus = transactionStatusToken["Value"]?.First?.ToString();
             }
-            
+
 
             return dto;
         }
+
+        /// *** STOW-RS SECCION : ENDS *** ///
+
+        /// *** QIDO-RS SECCION : BEGINS *** ///
+
+        /// <summary>
+        /// Maps the query parameters to ControlQueryParametersDto and StudyQueryParametersDto.
+        /// This method handles both URI-encoded operators and standard query parameters.
+        /// </summary>
+        /// <param name="queryParams">Dictionary containing query parameters from the request.</param>
+        /// <returns>Tuple containing ControlQueryParametersDto and StudyQueryParametersDto.</returns>
+        public static (ControlQueryParametersDto, StudyQueryParametersDto) MapQueryParamsToDtos(Dictionary<string, string> queryParams)
+        {
+            var controlParamsDto = new ControlQueryParametersDto();
+            var studyParamsDto = new StudyQueryParametersDto();
+
+            foreach (var param in queryParams)
+            {
+                // Decodificar el valor del parámetro para manejar operadores URI codificados
+                var decodedValue = System.Web.HttpUtility.UrlDecode(param.Value);
+
+                // Asignar el parámetro al ControlQueryParametersDto si corresponde
+                if (controlParameters.Contains(param.Key.ToLower()))
+                {
+                    AssignControlParameter(controlParamsDto, param.Key.ToLower(), decodedValue);
+                }
+                // Asignar el parámetro al StudyQueryParametersDto si es un atributo DICOM
+                else if (DicomTagToDto.TryGetValue(param.Key, out var propertyKey) || DicomTagToDto.ContainsValue(param.Key))
+                {
+                    propertyKey ??= DicomTagToDto.FirstOrDefault(x => x.Value == param.Key).Key;
+                    var propertyInfo = studyParamsDto.GetType().GetProperty(propertyKey);
+                    if (propertyInfo != null)
+                    {
+                        var queryParameter = CreateQueryParameter(decodedValue);
+                        propertyInfo.SetValue(studyParamsDto, queryParameter);
+                    }
+                }
+            }
+            return (controlParamsDto, studyParamsDto);
+        }
+
+        /// <summary>
+        /// Assigns the control parameter value to the corresponding property in ControlQueryParametersDto.
+        /// </summary>
+        private static void AssignControlParameter(ControlQueryParametersDto controlParamsDto, string key, string value)
+        {
+            var queryParameter = CreateQueryParameter(value);
+            switch (key)
+            {
+                case "limit":
+                    controlParamsDto.Limit = queryParameter;
+                    break;
+                case "orderby":
+                    controlParamsDto.OrderBy = queryParameter;
+                    break;
+                case "offset":
+                    controlParamsDto.Offset = queryParameter;
+                    break;
+                case "includefields":
+                    controlParamsDto.IncludeFields.AddRange(value.Split(',').Select(field => field.Trim()));
+                    break;
+                case "format":
+                    controlParamsDto.Format = queryParameter;
+                    break;
+                case "page":
+                    controlParamsDto.Page = queryParameter;
+                    break;
+                case "pagesize":
+                    controlParamsDto.PageSize = queryParameter;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Creates a QueryParameter instance based on the decoded value.
+        /// </summary>
+        /// <param name="decodedValue">The decoded query parameter value.</param>
+        /// <returns>A QueryParameter with the appropriate value and operator.</returns>
+        private static QueryParameter CreateQueryParameter(string decodedValue)
+        {
+            var queryParameter = new QueryParameter();
+            bool isRange = decodedValue.Contains("-");
+            if (isRange)
+            {
+                queryParameter.Operator = SqlOperator.Between;
+                queryParameter.Value = decodedValue;
+            }
+            else
+            {
+                var operatorKey = decodedValue.Substring(0, 1);
+                queryParameter.Operator = OperatorMappingToSqlOperator(operatorKey);
+                queryParameter.Value = decodedValue.Substring(1);
+            }
+            return queryParameter;
+        }
+
+
+
+        // List of known control parameters (not part of DICOM tags)
+        internal static List<string>  controlParameters = new List<string> 
+        { 
+            "limit", 
+            "orderby", 
+            "offset", 
+            "includefields", 
+            "format", 
+            "page",
+            "pagesize" 
+        };
+
+        internal static Dictionary<string, string> DicomTagToDto = new Dictionary<string, string>
+        {
+            // Study-level attributes
+            { "PatientID", "00100020" },
+            { "StudyDate", "00080020" },
+            { "AccessionNumber", "00080050" },
+            { "StudyInstanceUID", "0020000D" },
+            { "PatientName", "00100010" },
+            { "PatientAge", "00101010" },
+            { "PatientSex", "00100040" },
+            { "InstitutionName", "00080080" },
+            { "BodyPartExamined", "00180015" },
+
+            // Series-level attributes
+            { "SeriesInstanceUID", "0020000E" },
+            { "SeriesNumber", "00200011" },
+            { "Modality", "00080060" },
+            { "SeriesDateTime", "00080031" },
+            { "PatientPosition", "00185100" },
+
+            // Instance-level attributes
+            { "SOPInstanceUID", "00080018" },
+            { "SOPClassUID", "00080016" },
+            { "TransferSyntaxUID", "00020010" },
+            { "InstanceNumber", "00200013" },
+            { "ImageComments", "00204000" },
+            { "PhotometricInterpretation", "00280004" },
+            { "PixelSpacing", "00280030" },
+            { "NumberOfFrames", "00280008" },
+            { "ImagePositionPatient", "00200032" },
+            { "ImageOrientationPatient", "00200037" }
+        };
+
+        internal static SqlOperator OperatorMappingToSqlOperator(string operatorValue)
+        {
+            return operatorValue.ToLower() switch
+            {
+                "=" => SqlOperator.Equals,
+                ">" => SqlOperator.GreaterThan,
+                "<" => SqlOperator.LessThan,
+                ">=" => SqlOperator.GreaterThanOrEqual,
+                "<=" => SqlOperator.LessThanOrEqual,
+                "!" => SqlOperator.NotEqual,
+                "orderby" => SqlOperator.OrderBy,
+                "desc" => SqlOperator.Descending,
+                "asc" => SqlOperator.Ascending,
+                _ => SqlOperator.Equals
+            };
+
+        }
+
+
+        /// <summary>
+        /// Converts a list of StudyDto objects to a DICOM JSON string for QIDO-RS response.
+        /// Only essential study attributes are included: PatientName, PatientAge, PatientSex, StudyDate, Modality, BodyPartExamined, StudyInstanceUID.
+        /// </summary>
+        /// <param name="studyDtos">List of StudyDto containing the study metadata.</param>
+        /// <returns>A JSON string representing the combined DICOM JSON structure.</returns>
+        public static string ConvertStudiesToDicomJsonString(List<StudyDto> studyDtos)
+        {
+            var dicomJsonArray = new JArray();
+
+            foreach (var study in studyDtos)
+            {
+                var dicomJson = new JObject();
+
+                // Study Instance UID (Mandatory for QIDO-RS)
+                if (!string.IsNullOrEmpty(study.StudyInstanceUID))
+                {
+                    dicomJson["0020000D"] = new JObject
+                    {
+                        ["vr"] = "UI",
+                        ["Value"] = new JArray(study.StudyInstanceUID)
+                    };
+                }
+
+                // Study Description
+                if (!string.IsNullOrEmpty(study.StudyDescription))
+                {
+                    dicomJson["00081030"] = new JObject
+                    {
+                        ["vr"] = "LO",
+                        ["Value"] = new JArray(study.StudyDescription)
+                    };
+                }
+
+                // Study Date
+                if (study.StudyDate != DateTime.MinValue)
+                {
+                    dicomJson["00080020"] = new JObject
+                    {
+                        ["vr"] = "DA",
+                        ["Value"] = new JArray(study.StudyDate.ToString("yyyyMMdd"))
+                    };
+                }
+
+                // Modality
+                if (!string.IsNullOrEmpty(study.Modality))
+                {
+                    dicomJson["00080060"] = new JObject
+                    {
+                        ["vr"] = "CS",
+                        ["Value"] = new JArray(study.Modality)
+                    };
+                }
+
+                // Patient's Name
+                if (!string.IsNullOrEmpty(study.PatientName))
+                {
+                    dicomJson["00100010"] = new JObject
+                    {
+                        ["vr"] = "PN",
+                        ["Value"] = new JArray(new JObject { ["Alphabetic"] = study.PatientName })
+                    };
+                }
+
+                // Patient's Sex
+                if (!string.IsNullOrEmpty(study.PatientSex))
+                {
+                    dicomJson["00100040"] = new JObject
+                    {
+                        ["vr"] = "CS",
+                        ["Value"] = new JArray(study.PatientSex)
+                    };
+                }
+
+                // Patient's Age
+                if (!string.IsNullOrEmpty(study.PatientAge))
+                {
+                    dicomJson["00101010"] = new JObject
+                    {
+                        ["vr"] = "AS",
+                        ["Value"] = new JArray(study.PatientAge)
+                    };
+                }
+
+                // Body Part Examined
+                if (!string.IsNullOrEmpty(study.BodyPartExamined))
+                {
+                    dicomJson["00180015"] = new JObject
+                    {
+                        ["vr"] = "CS",
+                        ["Value"] = new JArray(study.BodyPartExamined)
+                    };
+                }
+
+                dicomJsonArray.Add(dicomJson);
+            }
+
+            // Convert the JArray to a JSON string
+            return JsonConvert.SerializeObject(dicomJsonArray);
+        }
+
+
+        /// *** QIDO-RS SECCION : ENDS *** ///
+
+        // --- CONVERTER ZONE --- //
+        private static readonly HashSet<string> SupportedSopClasses = new HashSet<string>
+        {
+            DicomUID.CTImageStorage.UID,                         // Tomografía Computarizada
+            DicomUID.MRImageStorage.UID,                         // Resonancia Magnética
+            DicomUID.RTImageStorage.UID,
+            DicomUID.UltrasoundImageStorage.UID,                 // Ultrasonido
+            DicomUID.SecondaryCaptureImageStorage.UID,           // Captura Secundaria
+            DicomUID.DigitalXRayImageStorageForPresentation.UID, // Radiografía Digital para Presentación
+            DicomUID.DigitalMammographyXRayImageStorageForPresentation.UID, // Mamografía Digital para Presentación
+            DicomUID.NuclearMedicineImageStorage.UID,            // Medicina Nuclear
+            DicomUID.EnhancedCTImageStorage.UID,                 // Imágenes CT Mejoradas
+            DicomUID.EnhancedMRImageStorage.UID,                 // Imágenes MR Mejoradas
+            DicomUID.EnhancedUSVolumeStorage.UID                // Volumen de Ultrasonido Mejorado
+        };
+
+        private static readonly HashSet<string> SupportedTransferSyntaxes = new HashSet<string>
+        {
+            DicomUID.ExplicitVRLittleEndian.UID,
+            //DicomUID.ExplicitVRBigEndian.UID, //RETIRED
+            DicomUID.ImplicitVRLittleEndian.UID,
+            // Add other supported Transfer Syntaxes
+        };
+
+
+        
+
+
+
+        // PENDIENTES DEFINIR SU POSICION :
+
+        
 
     }
 }

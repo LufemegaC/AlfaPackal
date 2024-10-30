@@ -50,7 +50,7 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// </summary>
         /// <param name="studyInstanceUID">The UID of the Study to be updated.</param>
         /// <returns>The task result contains the updated StudyLoad entity.</returns>
-        Task<StudyDetails> UpdateDetailsForNewSerie(string studyInstanceUID);
+        Task UpdateForNewSerie(string studyInstanceUID, string modality);
 
         /// <summary>
         /// Updates the load information of a Study entity for a new instance.

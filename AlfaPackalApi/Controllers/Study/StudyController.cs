@@ -81,9 +81,6 @@ namespace Api_PACsServer.Controllers.GatewayData
             }
         }
 
-
-
-
         /// <summary>
         /// Handles GET requests for retrieving studies based on provided query parameters.
         /// </summary>

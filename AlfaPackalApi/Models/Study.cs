@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Api_PACsServer.Modelos.AccessControl;
 using Api_PACsServer.Modelos.IModels;
 using Api_PACsServer.Modelos.Load;
+using Api_PACsServer.Models.DicomList;
 
 namespace Api_PACsServer.Modelos
 {
@@ -30,18 +31,16 @@ namespace Api_PACsServer.Modelos
         public TimeSpan? StudyTime { get; set; }
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
-        // Study modality DICOM/Metadata
-        public string? Modality { get; set; }
-        // Body Part Examined
-        public string? BodyPartExamined { get; set; }
-        // ** Issuing institution (Internal control)
-        //[Required]
-        //public int InstitutionID { get; set; }
-        //[ForeignKey("InstitutionID")]
-        //public virtual Institution Institution { get; set; }
+
+        public int MyProperty { get; set; }
+
+        public string?  ReferringPhysicianName { get; set; }
+        // Modalities
+        public virtual ICollection<StudyModality>? ModalitiesInStudy { get; set; }
         // ** Collection of Series
         public virtual ICollection<Serie> Series { get; set; }
         // ** Patient Information **//
+        public string? PatientID { get; set; }
         // Full patient name 
         // LastName^MiddleName^FirstName(s)^Prefix^Suffix
         [Required]

@@ -1,4 +1,5 @@
 using InterfazDeUsuario.Services;
+using InterfazDeUsuario.Services.IDicomWeb;
 using InterfazDeUsuario.Services.IServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -20,6 +21,10 @@ builder.Services.AddSingleton<IWadoUriService, WadoUriService>();
 //Usuario 
 builder.Services.AddHttpClient<IUserService, UserService>();
 builder.Services.AddScoped<IUserService, UserService>();
+// dicom web
+builder.Services.AddHttpClient<IDicomWebService, DicomWebService>();
+builder.Services.AddSingleton<IDicomWebService, DicomWebService>();
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(option =>
 {

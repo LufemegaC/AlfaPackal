@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Api_PACsServer.Modelos.IModels;
+using Api_PACsServer.Models.DicomList;
 
 namespace Api_PACsServer.Modelos.Load
 {
@@ -23,6 +24,7 @@ namespace Api_PACsServer.Modelos.Load
         // Accession number DICOM/Metadata
         [MaxLength(64)]
         public string? AccessionNumber { get; set; }
+        
         // Total size of the study in MB.
         public decimal TotalFileSizeMB { get; set; }
         // Date when the record was created.

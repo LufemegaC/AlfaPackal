@@ -42,6 +42,8 @@ namespace Api_PACsServer.Orchestrators
                 var studies = await _studyService.AllStudiesByControlParams(controlQuery);
                 return studies;
             }
+
+
             throw new NotImplementedException();
         }
 
@@ -49,18 +51,18 @@ namespace Api_PACsServer.Orchestrators
         private bool IsPaginationOnlyQuery(StudyQueryParametersDto studyParamsDto, ControlQueryParametersDto controlParamsDto)
         {
             // validate atributes
-            bool hasStudySpecificParams = !string.IsNullOrEmpty(studyParamsDto.PatientName) ||
-                                          !string.IsNullOrEmpty(studyParamsDto.StudyDate) ||
-                                          !string.IsNullOrEmpty(studyParamsDto.AccessionNumber);
+            bool hasStudySpecificParams = !string.IsNullOrEmpty(studyParamsDto.PatientName.Value) ||
+                                          !string.IsNullOrEmpty(studyParamsDto.StudyDate.Value) ||
+                                          !string.IsNullOrEmpty(studyParamsDto.AccessionNumber.Value);
 
-            bool hasPaginationParams = !string.IsNullOrEmpty(controlParamsDto.Page) && !string.IsNullOrEmpty(controlParamsDto.PageSize) &&
-                                       !string.IsNullOrEmpty(controlParamsDto.Order);
+            bool hasPaginationParams = !string.IsNullOrEmpty(controlParamsDto.Page.Value) && !string.IsNullOrEmpty(controlParamsDto.PageSize.Value) &&
+                                       !string.IsNullOrEmpty(controlParamsDto.OrderBy.Value);
             
             // check values
-            if (int.Parse(controlParamsDto.Page) <= 0)
+            if (int.Parse(controlParamsDto.Page.Value) <= 0)
                 throw new ArgumentException("Page number must be greater than zero.");
             
-            if (int.Parse(controlParamsDto.PageSize) <= 0)
+            if (int.Parse(controlParamsDto.PageSize.Value) <= 0)
                 throw new ArgumentException("Page size must be greater than zero.");
 
             // Si no hay parámetros específicos del estudio y hay parámetros de paginación, entonces es una consulta estándar de paginación

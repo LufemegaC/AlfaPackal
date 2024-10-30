@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfazDeUsuario", "InterfazDeUsuario\InterfazDeUsuario.csproj", "{DE63CA4C-638C-4C80-8993-928005B60FAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServidorWADO", "ServidorWADO\ServidorWADO.csproj", "{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,18 +74,6 @@ Global
 		{DE63CA4C-638C-4C80-8993-928005B60FAD}.Release|x64.Build.0 = Release|Any CPU
 		{DE63CA4C-638C-4C80-8993-928005B60FAD}.Release|x86.ActiveCfg = Release|Any CPU
 		{DE63CA4C-638C-4C80-8993-928005B60FAD}.Release|x86.Build.0 = Release|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Debug|x64.Build.0 = Debug|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Debug|x86.Build.0 = Debug|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Release|x64.ActiveCfg = Release|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Release|x64.Build.0 = Release|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Release|x86.ActiveCfg = Release|Any CPU
-		{D9A2DFC9-BB48-49CC-9F1B-40743557F43A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

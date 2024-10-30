@@ -6,6 +6,8 @@ namespace InterfazDeUsuario.Models.Dtos.PacsDto
     {
         // ** Study info **//
         public string StudyInstanceUID { get; set; }
+        // internal ID
+        public int StudyID { get; set; }
         // Study description DICOM
         public string? StudyDescription { get; set; }
         public DateTime StudyDate { get; set; }
@@ -20,7 +22,7 @@ namespace InterfazDeUsuario.Models.Dtos.PacsDto
         // Body Part descripcion
         public string? DescBodyPartE { get; set; }
         // ** Institution **//
-        public int InstitutionID { get; set; }
+        //public int InstitutionID { get; set; }
         // ** Patient Information **//
         // Non internal control institution added
         public string? PatientName { get; set; }

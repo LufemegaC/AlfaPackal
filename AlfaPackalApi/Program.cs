@@ -1,13 +1,17 @@
 using AlfaPackalApi;
 using AlfaPackalApi.Datos;
 using Api_PACsServer.Modelos.AccessControl;
+using Api_PACsServer.Models.DicomList;
 using Api_PACsServer.Orchestrators;
 using Api_PACsServer.Orchestrators.IOrchestrator;
+using Api_PACsServer.Repositories.DicomSupport;
+using Api_PACsServer.Repositories.IRepository.DicomSupport;
 using Api_PACsServer.Repositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Repositorio.Pacs;
 using Api_PACsServer.Repository.Authentication;
+using Api_PACsServer.Repository.DataAccess;
 using Api_PACsServer.Repository.IRepository.Authentication;
 using Api_PACsServer.Services;
 using Api_PACsServer.Services.IService;
@@ -94,6 +98,8 @@ builder.Services.AddScoped<IInstanceDetailsRepository, InstanceDetailsRepository
 builder.Services.AddScoped<IStudyRepository, StudyRepository>();
 builder.Services.AddScoped<ISerieRepository, SerieRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
+// Repositories for dicom support
+builder.Services.AddScoped<IStudyModalityRepository, StudyModalityRepository>();
 // Repositories for access
 builder.Services.AddScoped<ILocalDicomServerRepostory, LocalDicomServerRepostory>();
 //builder.Services.AddScoped<IInstitutionRespository, InstitutionRespository>();

@@ -3,6 +3,7 @@ using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.AccessControl;
 using Api_PACsServer.Modelos.Geography;
 using Api_PACsServer.Modelos.Load;
+using Api_PACsServer.Models.DicomList;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,8 +26,8 @@ namespace AlfaPackalApi.Datos
         public DbSet<StudyDetails> StudiesDetails { get; set; }
         public DbSet<SerieDetails> SeriesDetails { get; set; }
         public DbSet<InstanceDetails> InstancesDetails { get; set; }
-        // Dicom Servers information
-        //public DbSet<AllowedIPs> AllowedIPs { get; set; }
+        // Modalities for study
+        public DbSet<StudyModality> StudyModalities { get; set; }  
         public DbSet<LocalDicomServer> LocalDicomServers { get; set; }
         // Internal control
         //public DbSet<Institution> Institutions { get; set; }

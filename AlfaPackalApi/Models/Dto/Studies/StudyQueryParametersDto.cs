@@ -6,12 +6,13 @@
     /// </summary>
     public class StudyQueryParametersDto : BaseQueryParametersDto
     {
-        public string? StudyDate { get; set; }
-        public string? AccessionNumber { get; set; }
-        public string? PatientName { get; set; }
-        public string? PatientAge { get; set; }
-        public string? PatientSex { get; set; }
-        public string? InstitutionName { get; set; }
-        public string? BodyPartExamined { get; set; }
+        public QueryParameter? StudyDate { get; set; }
+        public QueryParameter? AccessionNumber { get; set; }
+        public QueryParameter? PatientName { get; set; }
+        public QueryParameter? PatientAge { get; set; }
+        public QueryParameter? PatientSex { get; set; }
+        public QueryParameter? InstitutionName { get; set; }
+        public QueryParameter? BodyPartExamined { get; set; }
+        public QueryParameter? Modality { get; set; }
     }
 }

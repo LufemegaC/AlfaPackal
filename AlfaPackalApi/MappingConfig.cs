@@ -22,8 +22,8 @@ namespace AlfaPackalApi
             CreateMap<Study, StudyCreateDto>().ReverseMap();
             CreateMap<StudyCreateDto, MetadataDto>().ReverseMap();
             CreateMap<Study, StudyDto>()
-             .ForMember(dest => dest.DescModality, opt => opt.MapFrom(src => ConverterHelp.GetDescModality(src.Modality)))
-             .ForMember(dest => dest.DescBodyPartE, opt => opt.MapFrom(src => ConverterHelp.GetDescBodyPart(src.BodyPartExamined)))
+             //.ForMember(dest => dest.DescModality, opt => opt.MapFrom(src => ConverterHelp.GetDescModality(src.Modality)))
+             //.ForMember(dest => dest.DescBodyPartE, opt => opt.MapFrom(src => ConverterHelp.GetDescBodyPart(src.BodyPartExamined)))
              .ReverseMap();
             CreateMap<StudyDetails, StudyDetailsUpdateDto>().ReverseMap();
             CreateMap<StudyDetails, StudyDetailsCreateDto>().ReverseMap();

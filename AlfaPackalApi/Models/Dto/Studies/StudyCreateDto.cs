@@ -15,13 +15,12 @@ namespace Api_PACsServer.Models.Dto.Studies
         [Required]
         public DateTime StudyDate { get; set; }
         public TimeSpan? StudyTime { get; set; }
-
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
         // Study modality DICOM/Metadata
         public string? Modality { get; set; }
         // Body Part Examined
-        public string? BodyPartExamined { get; set; }
+        //public string? BodyPartExamined { get; set; }
         // ** Issuing institution (Internal control)
         //[Required]
         //public int InstitutionID { get; set; }

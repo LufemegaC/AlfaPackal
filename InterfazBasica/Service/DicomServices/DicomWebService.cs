@@ -31,7 +31,7 @@ namespace InterfazBasica_DCStore.Service
             {
                 APIType = APIType.POST,
                 RequestData = content,
-                Url = _APIUrl + "/api/Study/studies",
+                Url = _APIUrl + "/packal/StowRs/studies",
                 Token = token
             });
         }

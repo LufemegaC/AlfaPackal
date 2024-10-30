@@ -25,6 +25,8 @@ namespace AlfaPackalApi.Modelos
         public string? Modality { get; set; }
         // Start date and time of the series
         public DateTime? SeriesDateTime { get; set; }
+        // Body Part Examined
+        public string? BodyPartExamined { get; set; }
         // Patient Position 
         public string? PatientPosition { get; set; }     
         // Instance collection

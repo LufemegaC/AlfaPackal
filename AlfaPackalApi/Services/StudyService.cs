@@ -2,13 +2,16 @@
 using Api_PACsServer.Modelos;
 using Api_PACsServer.Modelos.Especificaciones;
 using Api_PACsServer.Modelos.Load;
+using Api_PACsServer.Models.DicomList;
 using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
+using Api_PACsServer.Repositories.IRepository.DicomSupport;
 using Api_PACsServer.Repositorio.IRepositorio.Cargas;
 using Api_PACsServer.Repositorio.IRepositorio.Pacs;
 using Api_PACsServer.Services.IService.Pacs;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api_PACsServer.Services
 {
@@ -16,12 +19,17 @@ namespace Api_PACsServer.Services
     {
         private readonly IStudyRepository _studyRepo;
         private readonly IStudyDetailsRepository _studyDetailsRepo;
+        private readonly IStudyModalityRepository _studyModalityRepo;
+
         private readonly IMapper _mapper;
 
-        public StudyService(IStudyRepository studyRepo, IStudyDetailsRepository studyLoadRepo, IMapper mapper)
+
+        public StudyService(IStudyRepository studyRepo, IStudyDetailsRepository studyDetailsRepo,
+                            IStudyModalityRepository studyModalityRepo, IMapper mapper)
         {
             _studyRepo = studyRepo;
-            _studyDetailsRepo = studyLoadRepo;
+            _studyDetailsRepo = studyDetailsRepo;
+            _studyModalityRepo = studyModalityRepo;
             _mapper = mapper;
         }
 
@@ -29,18 +37,12 @@ namespace Api_PACsServer.Services
         {
             var studyInstanceUID = CreateDto.StudyInstanceUID;
             var SizeFile = CreateDto.TotalFileSizeMB;
-            //// Validate the StudyInstanceUID format
-            //if (!DicomUtilities.ValidateUID(studyInstanceUID))
-            //    throw new ArgumentException("The format of the StudyInstanceUID is invalid.");
             // Check if a Study with the same UID already exists
             if (await _studyRepo.Exists(u => u.StudyInstanceUID == studyInstanceUID))
                 throw new InvalidOperationException("A study with the same StudyInstanceUID already exists.");
             // Validate StudyDate
             if (CreateDto.StudyDate > DateTime.Today)
                 throw new ArgumentException("StudyDate cannot be in the future.");
-            // Validate InstitutionID
-            ////if (CreateDto.InstitutionID == 0)
-            ////    throw new ArgumentException("The Institution ID is required.");
             // Map the DTO to the Study entity
             var study = _mapper.Map<Study>(CreateDto);
             study.CreationDate = DateTime.UtcNow;
@@ -49,6 +51,9 @@ namespace Api_PACsServer.Services
             var studyDetailsCreate = new StudyDetailsCreateDto(study.StudyInstanceUID, SizeFile);
             var studyDetails = _mapper.Map<StudyDetails>(studyDetailsCreate);
             await _studyDetailsRepo.Create(studyDetails);
+            // Register modality
+            var studyModality = new StudyModality(study.StudyID, CreateDto.Modality);
+            await _studyModalityRepo.Create(studyModality);
             // Map the Study entity to the StudyDto
             return study;
         }
@@ -91,7 +96,18 @@ namespace Api_PACsServer.Services
             return await _studyRepo.Exists(s => s.StudyInstanceUID == studyInstanceUID);
         }
 
-        public async Task<StudyDetails> UpdateDetailsForNewSerie(string studyInstanceUID)
+        public async Task UpdateForNewSerie(string studyInstanceUID, string modality)
+        {
+            var study = await _studyRepo.Get(s => s.StudyInstanceUID == studyInstanceUID);
+            // update Details
+            await UpdateDetailsForNewSerie(studyInstanceUID);
+            // Register modality
+            var studyModality = new StudyModality(study.StudyID, modality);
+            await _studyModalityRepo.Create(studyModality);
+
+        }
+
+        internal async Task<StudyDetails> UpdateDetailsForNewSerie(string studyInstanceUID)
         {
             var studyDetails = await _studyDetailsRepo.Get(u => u.StudyInstanceUID == studyInstanceUID);
             var studyDetailsUpdateDto = _mapper.Map<StudyDetailsUpdateDto>(studyDetails);
@@ -136,7 +152,7 @@ namespace Api_PACsServer.Services
 
         public async Task<List<StudyDto>> AllStudiesByControlParams(ControlQueryParametersDto parameters)
         {
-            var studiesList = _studyRepo.GetStudies(int.Parse(parameters.Page),int.Parse(parameters.PageSize));
+            var studiesList = _studyRepo.GetStudies(int.Parse(parameters.Page.Value),int.Parse(parameters.PageSize.Value));
             return _mapper.Map<List<StudyDto>>(studiesList);
         }
     }
