@@ -1,5 +1,5 @@
-﻿using Api_PACsServer.Models.DicomList;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
+﻿using Api_PACsServer.Models.DicomSupport;
+using Api_PACsServer.Repositories.IRepository.DataAccess;
 
 namespace Api_PACsServer.Repositories.IRepository.DicomSupport
 {

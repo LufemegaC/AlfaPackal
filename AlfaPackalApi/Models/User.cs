@@ -1,8 +1,5 @@
-﻿using Api_PACsServer.Modelos.AccessControl;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Api_PACsServer.Modelos
+﻿
+namespace Api_PACsServer.Models
 {
     public class User
     {

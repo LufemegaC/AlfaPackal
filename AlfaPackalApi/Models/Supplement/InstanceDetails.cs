@@ -1,13 +1,13 @@
-﻿using AlfaPackalApi.Modelos;
-using Api_PACsServer.Modelos.IModels;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Api_PACsServer.Models.IModels;
 
-namespace Api_PACsServer.Modelos.Load
+namespace Api_PACsServer.Models.Supplement
 {
     public class InstanceDetails : IAuditable
+    /* Last Modified: 12/16/24 LFMG
+    Add constructors */
     {
-
         // SOP Instance UID
         [Key, Required]
         public string SOPInstanceUID { get; set; }

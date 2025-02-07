@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sKbshDao7WxjizyYMH3LBbM4v82IoYXm0SSBo0vICWO3UaE6OC9AS6ZxcK5Q3J3xJ3+x9Fly/kDu1jqjcBMB6A==",
+  "dgSpecHash": "+iWxArWOu87sIH+b/rJGZh04jX6x1rJ/ceA5mIu6jBWtEjfyCYs7Rnv7qWRV7Gpo2igQ84dUWEP+3GxTKRbwEQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\InterfazDeUsuario\\InterfazDeUsuario.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.identitymodel.abstractions\\7.6.0\\microsoft.identitymodel.abstractions.7.6.0.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\7.6.0\\microsoft.identitymodel.jsonwebtokens.7.6.0.nupkg.sha512",

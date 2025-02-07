@@ -61,7 +61,7 @@ public class DicomValidationService : IDicomValidationService
         return status;
     }
 
-    // *** Intenal metods ***//
+    // *** Intenal methods ***//
 
     internal ushort ValidateMainEntitiesCreate(MetadataDto mainEntitiesDto)
     {
@@ -94,8 +94,8 @@ public class DicomValidationService : IDicomValidationService
             return 0xA907; // Code for "Invalid or missing Modality"
 
         // Validación de SeriesDateTime
-        if (mainEntitiesDto.SeriesDateTime.HasValue && mainEntitiesDto.SeriesDateTime > DateTime.Now)
-            return 0xA908; // Code for "Series date is in the future"
+        //if (mainEntitiesDto.SeriesDateTime.HasValue && mainEntitiesDto.SeriesDateTime > DateTime.Now)
+        //    return 0xA908; // Code for "Series date is in the future"
 
         // Validación de SOPInstanceUID
         if (string.IsNullOrWhiteSpace(mainEntitiesDto.SOPInstanceUID))

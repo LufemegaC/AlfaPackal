@@ -1,7 +1,7 @@
-﻿using Api_PACsServer.Modelos.AccessControl;
+﻿using Api_PACsServer.Models.AccessControl;
 using Api_PACsServer.Models.Dto.AuthDtos;
 using Api_PACsServer.Models.Dto.DicomServer;
-using Api_PACsServer.Repository.IRepository.Authentication;
+using Api_PACsServer.Repositories.IRepository.Authentication;
 using Api_PACsServer.Services.IService;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -134,14 +134,18 @@ namespace Api_PACsServer.Services
                     if (!_roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult())
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                        await _roleManager.CreateAsync(new IdentityRole("serverAdmin"));
+                        await _roleManager.CreateAsync(new IdentityRole("ServerAdmin"));
                         await _roleManager.CreateAsync(new IdentityRole("Physician"));
                         await _roleManager.CreateAsync(new IdentityRole("Technician"));
+                        await _roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
                     }
                     //Asigno rol al usuario
                     await _userManager.AddToRoleAsync(user, "Admin");
                     var userSys = _userRepository.Get(u => u.UserName == registerRequest.UserName);
+                    
+                    // PENDIENTE REVISAR ERROR EN MAPEO 
                     return _mapper.Map<UserDto>(userSys);
+                    // --------------------------------
                 }
             }
             catch (Exception ex)

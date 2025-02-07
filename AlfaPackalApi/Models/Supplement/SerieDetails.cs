@@ -1,11 +1,12 @@
-﻿using AlfaPackalApi.Modelos;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Api_PACsServer.Modelos.IModels;
+using Api_PACsServer.Models.IModels;
 
-namespace Api_PACsServer.Modelos.Load
+namespace Api_PACsServer.Models.Supplement
 {
     public class SerieDetails : IAuditable
+    /* Last Modified: 12/16/24 LFMG
+    Add constructors */
     {
         // PK: 'SRD-'+StudyId+'-'+SeriesNumber+'-'+N
         [Key]

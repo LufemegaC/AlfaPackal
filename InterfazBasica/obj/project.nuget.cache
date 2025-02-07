@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "32TMSz/sDkOn5hROEjpptYjj5B+NQg9aicFkURPzbti1vG2IrR40GDhVzkkDIYrEQhhk4vfY7EtkyCBzTrQ2yA==",
+  "dgSpecHash": "FQ8xKEpiZ8GhWCqh/VFjeSmmQXXdoA5EUFILRh+jnWcFq2SfBzMVsT0wCdmdcFMY9XvJAStbAdMjIttfPfr7rg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\InterfazBasica\\InterfazBasica_DCStore.csproj",
+  "projectFilePath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\InterfazBasica\\InterfazBasica_DCStore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Desktop\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Desktop\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj": {}
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj": {
+    "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
+        "projectUniqueName": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
         "projectName": "WorkStation",
-        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
+        "projectPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\WorkStation\\WorkStation.csproj",
         "packagesPath": "C:\\Users\\Desktop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\251024\\AlfaPackal - Omega\\WorkStation\\obj\\",
+        "outputPath": "C:\\Users\\Desktop\\Documents\\WEB\\AVANC\\2025\\Febrero\\AlfaPackal - Omega\\WorkStation\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Desktop\\AppData\\Roaming\\NuGet\\NuGet.Config",

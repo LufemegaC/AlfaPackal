@@ -3,6 +3,7 @@ using InterfazBasica_DCStore.Models.Dicom.Web;
 using InterfazBasica_DCStore.Models.Dtos.Indentity;
 using InterfazBasica_DCStore.Service.DicomServices;
 using InterfazBasica_DCStore.Service.IService.Dicom;
+using Newtonsoft.Json.Linq;
 using static InterfazBasica_DCStore.Utilities.LocalUtility;
 
 namespace InterfazBasica_DCStore.Service
@@ -20,20 +21,15 @@ namespace InterfazBasica_DCStore.Service
             _httpClient = httpClient;
         }
         
-        public Task<StowRsResponse> RegisterInstances(MultipartContent content)
+        public Task<StowRsResponse> RegisterInstances(MultipartContent content, string studyUID="")
         {
-            return RegisterInstancesAPI<StowRsResponse>(content, Token);
-        }
-        // ** METODOS DE REGISTRO DE ENTIDADES ** //
-        internal Task<T> RegisterInstancesAPI<T>(MultipartContent content, string token)
-        {
-            return DicomSendAsync<T>(new DicomAPIRequest()
+            return DicomSendAsync<StowRsResponse>(new DicomAPIRequest()
             {
                 APIType = APIType.POST,
                 RequestData = content,
-                Url = _APIUrl + "/packal/StowRs/studies",
-                Token = token
-            });
+                Url = _APIUrl + "/packal/StowRs/studies"+ studyUID,
+                Token = Token
+        });
         }
 
         

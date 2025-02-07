@@ -1,11 +1,11 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos.Especificaciones;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Linq;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
+using Api_PACsServer.Datos;
+using Api_PACsServer.Models.Specifications;
+using Api_PACsServer.Repositories.IRepository.DataAccess;
 
-namespace Api_PACsServer.Repository.DataAccess
+namespace Api_PACsServer.Repositories.DataAccess
 {
     public class ReadWriteRepository<T> : IReadRepository<T>, IWriteRepository<T> where T : class
     {
@@ -21,7 +21,7 @@ namespace Api_PACsServer.Repository.DataAccess
         {
             await DbSet.AddAsync(entity);
             await Save();
-           
+
         }
 
         public async Task Save()

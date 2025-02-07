@@ -1,4 +1,5 @@
-﻿using FellowOakDicom.Network;
+﻿using FellowOakDicom;
+using FellowOakDicom.Network;
 using InterfazBasica.Models;
 using System.Net;
 
@@ -6,7 +7,7 @@ namespace InterfazBasica_DCStore.Utilities
 {
     public static class LocalUtility
     {
-        public static string StorageURL = "C:\\Users\\Desktop\\source\\repos\\AlfaPackal\\DicomArchives";
+        //public static string StorageURL = "C:\\Users\\Desktop\\source\\repos\\AlfaPackal\\DicomArchives";
         public enum APIType
         {
             GET,
@@ -76,6 +77,8 @@ namespace InterfazBasica_DCStore.Utilities
 
         public static string Institution = "Institution";
 
+        // C- STORE
 
+        
     }
 }

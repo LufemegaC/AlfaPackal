@@ -1,7 +1,5 @@
-﻿using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
-
-namespace Api_PACsServer.Repository.IRepository.Authentication
+﻿
+namespace Api_PACsServer.Repositories.IRepository.Authentication
 {
     //public interface IInstitutionRespository : IReadRepository<Institution>
     //{

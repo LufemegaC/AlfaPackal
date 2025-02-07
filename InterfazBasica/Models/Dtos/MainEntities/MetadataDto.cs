@@ -18,7 +18,7 @@ namespace InterfazBasica_DCStore.Models.Dtos.MainEntities
         [Required, MaxLength(64)]
         public string StudyInstanceUID { get; set; }
         // Transfer Syntax UID
-        [ MaxLength(64)]
+        [MaxLength(64)]
         public string? TransferSyntaxUID { get; set; }
         // -- Instance information -- //
         // Image description
@@ -38,22 +38,40 @@ namespace InterfazBasica_DCStore.Models.Dtos.MainEntities
         public string? PixelSpacing { get; set; }
         // Number of frames in the image
         public int? NumberOfFrames { get; set; }
-        public string? ImagePositionPatient { get; set; }  
+        // Image position and orientation patient
+        public string? ImagePositionPatient { get; set; }
         public string? ImageOrientationPatient { get; set; }
+        //Numbre of Bits for each pixel
+        public int BitsAllocated { get; set; }
+        // Nominal thickness and Relative position of a slice in millimeters.
+        public float SliceThickness { get; set; }
+        public float SliceLocation { get; set; }
+        // Date and Time when the DICOM instance was created.
+        public string? InstanceCreationDate { get; set; }
+        public string? InstanceCreationTime { get; set; }
+        // Date and Time when the content of the DICOM instance was generated.
+        public string? ContentDate { get; set; }
+        public string? ContentTime { get; set; }
         // -- Serie Information -- //
         // Description
         public string SeriesDescription { get; set; }
         public int? SeriesNumber { get; set; }
         // Study modality DICOM/Metadata
         public string? Modality { get; set; }
-        // Start date and time of the series
-        public DateTime? SeriesDateTime { get; set; }
+        // Start date and time of the Acquisition // 
+        public DateTime? AcquisitionDateTime { get; set; }
         // Patient Position.
         [MaxLength(16)]
         public string? PatientPosition { get; set; }
+        // Protocol Name
+        public string? ProtocolName { get; set; }
+        //// Series Date
+        public string? SeriesDate { get; set; }
+        // Series Time
+        public string? SeriesTime { get; set; }
         // -- Study Information -- //
         // Study comments
-        public string? StudyComments { get; set; }
+        //public string? StudyComments { get; set; }
         // Study description DICOM
         public string? StudyDescription { get; set; }
         // Date the study was performed DICOM/Metadata

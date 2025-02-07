@@ -1,9 +1,9 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Repository.DataAccess;
-using Api_PACsServer.Repository.IRepository.Authentication;
+﻿using Api_PACsServer.Datos;
+using Api_PACsServer.Models.AccessControl;
+using Api_PACsServer.Repositories.DataAccess;
+using Api_PACsServer.Repositories.IRepository.Authentication;
 
-namespace Api_PACsServer.Repository.Authentication
+namespace Api_PACsServer.Repositories.Authentication
 {
     public class LocalDicomServerRepostory : ReadRepository<LocalDicomServer>, ILocalDicomServerRepostory
     {

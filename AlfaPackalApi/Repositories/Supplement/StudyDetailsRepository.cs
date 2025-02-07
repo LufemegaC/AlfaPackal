@@ -1,9 +1,10 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Repositorio.IRepositorio.Cargas;
-using Api_PACsServer.Repository.DataAccess;
+﻿using Api_PACsServer.Datos;
+using Api_PACsServer.Models.Supplement;
+using Api_PACsServer.Repositories.DataAccess;
+using Api_PACsServer.Repositories.IRepository.Supplement;
+using Microsoft.EntityFrameworkCore;
 
-namespace Api_PACsServer.Repositorio.Cargas
+namespace Api_PACsServer.Repositories.Supplement
 {
     public class StudyDetailsRepository : ReadWriteRepository<StudyDetails>, IStudyDetailsRepository
     {
@@ -17,9 +18,16 @@ namespace Api_PACsServer.Repositorio.Cargas
         public async Task<StudyDetails> Update(StudyDetails studyLoad)
         {
             studyLoad.UpdateDate = DateTime.Now;
-            _db.StudiesDetails.Update(studyLoad);
+            _db.StudyDetails.Update(studyLoad);
             await _db.SaveChangesAsync();
             return studyLoad;
+        }
+
+        public async Task<List<StudyDetails>> GetDetailsByUIDs(List<string> studyInstanceUIDs)
+        {
+            return await _db.StudyDetails
+                .Where(d => studyInstanceUIDs.Contains(d.StudyInstanceUID))
+                .ToListAsync();
         }
     }
 }

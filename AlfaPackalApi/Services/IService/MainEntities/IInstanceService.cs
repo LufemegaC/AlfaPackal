@@ -1,17 +1,18 @@
-﻿using Api_PACsServer.Modelos;
-using Api_PACsServer.Models.Dto;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
 using Api_PACsServer.Models.Dto.Instances;
 using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
 
-namespace Api_PACsServer.Services.IService.Pacs
+namespace Api_PACsServer.Services.IService.MainEntities
 {
     /// <summary>
     /// Service interface for handling Instance-related operations in the PACS system.
     /// </summary>
     public interface IInstanceService
     {
-        
+
         /// <summary>
         /// Creates a new Instance entity.
         /// </summary>
@@ -59,7 +60,19 @@ namespace Api_PACsServer.Services.IService.Pacs
         ///// mapped from the provided metadata, ready to be used for creating a new Instance entity.
         ///// </returns>
         //Task<InstanceCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
-        
+
+        /// <summary>
+        /// Retrieves a list of series based on the specified query parameters  and Study UID.
+        /// </summary>
+        /// <param name="requestParameters">
+        /// An object containing the query parameters for filtering and controlling the study retrieval process.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a list of <see cref="StudyDto"/> 
+        /// objects that match the specified query criteria.
+        /// </returns>
+        Task<List<InstanceDto>> GetInstancesFromSerie(QueryRequestParameters<InstanceQueryParametersDto> requestParameters);
+
         /// <summary>
         /// Maps the provided DICOM metadata to an InstanceCreateDto object.
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using FellowOakDicom;
 using FellowOakDicom.Network;
 using InterfazBasica_DCStore.Service.IService.Dicom;
+using InterfazBasica_DCStore.Utilities;
 using System.Text;
 
 
@@ -8,8 +9,10 @@ namespace InterfazBasica_DCStore.Service.DicomServices
 {
     public class CStoreSCP : DicomService, IDicomServiceProvider, IDicomCStoreProvider, IDicomCEchoProvider
     {
-        // 25/01/24 Luis Felipe MG.-Dependencias
-        private IDicomOrchestrator _dicomOrchestrator;
+        // Service for validation process
+        private readonly IDicomValidationService _validationService;
+        private readonly ILogger<CStoreSCP> _logger;
+
 
         private static readonly DicomTransferSyntax[] _acceptedTransferSyntaxes = new DicomTransferSyntax[]
         {
@@ -41,12 +44,13 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         public CStoreSCP(INetworkStream stream, Encoding fallbackEncoding, ILogger log, DicomServiceDependencies dependencies)
             : base(stream, fallbackEncoding, log, dependencies)
         {
-            _dicomOrchestrator = ServiceLocator.GetService<IDicomOrchestrator>();
+            _validationService = ServiceLocator.GetService<IDicomValidationService>();
+            _logger = ServiceLocator.GetService<ILogger<CStoreSCP>>();
         }
 
         public Task OnReceiveAssociationRequestAsync(DicomAssociation association)
         {
-            var AEtitle = _dicomOrchestrator.GetServerAEtitle();
+            var AEtitle = LocalUtility.Aetitle;
             if (association.CalledAE != AEtitle) 
             {
                 return SendAssociationRejectAsync(
@@ -91,21 +95,32 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         public async Task<DicomCStoreResponse> OnCStoreRequestAsync(DicomCStoreRequest request)
         {
             try
-            {              
-                // DicomFile from DataSet
-                DicomFile dicomFile = new DicomFile(request.Dataset);
-                // Se entrega al orchestrator para registro de entidades PACS
-                var resultStoreDicomData = await _dicomOrchestrator.StoreDicomData(dicomFile);
-                //var resultStoreDicomFile = await _dicomOrchestrator.StoreDicomFile(dicomFile);
-
-                // Envio de archivo DICOM para su almacenamiento fisico
-                //var resultStoreDicomFile = _dicomOrchestrator.StoreDicomFile(dicomFile);
-                //Si falla el proceso de almacenamiento
-                return new DicomCStoreResponse(request, resultStoreDicomData);
-            }
-            catch 
             {
-                return new DicomCStoreResponse(request, DicomStatus.Warning);
+                // 1) Crear el DicomFile
+                var dicomFile = new DicomFile(request.Dataset);
+
+                // 2) Validar
+                var dicomStatus = _validationService.IsValidDicomFile(dicomFile);
+                if (dicomStatus != DicomStatus.Success)
+                {
+                    // Manejo de error: si la validación falla, opcionalmente guardas en disco “Failed”, etc.
+                    _logger.LogWarning("DICOM validation failed. Status: {0}", dicomStatus);
+                    return new DicomCStoreResponse(request, dicomStatus);
+                }
+
+                // 3) (Opcional) Guardar en disco temporal antes de procesar
+                //    await StoreDicomOnlocalDisk(dicomFile, StorageLocation.Temporary);
+
+                // 4) Escribir en el Channel
+                await DicomChannelSingleton.DicomChannel.Writer.WriteAsync(dicomFile);
+
+                // 5) Devolver respuesta
+                return new DicomCStoreResponse(request, DicomStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en OnCStoreRequestAsync");
+                return new DicomCStoreResponse(request, DicomStatus.ProcessingFailure);
             }
         }
 

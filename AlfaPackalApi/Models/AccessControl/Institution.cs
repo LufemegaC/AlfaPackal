@@ -2,7 +2,7 @@
 //using System.ComponentModel.DataAnnotations;
 //using Api_PACsServer.Modelos.Geography;
 
-namespace Api_PACsServer.Modelos.AccessControl
+namespace Api_PACsServer.Models.AccessControl
 {
     // this class has been deleted
     ///// <remarks>

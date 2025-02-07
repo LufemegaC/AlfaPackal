@@ -2,6 +2,8 @@
 using FellowOakDicom;
 using InterfazBasica_DCStore.Models.Dtos.MainEntities;
 using InterfazBasica_DCStore.Service.IService.Dicom;
+using InterfazBasica_DCStore.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace InterfazBasica_DCStore.Service.DicomServices
 {
@@ -12,8 +14,38 @@ namespace InterfazBasica_DCStore.Service.DicomServices
         {
             _mapper = mapper;
         }
+        
+        public string ConvertDatasetToJson(DicomDataset dicomDataset)
+        {
+            var dicomDictionary = ExtractMetadata(dicomDataset);
+            var metadataDto = _mapper.Map<MetadataDto>(dicomDictionary);
+            return DicomUtility.ConvertMetadataDtoToDicomJsonString(metadataDto).ToString();
+        }
 
-        public Dictionary<DicomTag, object> ExtractMetadata(DicomDataset dicomDataset)
+        ////public decimal GetFileSizeInMB(DicomFile dicomFile)
+        ////{
+        ////    try
+        ////    {
+        ////        using (var memoryStream = new MemoryStream())
+        ////        {
+        ////            // Guarda el archivo en el MemoryStream
+        ////            dicomFile.Save(memoryStream);
+        ////            // El tamaño del archivo DICOM en bytes
+        ////            long fileSizeInBytes = memoryStream.Length;
+        ////            decimal fileSizeInMB = (decimal)fileSizeInBytes / (1024 * 1024);
+        ////            return fileSizeInMB;
+        ////        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        // Log the exception or throw it, depending on your logging strategy
+        ////        Console.WriteLine($"Error al obtener el tamaño del archivo: {ex.Message}");
+        ////        // Puedes lanzar la excepción nuevamente o manejarla según sea necesario
+        ////        throw;
+        ////    }
+        ////}
+
+        private Dictionary<DicomTag, object> ExtractMetadata(DicomDataset dicomDataset)
         // Método para extraer los metadatos de un DicomDataset.
         // Retorna un diccionario con las etiquetas DICOM y sus valores asociados.
         {
@@ -42,11 +74,6 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             }
         }
 
-        public MetadataDto DicomDictionaryToCreateEntities(Dictionary<DicomTag, object> metadata)
-        {
-            return _mapper.Map<MetadataDto>(metadata);
-
-        }
 
         private static object ExtractElementValue(DicomElement element)
         {
@@ -64,27 +91,6 @@ namespace InterfazBasica_DCStore.Service.DicomServices
             return null;
         }
 
-        public decimal GetFileSizeInMB(DicomFile dicomFile)
-        {
-            try
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    // Guarda el archivo en el MemoryStream
-                    dicomFile.Save(memoryStream);
-                    // El tamaño del archivo DICOM en bytes
-                    long fileSizeInBytes = memoryStream.Length;
-                    decimal fileSizeInMB = (decimal)fileSizeInBytes / (1024 * 1024);
-                    return fileSizeInMB;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or throw it, depending on your logging strategy
-                Console.WriteLine($"Error al obtener el tamaño del archivo: {ex.Message}");
-                // Puedes lanzar la excepción nuevamente o manejarla según sea necesario
-                throw;
-            }
-        }
+       
     }
 }

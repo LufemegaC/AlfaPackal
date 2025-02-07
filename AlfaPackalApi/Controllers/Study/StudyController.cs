@@ -1,6 +1,7 @@
 ﻿using Api_PACsServer.Models;
 using Api_PACsServer.Models.Dto;
 using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Stow;
 using Api_PACsServer.Orchestrators.IOrchestrator;
 using Api_PACsServer.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Api_PACsServer.Controllers.GatewayData
+namespace Api_PACsServer.Controllers.Study
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -56,20 +57,20 @@ namespace Api_PACsServer.Controllers.GatewayData
 
                 // Handle exceptions and return an appropriate STOW-RS failure response
 
-                // Create a DicomOperationResult indicating failure
-                var failedOperationResult = new DicomOperationResult
+                // Create a StowInstanceResult indicating failure
+                var failedOperationResult = new StowInstanceResult
                 {
                     IsSuccess = false,
                     FailureReason = 272 // Processing failure
                                         // UIDs are unknown in this context, so they remain null
                 };
 
-                // Create a FailedInstance using the DicomOperationResult constructor
+                // Create a FailedInstance using the StowInstanceResult constructor
                 var failedInstance = new FailedInstance(failedOperationResult);
 
                 // Create the StowRsResponse using the new constructor
                 var failedResponse = new StowRsResponse(
-                    acceptedInstances: new List<AcceptedInstance>(), // Empty list since no instances were accepted
+                    acceptedInstances: new List<ReferencedSOPInstance>(), // Empty list since no instances were accepted
                     failedInstances: new List<FailedInstance> { failedInstance }
                 );
 
@@ -81,31 +82,31 @@ namespace Api_PACsServer.Controllers.GatewayData
             }
         }
 
-        /// <summary>
-        /// Handles GET requests for retrieving studies based on provided query parameters.
-        /// </summary>
-        /// <param name="queryParams">Dictionary of query parameters to filter studies by.</param>
-        /// <returns>JSON response with the list of studies.</returns>
-        [HttpGet("studies")]
-        public async Task<IActionResult> GetStudies([FromQuery] Dictionary<string, string> queryParams)
-        {
-            try
-            {
-                // Dividir los parámetros en DTOs correspondientes
-                var (controlParamsDto, studyParamsDto) = DicomWebHelper.MapQueryParamsToDtos(queryParams);
+        ///// <summary>
+        ///// Handles GET requests for retrieving studies based on provided query parameters.
+        ///// </summary>
+        ///// <param name="queryParams">Dictionary of query parameters to filter studies by.</param>
+        ///// <returns>JSON response with the list of studies.</returns>
+        //[HttpGet("studies")]
+        //public async Task<IActionResult> GetStudies([FromQuery] Dictionary<string, string> queryParams)
+        //{
+        //    try
+        //    {
+        //        // Dividir los parámetros en DTOs correspondientes
+        //        var (controlParamsDto, studyParamsDto) = DicomWebHelper.MapQueryParamsToDtos(queryParams);
 
-                var studyDtos = await _orchestrator.GetInfoStudy(studyParamsDto, controlParamsDto);
+        //        var studyDtos = await _orchestrator.GetInfoStudy(studyParamsDto, controlParamsDto);
 
-                var jsonResponse = DicomWebHelper.ConvertStudiesToDicomJsonString(studyDtos);
+        //        var jsonResponse = DicomWebHelper.ConvertStudiesToDicomJsonString(studyDtos);
 
-                return Content(jsonResponse, "application/dicom+json");
-            }
-            catch (Exception ex)
-            {
-                // Manejo de excepciones
-                return StatusCode(500, $"Error del servidor: {ex.Message}");
-            }
-        }
+        //        return Content(jsonResponse, "application/dicom+json");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Manejo de excepciones
+        //        return StatusCode(500, $"Error del servidor: {ex.Message}");
+        //    }
+        //}
     }
-    
+
 }

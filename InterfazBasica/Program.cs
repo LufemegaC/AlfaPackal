@@ -5,6 +5,7 @@ using InterfazBasica.Service;
 using InterfazBasica.Service.IService;
 using InterfazBasica_DCStore;
 using InterfazBasica_DCStore.Service;
+using InterfazBasica_DCStore.Service.BackgroundServices;
 using InterfazBasica_DCStore.Service.DicomServices;
 using InterfazBasica_DCStore.Service.IService;
 using InterfazBasica_DCStore.Service.IService.Dicom;
@@ -36,11 +37,23 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-// Servicios de administracion DICOM
+// ** Servicios de administracion DICOM
+// Dicom Validation service
 builder.Services.AddSingleton<IDicomValidationService, DicomValidationService>(); // Inyeccion de dependencia para Validacion Dicom
-builder.Services.AddSingleton<IDicomDecompositionService,DicomDecompositionService>(); // Inyeccion de dependencia para Decomposicion Dicom
+// Channels
+builder.Services.AddHostedService<DicomChannel>();
+builder.Services.AddHostedService<DicomBatchChannel>();
+// Local storage 
+builder.Services.AddSingleton<ILocalDicomStorageService, LocalDicomStorageService>();
+// Decomposition dicom service
+//builder.Services.AddSingleton<IDicomDecompositionService,DicomDecompositionService>(); // Inyeccion de dependencia para Decomposicion Dicom
+builder.Services.AddSingleton<IDicomDecompositionService, DicomDecompositionService2>(); // Inyeccion de dependencia para Decomposicion Dicom
+
+// Dicom web service
 builder.Services.AddSingleton<IDicomWebService,DicomWebService> ();
-builder.Services.AddSingleton<IDicomOrchestrator, DicomOrchestrator>(); // Inyeccion de dependencia orchestador
+
+
+//builder.Services.AddSingleton<IDicomOrchestrator, DicomOrchestrator>(); // Inyeccion de dependencia orchestador
 //builder.Services.AddSingleton<IDicomImageFinderService, DicomImageFinderService>(); // Inyeccion de dependencia orchestador
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                                     .AddCookie(options =>

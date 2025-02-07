@@ -1,17 +1,17 @@
-﻿
-using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.Especificaciones;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Models.DicomList;
-using Api_PACsServer.Models.Dto;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.DicomSupport;
+using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
 using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
+using Api_PACsServer.Models.Supplement;
 using Api_PACsServer.Repositories.IRepository.DicomSupport;
-using Api_PACsServer.Repositorio.IRepositorio.Cargas;
-using Api_PACsServer.Repositorio.IRepositorio.Pacs;
-using Api_PACsServer.Services.IService.Pacs;
+using Api_PACsServer.Repositories.IRepository.MainEntities;
+using Api_PACsServer.Repositories.IRepository.Supplement;
+using Api_PACsServer.Services.IService;
+using Api_PACsServer.Services.IService.MainEntities;
 using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
+using FellowOakDicom;
 
 namespace Api_PACsServer.Services
 {
@@ -20,16 +20,18 @@ namespace Api_PACsServer.Services
         private readonly IStudyRepository _studyRepo;
         private readonly IStudyDetailsRepository _studyDetailsRepo;
         private readonly IStudyModalityRepository _studyModalityRepo;
-
+        private readonly IQueryBuilderService _queryBuilderService;
         private readonly IMapper _mapper;
 
 
         public StudyService(IStudyRepository studyRepo, IStudyDetailsRepository studyDetailsRepo,
-                            IStudyModalityRepository studyModalityRepo, IMapper mapper)
+                            IStudyModalityRepository studyModalityRepo, IQueryBuilderService queryBuilderService, 
+                            IMapper mapper)
         {
             _studyRepo = studyRepo;
             _studyDetailsRepo = studyDetailsRepo;
             _studyModalityRepo = studyModalityRepo;
+            _queryBuilderService = queryBuilderService;
             _mapper = mapper;
         }
 
@@ -47,12 +49,14 @@ namespace Api_PACsServer.Services
             var study = _mapper.Map<Study>(CreateDto);
             study.CreationDate = DateTime.UtcNow;
             await _studyRepo.Create(study);
-            // Create and map StudyLoad
+            // Create and map Study Details
             var studyDetailsCreate = new StudyDetailsCreateDto(study.StudyInstanceUID, SizeFile);
             var studyDetails = _mapper.Map<StudyDetails>(studyDetailsCreate);
             await _studyDetailsRepo.Create(studyDetails);
             // Register modality
-            var studyModality = new StudyModality(study.StudyID, CreateDto.Modality);
+            var studyModalityCreate = _mapper.Map<StudyModalityCreateDto>(CreateDto);
+            var studyModality = _mapper.Map<StudyModality>(studyModalityCreate);
+            studyModality.CreationDate = DateTime.UtcNow;
             await _studyModalityRepo.Create(studyModality);
             // Map the Study entity to the StudyDto
             return study;
@@ -74,6 +78,8 @@ namespace Api_PACsServer.Services
         public async Task<Study> GetByUID(string studyInstanceUID)
         {
             // Retrieve the Study by StudyInstanceUID and validate
+            if (!DicomUID.IsValidUid(studyInstanceUID))
+                throw new KeyNotFoundException("StudyInstanceUID not valid.");
             var study = await _studyRepo.Get(v => v.StudyInstanceUID == studyInstanceUID);
             if (study == null)
                 throw new KeyNotFoundException("Study not found.");
@@ -93,6 +99,8 @@ namespace Api_PACsServer.Services
         public async Task<bool> ExistsByUID(string studyInstanceUID)
         {
             // Implementación de la lógica para verificar la existencia por SeriesInstanceUID
+            if (!DicomUID.IsValidUid(studyInstanceUID))
+                throw new KeyNotFoundException("StudyInstanceUID not valid.");
             return await _studyRepo.Exists(s => s.StudyInstanceUID == studyInstanceUID);
         }
 
@@ -101,10 +109,19 @@ namespace Api_PACsServer.Services
             var study = await _studyRepo.Get(s => s.StudyInstanceUID == studyInstanceUID);
             // update Details
             await UpdateDetailsForNewSerie(studyInstanceUID);
-            // Register modality
-            var studyModality = new StudyModality(study.StudyID, modality);
-            await _studyModalityRepo.Create(studyModality);
-
+            // Verificar si ya existe la modalidad para el estudio
+            bool modalityExists = await _studyModalityRepo.Exists(sm => sm.StudyInstanceUID == studyInstanceUID && sm.Modality == modality);
+            if (!modalityExists)
+            {
+                // Registrar la modalidad solo si no existe
+                var studyModality = new StudyModality
+                {
+                    StudyInstanceUID = studyInstanceUID,
+                    Modality = modality,
+                    CreationDate = DateTime.Now
+                };
+                await _studyModalityRepo.Create(studyModality);
+            }
         }
 
         internal async Task<StudyDetails> UpdateDetailsForNewSerie(string studyInstanceUID)
@@ -150,10 +167,29 @@ namespace Api_PACsServer.Services
             return _mapper.Map<StudyCreateDto>(metadata);
         }
 
-        public async Task<List<StudyDto>> AllStudiesByControlParams(ControlQueryParametersDto parameters)
+        public async Task<List<StudyDto>> GetStudyData(QueryRequestParameters<StudyQueryParametersDto> requestParameters) 
         {
-            var studiesList = _studyRepo.GetStudies(int.Parse(parameters.Page.Value),int.Parse(parameters.PageSize.Value));
-            return _mapper.Map<List<StudyDto>>(studiesList);
-        }
+
+            // Validate DTOs before proceeding.
+            //ValidateStudyParameters(requestParameters.DicomParameters);
+            var querySpecifications = _queryBuilderService.BuildQuerySpecification(requestParameters);
+
+            // Call repository to execute query
+            var studies = await _studyRepo.ExecuteStudyQuery(querySpecifications);
+            // 2. Obtener StudyDetails asociados a los StudyInstanceUID de los estudios
+            var studyInstanceUIDs = studies.Select(s => s.StudyInstanceUID).ToList();
+
+            var studyDetails = await _studyDetailsRepo.GetDetailsByUIDs(studyInstanceUIDs);
+
+            // Map results to StudyDto
+            var studiesDto = new List<StudyDto>();
+            for (int i = 0; i < studies.Count; i++)
+            {
+                var studyDto = _mapper.Map<(Study, StudyDetails), StudyDto>((studies[i], studyDetails[i]));
+                studiesDto.Add(studyDto);
+            }
+
+            return studiesDto;
+        } 
     }
 }

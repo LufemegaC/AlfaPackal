@@ -1,6 +1,4 @@
-﻿using Api_PACsServer.Modelos.AccessControl;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Api_PACsServer.Models.Dto.Studies
 {

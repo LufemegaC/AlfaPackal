@@ -7,9 +7,9 @@
         /// </summary>
         /// <param name="RequestDto"></param>
         /// <returns></returns>
-        public async Task<List<DicomOperationResult>> RegisterDicomInstances(List<StowRsRequestDto> requestsDto, string StudyUID = null)
+        public async Task<List<StowInstanceResult>> RegisterDicomInstances(List<StowRsRequestDto> requestsDto, string StudyUID = null)
         {
-            var operationResults = new List<DicomOperationResult>();
+            var operationResults = new List<StowInstanceResult>();
 
             foreach (var requestDto in requestsDto)
             {
@@ -27,7 +27,7 @@
                     }
                     catch (DicomFileException ex)
                     {
-                        operationResults.Add(DicomOperationResult.Failure(
+                        operationResults.Add(StowInstanceResult.Failure(
                             "Cannot parse DICOM file.",
                             null, null, null,
                             49152 // Cannot Understand
@@ -77,7 +77,7 @@
                     //// Check if SOP Class is supported
                     //if (!SupportedSopClasses.Contains(sopClassUID))
                     //{
-                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //    operationResults.Add(StowInstanceResult.Failure(
                     //        "Unsupported SOP Class.",
                     //        extractedStudyInstanceUID,
                     //        extractedSeriesInstanceUID,
@@ -91,7 +91,7 @@
                     // Validate required attributes for the SOP Class
                     //if (!AreRequiredAttributesPresent(dicomFile.Dataset, sopClassUID))
                     //{
-                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //    operationResults.Add(StowInstanceResult.Failure(
                     //        "Missing required attributes for the SOP Class.",
                     //        extractedStudyInstanceUID,
                     //        extractedSeriesInstanceUID,
@@ -106,7 +106,7 @@
                     //var transferSyntaxUID = dicomFile.FileMetaInfo.TransferSyntaxUID.UID;
                     //if (!SupportedTransferSyntaxes.Contains(transferSyntaxUID))
                     //{
-                    //    operationResults.Add(DicomOperationResult.Failure(
+                    //    operationResults.Add(StowInstanceResult.Failure(
                     //        "Referenced Transfer Syntax not supported.",
                     //        extractedStudyInstanceUID,
                     //        extractedSeriesInstanceUID,
@@ -161,7 +161,7 @@
                     }
 
                     // Add success result
-                    operationResults.Add(DicomOperationResult.Success(
+                    operationResults.Add(StowInstanceResult.Success(
                         studyInstanceUID: extractedStudyInstanceUID,
                         seriesInstanceUID: extractedSeriesInstanceUID,
                         sopInstanceUID: extractedSOPInstanceUID

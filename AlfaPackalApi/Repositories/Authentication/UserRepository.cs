@@ -1,17 +1,15 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos;
-using Api_PACsServer.Repositorio.IRepositorio;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Repository.DataAccess;
-using Api_PACsServer.Repository.IRepository.Authentication;
+using Api_PACsServer.Repositories.DataAccess;
+using Api_PACsServer.Datos;
+using Api_PACsServer.Models.AccessControl;
+using Api_PACsServer.Repositories.IRepository.Authentication;
 
-namespace Api_PACsServer.Repository.Authentication
+namespace Api_PACsServer.Repositories.Authentication
 {
     public class UserRepository : ReadRepository<SystemUser>, IUserRepository
     {

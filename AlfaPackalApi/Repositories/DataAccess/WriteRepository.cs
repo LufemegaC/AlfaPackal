@@ -1,8 +1,8 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
+﻿using Api_PACsServer.Datos;
+using Api_PACsServer.Repositories.IRepository.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api_PACsServer.Repository.DataAccess
+namespace Api_PACsServer.Repositories.DataAccess
 {
     public class WriteRepository<T> : IWriteRepository<T> where T : class
     {

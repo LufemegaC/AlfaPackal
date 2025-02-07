@@ -1,15 +1,14 @@
-﻿using AlfaPackalApi.Modelos;
-using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Models.Dto;
-using Api_PACsServer.Models.Dto.Instances;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
 using Api_PACsServer.Models.Dto.Series;
 using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
-using Api_PACsServer.Repositorio.IRepositorio.Cargas;
-using Api_PACsServer.Repositorio.IRepositorio.Pacs;
-using Api_PACsServer.Services.IService.Pacs;
-using Api_PACsServer.Utilities;
+using Api_PACsServer.Models.Supplement;
+using Api_PACsServer.Repositories.IRepository.MainEntities;
+using Api_PACsServer.Repositories.IRepository.Supplement;
+using Api_PACsServer.Services.IService;
+using Api_PACsServer.Services.IService.MainEntities;
 using AutoMapper;
 
 namespace Api_PACsServer.Services
@@ -18,13 +17,15 @@ namespace Api_PACsServer.Services
     {
         private readonly ISerieRepository _serieRepo;
         private readonly ISerieDetailsRepository _serieDetailsRepo;
+        private readonly IQueryBuilderService _queryBuilderService;
         private readonly IMapper _mapper;
 
         public SerieService(ISerieRepository serieRepo, ISerieDetailsRepository serieDetailsRepo,
-                            IMapper mapper)
+                            IQueryBuilderService queryBuilderService, IMapper mapper)
         {
             _serieRepo = serieRepo;
             _serieDetailsRepo = serieDetailsRepo;
+            _queryBuilderService = queryBuilderService;
             _mapper = mapper;
         }
 
@@ -82,7 +83,7 @@ namespace Api_PACsServer.Services
             return _mapper.Map<IEnumerable<OHIFSerie>>(serieList);
         }
 
-        public async Task<SerieDetails> UpdateLoadForNewInstance(string seriesInstanceUID, decimal totalSizeFile)
+        public async Task<SerieDetails> UpdateDetailsForNewInstance(string seriesInstanceUID, decimal totalSizeFile)
         {
             var serieDetails = await _serieDetailsRepo.Get(u => u.SeriesInstanceUID == seriesInstanceUID);
             var serieDetailsUpdateDto = _mapper.Map<SerieDetailsUpdateDto>(serieDetails);
@@ -103,5 +104,25 @@ namespace Api_PACsServer.Services
             return _mapper.Map<SerieCreateDto>(metadata);
         }
 
+        public async Task<List<SerieDto>> GetSeriesFromStudy(QueryRequestParameters<SerieQueryParametersDto> requestParameters)
+        {
+            // Validate DTOs before proceeding.
+            //ValidateStudyParameters(requestParameters.DicomParameters);
+            var querySpecifications = _queryBuilderService.BuildQuerySpecification(requestParameters);
+            var series = await _serieRepo.ExecuteSerieQuery(querySpecifications);
+            var serieInstanceUIDs = series.Select(s => s.SeriesInstanceUID).ToList();
+            // Call repository to execute query
+            var seriesDetails = await _serieDetailsRepo.GetDetailsByUIDs(serieInstanceUIDs);
+            
+            // Map results to StudyDto
+            var seriesDto = new List<SerieDto>();
+            for (int i = 0; i < series.Count; i++)
+            {
+                var serieDto = _mapper.Map<(Serie, SerieDetails), SerieDto>((series[i], seriesDetails[i]));
+                seriesDto.Add(serieDto);
+            }
+
+            return seriesDto;
+        }
     }
 }

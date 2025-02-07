@@ -10,21 +10,17 @@ namespace Api_PACsServer.Models.Dto.Studies
         public int StudyID { get; set; }
         // Study description DICOM
         public string? StudyDescription { get; set; }
+        //Study date
         public DateTime StudyDate { get; set; }
+        //Study Time
+        public TimeSpan? StudyTime { get; set; }
         // Name of the institution performing the study DICOM/Metadata
         public string? InstitutionName { get; set; }
-        // Study modality DICOM/Metadata
-        public string? Modality { get; set; }
-        // Modality descripcion ( internal )
-        public string? DescModality { get; set; }
-        // Body Part Examined
-        public string? BodyPartExamined { get; set; }
-        // Body Part descripcion
-        public string? DescBodyPartE { get; set; }
-        // ** Institution **//
-        //public int InstitutionID { get; set; }
-        // ** Patient Information **//
-        // Non internal control institution added
+        // Referring Physician Name
+        public string? ReferringPhysicianName { get; set; }
+        // Modalities
+        public string? ModalitiesInStudy { get; set; }
+        public string? PatientID { get; set; }
         public string? PatientName { get; set; }
         // Patient age
         [StringLength(4)] // DICOM format for age, e.g. "034Y"
@@ -35,6 +31,7 @@ namespace Api_PACsServer.Models.Dto.Studies
         // Patient weight
         [RegularExpression(@"\d{1,3}(\.\d{1})?")] // Format for weight in kg with one decimal
         public string? PatientWeight { get; set; }
+        public DateTime? PatientBirthDate { get; set; }
         // Additional fields suggested by DICOM structure
         [StringLength(64)]
         public string? IssuerOfPatientID { get; set; } // Issuer of the PatientID

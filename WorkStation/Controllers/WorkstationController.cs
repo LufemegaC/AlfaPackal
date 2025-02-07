@@ -41,21 +41,31 @@ namespace WorkStation.Controllers
         [HttpPost]
         public async Task<IActionResult> SendDicomFile(IFormFile dicomFile)
         {
-            // Recuperar el ModalityVM desde la sesión
-            var modalityVm = JsonConvert.DeserializeObject<ModalityVM>(HttpContext.Session.GetString("ModalityVM"));
-            if (dicomFile != null && dicomFile.Length > 0)
+            try
             {
-                using (var stream = dicomFile.OpenReadStream())
+                // Recuperar el ModalityVM desde la sesión
+                var modalityVm = JsonConvert.DeserializeObject<ModalityVM>(HttpContext.Session.GetString("ModalityVM"));
+                if (dicomFile != null && dicomFile.Length > 0)
                 {
-                    var resultMessage = await ProcessDicomFile(stream);
-                    ViewBag.Message = resultMessage;
+                    using (var stream = dicomFile.OpenReadStream())
+                    {
+                        var resultMessage = await ProcessDicomFile(stream);
+                        ViewBag.Message = resultMessage;
+                    }
                 }
+                else
+                {
+                    ViewBag.Message = "Debe seleccionar un archivo DICOM";
+                }
+                return View("Index", modalityVm);
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.Message = "Debe seleccionar un archivo DICOM";
+                ViewBag.Message = $"Error: {ex.Message}";
+                _logger.LogError(ex, "Error en el procesamiento de archivos DICOM.");
+                return View("Index");
             }
-            return View("Index", modalityVm);
+
         }
 
         [HttpPost]

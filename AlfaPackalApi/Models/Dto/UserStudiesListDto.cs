@@ -1,6 +1,4 @@
-﻿using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.Especificaciones;
-using Api_PACsServer.Models.Dto.Studies;
+﻿using Api_PACsServer.Models.Dto.Studies;
 
 namespace Api_PACsServer.Models.Dto
 {
@@ -8,7 +6,6 @@ namespace Api_PACsServer.Models.Dto
     {
         public IEnumerable<StudyDto> Studies { get; set; }
         public int TotalPages { get; set; }
-
     }
 
 }

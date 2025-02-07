@@ -1,7 +1,7 @@
-﻿using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
+﻿using Api_PACsServer.Models.AccessControl;
+using Api_PACsServer.Repositories.IRepository.DataAccess;
 
-namespace Api_PACsServer.Repository.IRepository.Authentication
+namespace Api_PACsServer.Repositories.IRepository.Authentication
 {
     public interface ILocalDicomServerRepostory : IReadRepository<LocalDicomServer>
     {

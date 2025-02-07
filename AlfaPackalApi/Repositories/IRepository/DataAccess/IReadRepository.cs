@@ -1,7 +1,7 @@
-﻿using Api_PACsServer.Modelos.Especificaciones;
+﻿using Api_PACsServer.Models.Specifications;
 using System.Linq.Expressions;
 
-namespace Api_PACsServer.Repository.IRepository.RepositoryBase
+namespace Api_PACsServer.Repositories.IRepository.DataAccess
 {
     /// <summary>
     /// Represents a repository for reading entities.

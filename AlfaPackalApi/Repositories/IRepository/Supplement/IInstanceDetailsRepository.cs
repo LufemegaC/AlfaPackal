@@ -1,11 +1,12 @@
-﻿using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
+﻿using Api_PACsServer.Models.Supplement;
+using Api_PACsServer.Repositories.IRepository.DataAccess;
 
-namespace Api_PACsServer.Repositorio.IRepositorio.Cargas
+namespace Api_PACsServer.Repositories.IRepository.Supplement
 {
-    public interface IInstanceDetailsRepository: IWriteRepository<InstanceDetails>, IReadRepository<InstanceDetails>
+    public interface IInstanceDetailsRepository : IWriteRepository<InstanceDetails>, IReadRepository<InstanceDetails>
     {
         //Task<ImagenCarga> Actualizar(ImagenCarga entidad);
         //Task<InstanceLoad> GetByPacsImageId(int pacsImagenID);
+        Task<List<InstanceDetails>> GetDetailsByUIDs(List<string> sopInstanceUIDs);
     }
 }

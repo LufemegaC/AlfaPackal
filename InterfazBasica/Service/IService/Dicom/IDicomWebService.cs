@@ -10,6 +10,6 @@ namespace InterfazBasica_DCStore.Service.IService.Dicom
         /// <param name="content">The data transfer object containing the CreateDto models for each main entity (Study, Series, and Instance).</param>
         /// <returns>A task that represents the asynchronous operation. 
         /// The task result contains an API response indicating the success or failure of the registration process.</returns>
-        Task<StowRsResponse> RegisterInstances(MultipartContent content);
+        Task<StowRsResponse> RegisterInstances(MultipartContent content, string studyUID = "");
     }
 }

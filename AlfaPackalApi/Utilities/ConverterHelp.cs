@@ -50,7 +50,7 @@ namespace Api_PACsServer.Utilities
             };
         }
 
-        public static APIResponse CreateResponse(bool isSuccess, HttpStatusCode statusCode, object result = null, List<string> errors = null)
+        public static APIResponse CreateResponse(bool isSuccess, HttpStatusCode statusCode, List<string> errors = null, object result = null)
         {
             return new APIResponse
             {

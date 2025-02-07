@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Api_PACsServer.Modelos.AccessControl
+namespace Api_PACsServer.Models.AccessControl
 {
     public class SystemUser : IdentityUser
     {

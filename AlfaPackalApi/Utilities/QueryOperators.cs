@@ -16,5 +16,23 @@
             Descending,
             Ascending
         }
+
+        public enum QueryParameterType
+        {
+            String,
+            Int,
+            DateTime,
+            Decimal,
+            Boolean
+        }
+
+        public enum QueryParameterCategory
+        {
+            Additional,
+            Dicom
+        }
+
+
+
     }
 }

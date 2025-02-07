@@ -1,28 +1,31 @@
-﻿using AlfaPackalApi.Modelos;
-using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Models.Dto;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
 using Api_PACsServer.Models.Dto.Instances;
+using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
-using Api_PACsServer.Repositorio.IRepositorio.Cargas;
-using Api_PACsServer.Repositorio.IRepositorio.Pacs;
-using Api_PACsServer.Services.IService.Pacs;
+using Api_PACsServer.Models.Supplement;
+using Api_PACsServer.Repositories.IRepository.MainEntities;
+using Api_PACsServer.Repositories.IRepository.Supplement;
+using Api_PACsServer.Services.IService;
+using Api_PACsServer.Services.IService.MainEntities;
 using AutoMapper;
-
 
 namespace Api_PACsServer.Services
 {
     public class InstanceService : IInstanceService
     {
         private readonly IInstanceRepository _instanceRepo;
-        private readonly IInstanceDetailsRepository _instanceLoadRepo;
+        private readonly IInstanceDetailsRepository _instanceDetailsRepo;
+        private readonly IQueryBuilderService _queryBuilderService;
         private readonly IMapper _mapper;
 
-        public InstanceService(IInstanceRepository instanceRepo, IInstanceDetailsRepository instanceLoadRepo,
-                             IMapper mapper)
+        public InstanceService(IInstanceRepository instanceRepo, IInstanceDetailsRepository instanceDetailsRepo,
+                              IQueryBuilderService queryBuilderService, IMapper mapper)
         {
             _instanceRepo = instanceRepo;
-            _instanceLoadRepo = instanceLoadRepo;
+            _instanceDetailsRepo = instanceDetailsRepo;
+            _queryBuilderService = queryBuilderService;
             _mapper = mapper;
         }
 
@@ -42,7 +45,7 @@ namespace Api_PACsServer.Services
             // register load entity
             var instanceDetailsCreate = new InstanceDetailsCreateDto(instance.SOPInstanceUID, SizeFile);
             var instanceDetails = _mapper.Map<InstanceDetails>(instanceDetailsCreate);
-            await _instanceLoadRepo.Create(instanceDetails);
+            await _instanceDetailsRepo.Create(instanceDetails);
             // response
             return instance;
         }
@@ -97,6 +100,23 @@ namespace Api_PACsServer.Services
         public async Task<InstanceCreateDto> MapMetadataToCreateDto(MetadataDto metadata)
         {
             return _mapper.Map<InstanceCreateDto>(metadata);
+        }
+
+        public async Task<List<InstanceDto>> GetInstancesFromSerie(QueryRequestParameters<InstanceQueryParametersDto> requestParameters)
+        {
+            var querySpecifications = _queryBuilderService.BuildQuerySpecification(requestParameters);
+            var instances = await _instanceRepo.ExecuteInstanceQuery(querySpecifications);
+            var sopInstancesUIDs = instances.Select(s => s.SOPInstanceUID).ToList();
+            // Call repository to execute query
+            var instancesDetails = await _instanceDetailsRepo.GetDetailsByUIDs(sopInstancesUIDs);
+            // Map results to StudyDto
+            var instancesDto = new List<InstanceDto>();
+            for (int i = 0; i < instances.Count; i++)
+            {
+                var serieDto = _mapper.Map<(Instance, InstanceDetails), InstanceDto>((instances[i], instancesDetails[i]));
+                instancesDto.Add(serieDto);
+            }
+            return instancesDto;
         }
     }
 }

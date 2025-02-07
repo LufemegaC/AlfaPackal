@@ -1,165 +1,116 @@
-﻿using Api_PACsServer.Models;
-using Api_PACsServer.Models.Dto;
+﻿using Api_PACsServer.Factories;
+using Api_PACsServer.Models;
 using Api_PACsServer.Models.Dto.DicomWeb;
-using Api_PACsServer.Models.Dto.Studies;
 using FellowOakDicom;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Api_PACsServer.Utilities.QueryOperators;
+using System.Reflection;
+using Api_PACsServer.Models.Dto.Base;
+using Api_PACsServer.Models.Dto.DicomWeb.Stow;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
+using FellowOakDicom.Network;
+using Api_PACsServer.Models.Attributes;
+using System.Globalization;
+using FellowOakDicom.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Api_PACsServer.Utilities
 {
     public class DicomWebHelper
     {
         /// *** STOW-RS SECCION *** ///
-
-        /// <summary>
-        /// Parses a STOW-RS request and extracts DICOM files and associated metadata.
-        /// </summary>
-        /// <param name="request">The HTTP request containing the multipart/related content.</param>
-        /// <returns>A list of StowRsRequestDto instances representing the DICOM files and metadata.</returns>
-        public static async Task<StowRsRequestDto> ParseStowRsRequest(HttpRequest request)
+        
+        public static async Task<StowRsValidationResult> ValidateRequest(HttpRequest request/*, ILogger logger*/)
         {
-            var result = new StowRsRequestDto();
+            var validationResult = new StowRsValidationResult();
+
+            // ESTA SECCION SE DEBE PASAR AL SERVICIO DEL ORCHESTRATOR
+
+            //// 1. Validación de IP de origen
+            //var remoteIp = request.HttpContext.Connection.RemoteIpAddress;
+            //if (!IsLocalDicomServer(remoteIp))
+            //{
+            //    logger.LogWarning($"Intento de acceso no autorizado desde IP: {remoteIp}");
+            //    validationResult.IsValid = false;
+            //    validationResult.ErrorMessage = "Solicitud rechazada: Origen no permitido";
+            //    return validationResult;
+            //}
 
             // Check if the request content type is multipart/related
             if (!request.ContentType.Contains("multipart/related", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Request does not contain multipart/related content.");
 
-            // Extract the boundary from the Content-Type header
-            var boundary = GetBoundaryFromContentType(request.ContentType);
-            if (string.IsNullOrEmpty(boundary))
-                throw new InvalidOperationException("Boundary not found in Content-Type header.");
+            var contentType = request.ContentType;
+            var boundary = GetBoundaryFromContentType(contentType);
 
-
-            // Create a MultipartReader to read each section of the multipart content
-            var reader = new MultipartReader(boundary, request.Body);
-            MultipartSection section;
-
-            var metadataList = new List<MetadataDto>();
-            var instancesList = new List<DicomFile>();
-            long fileSize = 0; // Initialize fileSize to avoid unassigned variable error
-            string transactionUID = null;
-
-            // Iterate through each section of the multipart content
-            while ((section = await reader.ReadNextSectionAsync()) != null)
+            if (!IsValidBoundary(boundary))
             {
-                var contentType = section.ContentType;
-                if (contentType == "application/dicom")
+                //logger.LogWarning($"Boundary no válido detectado: {boundary}");
+                validationResult.IsValid = false;
+                validationResult.ErrorMessage = "Formato de boundary no válido";
+                return validationResult;
+            }
+
+            // 3. Validación de estructura multipart
+            if (!ValidateMultipartStructure(request))
+            {
+                validationResult.IsValid = false;
+                validationResult.ErrorMessage = "Estructura DICOM no válida en el payload";
+                return validationResult;
+            }
+
+            validationResult.IsValid = true;
+            return validationResult;
+        }
+
+       
+
+        private static readonly HashSet<string> AllowedContentTypes = new()
+        {
+            "application/dicom+json",
+            "application/dicom"
+        };
+
+        private static bool IsValidBoundary(string boundary)
+        {
+            if (string.IsNullOrEmpty(boundary)) return false;
+
+            // Validar formato: PACKAL_ + UTC timestamp (14 dígitos)
+            var pattern = @"^PACKAL_\d{14}$";
+            return Regex.IsMatch(boundary, pattern);
+        }
+
+        private static bool ValidateMultipartStructure(HttpRequest request)
+        {
+            try
+            {
+                var reader = new MultipartReader(GetBoundaryFromContentType(request.ContentType), request.Body);
+                MultipartSection section;
+                bool hasMetadata = false, hasInstance = false;
+
+                while ((section = reader.ReadNextSectionAsync().Result) != null)
                 {
-                    using var memoryStream = new MemoryStream();
-                    await section.Body.CopyToAsync(memoryStream);
-                    memoryStream.Position = 0;
-                    fileSize = memoryStream.Length;
-                    var dicomFile = DicomFile.Open(memoryStream);
-                    instancesList.Add(dicomFile);
-                    // Extract TransactionUID from the DICOM file if not already set
-                    if (transactionUID == null)
+                    var contentType = section.ContentType?.Split(';')[0].Trim();
+
+                    if (!AllowedContentTypes.Contains(contentType))
                     {
-                        transactionUID = dicomFile.Dataset.GetSingleValueOrDefault<string>(DicomTag.TransactionUID, null);
+                        return false;
                     }
+
+                    // Validar alternancia de metadata/instancia
+                    if (contentType == "application/dicom+json") hasMetadata = true;
+                    if (contentType == "application/dicom") hasInstance = true;
                 }
 
-                else if(contentType.StartsWith("application/dicom+json", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Read the metadata JSON
-                    using var readerStream = new StreamReader(section.Body);
-                    var json = await readerStream.ReadToEndAsync();
-
-                    // Parse JSON into JObject and convert to MetadataDto
-                    var dicomJson = JObject.Parse(json);
-                    var metadataDto = ConvertDicomJsonToDto(dicomJson);
-                    metadataDto.TotalFileSizeMB = Math.Round((decimal)fileSize / (1024 * 1024), 2);
-                    metadataList.Add(metadataDto);
-                }
-
+                // Debe tener al menos un par metadata/instancia
+                return hasMetadata && hasInstance;
             }
-            result.DicomFilesPackage = CombineMetadataAndDicomFiles(metadataList, instancesList);
-            result.TransactionUID = transactionUID;
-            return result;
-        }
-
-        /// <summary>
-        /// Combines metadata and DICOM files into a list of DicomFilePackage.
-        /// </summary>
-        /// <param name="metadataList">List of MetadataDto containing the metadata information.</param>
-        /// <param name="dicomFiles">List of IFormFile representing the DICOM files.</param>
-        /// <returns>A list of DicomFilePackage combining the metadata and DICOM files.</returns>
-        internal static List<DicomFilePackage> CombineMetadataAndDicomFiles(List<MetadataDto> metadataList, List<DicomFile> dicomFiles)
-        {
-            var result = new List<DicomFilePackage>();
-
-            if (metadataList.Count != dicomFiles.Count)
+            catch
             {
-                throw new InvalidOperationException("The number of metadata entries does not match the number of DICOM files.");
+                return false;
             }
-
-            for (int i = 0; i < metadataList.Count; i++)
-            {
-                var stowRequest = new DicomFilePackage
-                {
-                    Metadata = metadataList[i],
-                    DicomFile = dicomFiles[i],
-                    //TotalFileSizeMB = Math.Round((decimal)instancesList[i].fileSize / (1024 * 1024), 2) // Convert bytes to MB
-                };
-                result.Add(stowRequest);
-            };
-
-            return result;
-        }
-
-
-        /// <summary>
-        /// Converts a list of OperationResult into a DICOMWeb STOW-RS response JSON.
-        /// </summary>
-        /// <param name="operationResults">List of OperationResult instances.</param>
-        /// <returns>A JSON string representing the STOW-RS response.</returns>
-        public static string CreateStowRsResponse(List<DicomOperationResult> operationResults, string transactionUID)
-        {
-            var acceptedInstances = operationResults
-                .Where(r => r.IsSuccess)
-                .Select(r => new AcceptedInstance(r))
-                .ToList();
-
-            var failedInstances = operationResults
-                .Where(r => !r.IsSuccess)
-                .Select(r => new FailedInstance(r))
-                .ToList();
-
-            var response = new StowRsResponse(acceptedInstances, failedInstances);
-            response.TransactionUID = transactionUID;
-            // STATUS CONFIGURATION
-            if (failedInstances.Count == 0 && acceptedInstances.Count > 0)
-            {
-                response.Status = "200 (OK)"; // All instances successfully stored
-            }
-            else if (failedInstances.Count > 0 && acceptedInstances.Count > 0)
-            {
-                response.Status = "202 (Accepted)"; // Some instances stored, some failed
-            }
-            else if (failedInstances.Count > 0 && acceptedInstances.Count == 0)
-            {
-                response.Status = "409 (Conflict)"; // All instances failed due to a conflict
-            }
-            else
-            {
-                response.Status = "400 (Bad Request)"; // Bad request, unable to store any instances
-            }
-            // Serialize the response to JSON
-            return JsonConvert.SerializeObject(response);
-        }
-
-        public static class DicomErrorCodes
-        // Last update with DICOM PS3.18 2024a - Web Services
-        // Table I.2-2. Store Instances Response Failure Reason Values
-        {
-            public const int ProcessingFailure = 272;             // Error de procesamiento (0x0110)
-            public const int CannotUnderstand = 49152;            // No se puede entender (0xC000)
-            public const int OutOfResources = 42752;              // Sin recursos (0xA700)
-            public const int DataSetDoesNotMatchSOPClass = 43264; // El dataset no coincide con el SOP Class (Archivo corrupto) (0xA900)
-            public const int TransferSyntaxNotSupported = 49442;  // Transfer Syntax no soportado (0x0122)
-            public const int SOPClassUIDNotSupported = 290;       // SOP Class UID no soportado 
         }
 
         /// <summary>
@@ -167,7 +118,7 @@ namespace Api_PACsServer.Utilities
         /// </summary>
         /// <param name="contentType">The Content-Type header value.</param>
         /// <returns>The boundary string if found; otherwise, null.</returns>
-        private static string GetBoundaryFromContentType(string contentType)
+        public static string GetBoundaryFromContentType(string contentType)
         {
             var elements = contentType.Split(';');
             foreach (var element in elements)
@@ -180,251 +131,138 @@ namespace Api_PACsServer.Utilities
             }
             return null;
         }
-
-        /// <summary>
-        /// Converts a DICOM JSON structure into a MainEntitiesCreateDto object.
-        /// </summary>
-        /// <param name="dicomJson">The JObject representing the DICOM JSON structure.</param>
-        /// <returns>A MetadataDto object containing the metadata for the DICOM instance.</returns>
-        public static MetadataDto ConvertDicomJsonToDto(JObject dicomJson)
-        {
-            var dto = new MetadataDto();
-
-            // SOP Class UID
-            if (dicomJson.TryGetValue("00020010", out var sopClassUidToken))
-            {
-                dto.SOPClassUID = sopClassUidToken["Value"]?.First?.ToString();
-            }
-
-            // SOP Instance UID and Series Instance UID
-            if (dicomJson.TryGetValue("00081199", out var referencedSeriesToken))
-            {
-                var referencedSeries = referencedSeriesToken["Value"]?.FirstOrDefault() as JObject;
-                if (referencedSeries != null)
-                {
-                    dto.SOPInstanceUID = referencedSeries["00080016"]?["Value"]?.First?.ToString();
-                    dto.SeriesInstanceUID = referencedSeries["00080018"]?["Value"]?.First?.ToString();
-                }
-            }
-
-            // Series Description
-            if (dicomJson.TryGetValue("0008103E", out var seriesDescriptionToken))
-            {
-                dto.SeriesDescription = seriesDescriptionToken["Value"]?.First?.ToString();
-            }
-
-            // Series Instance UID
-            if (dicomJson.TryGetValue("0020000E", out var seriesInstanceUidToken))
-            {
-                dto.SeriesInstanceUID = seriesInstanceUidToken["Value"]?.First?.ToString();
-            }
-
-            // Series Number
-            if (dicomJson.TryGetValue("00200010", out var seriesNumberToken))
-            {
-                int.TryParse(seriesNumberToken["Value"]?.First?.ToString(), out var seriesNumber);
-                dto.SeriesNumber = seriesNumber;
-            }
-
-            // Modality
-            if (dicomJson.TryGetValue("00080060", out var modalityToken))
-            {
-                dto.Modality = modalityToken["Value"]?.First?.ToString();
-            }
-
-            // Series Date
-            if (dicomJson.TryGetValue("00080021", out var seriesDateToken))
-            {
-                if (DateTime.TryParseExact(seriesDateToken["Value"]?.First?.ToString(), "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var seriesDate))
-                {
-                    dto.SeriesDateTime = seriesDate;
-                }
-            }
-
-            // Patient Position
-            if (dicomJson.TryGetValue("00180050", out var patientPositionToken))
-            {
-                dto.PatientPosition = patientPositionToken["Value"]?.First?.ToString();
-            }
-
-            // Study Description
-            if (dicomJson.TryGetValue("00081030", out var studyDescriptionToken))
-            {
-                dto.StudyDescription = studyDescriptionToken["Value"]?.First?.ToString();
-            }
-
-            // Study Date
-            if (dicomJson.TryGetValue("00080020", out var studyDateToken))
-            {
-                if (DateTime.TryParseExact(studyDateToken["Value"]?.First?.ToString(), "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var studyDate))
-                {
-                    dto.StudyDate = studyDate;
-                }
-            }
-
-            // Study Time
-            if (dicomJson.TryGetValue("00080030", out var studyTimeToken))
-            {
-                if (TimeSpan.TryParseExact(studyTimeToken["Value"]?.First?.ToString(), "hhmmss", null, out var studyTime))
-                {
-                    dto.StudyTime = studyTime;
-                }
-            }
-
-            // Accession Number
-            if (dicomJson.TryGetValue("00080050", out var accessionNumberToken))
-            {
-                dto.AccessionNumber = accessionNumberToken["Value"]?.First?.ToString();
-            }
-
-            // Institution Name
-            if (dicomJson.TryGetValue("00080080", out var institutionNameToken))
-            {
-                dto.InstitutionName = institutionNameToken["Value"]?.First?.ToString();
-            }
-
-            // Patient's Name
-            if (dicomJson.TryGetValue("00100010", out var patientNameToken))
-            {
-                dto.PatientName = patientNameToken["Value"]?.First?.ToString();
-            }
-
-            // Patient's Sex
-            if (dicomJson.TryGetValue("00100040", out var patientSexToken))
-            {
-                dto.PatientSex = patientSexToken["Value"]?.First?.ToString();
-            }
-
-            // Patient's Birth Date
-            if (dicomJson.TryGetValue("00100030", out var patientBirthDateToken))
-            {
-                if (DateTime.TryParseExact(patientBirthDateToken["Value"]?.First?.ToString(), "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var patientBirthDate))
-                {
-                    dto.PatientBirthDate = patientBirthDate;
-                }
-            }
-
-            // Study Instance UID
-            if (dicomJson.TryGetValue("0020000D", out var studyInstanceUidToken))
-            {
-                dto.StudyInstanceUID = studyInstanceUidToken["Value"]?.First?.ToString();
-            }
-
-            // Instance Number
-            if (dicomJson.TryGetValue("00200011", out var instanceNumberToken))
-            {
-                int.TryParse(instanceNumberToken["Value"]?.First?.ToString(), out var instanceNumber);
-                dto.InstanceNumber = instanceNumber;
-            }
-
-            // Rows
-            if (dicomJson.TryGetValue("00280010", out var rowsToken))
-            {
-                int.TryParse(rowsToken["Value"]?.First?.ToString(), out var rows);
-                dto.Rows = rows;
-            }
-
-            // Columns
-            if (dicomJson.TryGetValue("00280011", out var columnsToken))
-            {
-                int.TryParse(columnsToken["Value"]?.First?.ToString(), out var columns);
-                dto.Columns = columns;
-            }
-
-            // Pixel Spacing
-            if (dicomJson.TryGetValue("00280030", out var pixelSpacingToken))
-            {
-                dto.PixelSpacing = pixelSpacingToken["Value"]?.First?.ToString();
-            }
-
-            // Image Position (Patient)
-            if (dicomJson.TryGetValue("00200032", out var imagePositionToken))
-            {
-                dto.ImagePositionPatient = imagePositionToken["Value"]?.First?.ToString();
-            }
-
-            // Image Orientation (Patient)
-            if (dicomJson.TryGetValue("00200037", out var imageOrientationToken))
-            {
-                dto.ImageOrientationPatient = imageOrientationToken["Value"]?.First?.ToString();
-            }
-
-            // Body Part Examined
-            if (dicomJson.TryGetValue("00082120", out var bodyPartExaminedToken))
-            {
-                dto.BodyPartExamined = bodyPartExaminedToken["Value"]?.First?.ToString();
-            }
-
-            // Photometric Interpretation
-            if (dicomJson.TryGetValue("00280004", out var photometricInterpretationToken))
-            {
-                dto.PhotometricInterpretation = photometricInterpretationToken["Value"]?.First?.ToString();
-            }
-
-            // -- Transaction -- //
-            // Transaction UID
-            if (dicomJson.TryGetValue("00081195", out var transactionUIDToken))
-            {
-                dto.TransactionUID = transactionUIDToken["Value"]?.First?.ToString();
-            }
-
-            // Transaction Status
-            if (dicomJson.TryGetValue("00080417", out var transactionStatusToken))
-            {
-                dto.TransactionStatus = transactionStatusToken["Value"]?.First?.ToString();
-            }
-
-
-            return dto;
-        }
-
         /// *** STOW-RS SECCION : ENDS *** ///
 
         /// *** QIDO-RS SECCION : BEGINS *** ///
 
-        /// <summary>
-        /// Maps the query parameters to ControlQueryParametersDto and StudyQueryParametersDto.
-        /// This method handles both URI-encoded operators and standard query parameters.
-        /// </summary>
-        /// <param name="queryParams">Dictionary containing query parameters from the request.</param>
-        /// <returns>Tuple containing ControlQueryParametersDto and StudyQueryParametersDto.</returns>
-        public static (ControlQueryParametersDto, StudyQueryParametersDto) MapQueryParamsToDtos(Dictionary<string, string> queryParams)
+        public static QueryRequestParameters<T> TranslateRequestParameters<T> (Dictionary<string, List<string>> queryParams) where T : BaseDicomQueryParametersDto, new ()
         {
-            var controlParamsDto = new ControlQueryParametersDto();
-            var studyParamsDto = new StudyQueryParametersDto();
-
+            var additionalParams = new AdditionalParameters();
+            // Create an instance of the DTO type specified by T
+            var dicomParamsDto = new T();
+            var dicomLevel = dicomParamsDto.DicomQueryLevel;
             foreach (var param in queryParams)
             {
-                // Decodificar el valor del parámetro para manejar operadores URI codificados
-                var decodedValue = System.Web.HttpUtility.UrlDecode(param.Value);
+                // Iterar a través de cada valor de la lista para la clave dada
+                foreach (var value in param.Value)
+                {
+                    // Decodificar el valor del parámetro
+                    var decodedValue = System.Web.HttpUtility.UrlDecode(value);
+                    string columnName;
 
-                // Asignar el parámetro al ControlQueryParametersDto si corresponde
-                if (controlParameters.Contains(param.Key.ToLower()))
-                {
-                    AssignControlParameter(controlParamsDto, param.Key.ToLower(), decodedValue);
-                }
-                // Asignar el parámetro al StudyQueryParametersDto si es un atributo DICOM
-                else if (DicomTagToDto.TryGetValue(param.Key, out var propertyKey) || DicomTagToDto.ContainsValue(param.Key))
-                {
-                    propertyKey ??= DicomTagToDto.FirstOrDefault(x => x.Value == param.Key).Key;
-                    var propertyInfo = studyParamsDto.GetType().GetProperty(propertyKey);
-                    if (propertyInfo != null)
+                    if (param.Key.Equals("includefield", StringComparison.OrdinalIgnoreCase))
                     {
-                        var queryParameter = CreateQueryParameter(decodedValue);
-                        propertyInfo.SetValue(studyParamsDto, queryParameter);
+                        // Procesar IncludeFields, soportando tanto una sola declaración con múltiples valores
+                        // como múltiples declaraciones con un solo valor cada una.
+                        var fields = decodedValue.Split(',');
+                        foreach (var field in fields)
+                        {
+                            string includeFieldName;
+                            if (IsNumericTag(field))
+                            {
+                                // Convertir el string hexadecimal al DicomTag correspondiente
+                                var dicomTag = DicomTag.Parse(field);
+                                if (dicomTag != null)
+                                {
+                                    // Obtener el nombre del tag directamente desde el DicomTag
+                                    includeFieldName = dicomTag.DictionaryEntry.Keyword;
+                                }
+                                else
+                                {
+                                    throw new InvalidOperationException($"DicomTag no válido para el valor: {field}");
+                                }
+                            }
+                            else
+                            {
+                                // Validar si el nombre del atributo es un DICOM Tag válido
+                                var dicomTag = DicomDictionary.Default.FirstOrDefault(tag => tag.Keyword.Equals(field, StringComparison.OrdinalIgnoreCase));
+                                if (dicomTag != null)
+                                {
+                                    includeFieldName = dicomTag.Keyword;
+                                }
+                                else
+                                {
+                                    throw new InvalidOperationException($"Atributo DICOM no válido: {field}");
+                                }
+                            }
+                            // Validar si el campo existe en el modelo Study
+                            if (!ValidatePropertyExists(includeFieldName, dicomLevel))
+                            {
+                                throw new InvalidOperationException($"The field '{includeFieldName}' do not exists in {dicomLevel} level.");
+                            }
+                            // Agregar el campo validado a la lista de IncludeFields en el DTO
+                            dicomParamsDto.IncludeFields.Add(includeFieldName);
+                        }
+                    }
+                    else
+                    {
+                        // Determinar si el parámetro es un nombre de atributo o un tag DICOM
+                        if (IsNumericTag(param.Key))
+                        {
+                            // Convertir el string hexadecimal al DicomTag correspondiente
+                            var dicomTag = DicomTag.Parse(param.Key);
+                            if (dicomTag != null)
+                            {
+                                // Obtener el nombre del tag directamente desde el DicomTag
+                                columnName = dicomTag.DictionaryEntry.Keyword;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException($"DicomTag no válido para el valor: {param.Key}");
+                            }
+                        }
+                        else
+                        {
+                            columnName = param.Key;
+                        }
+
+                        // Crear el QueryParameter correspondiente
+                        var queryParameter = QueryParameterFactory.CreateQueryParameter(columnName, decodedValue);
+
+                        // Asignar el QueryParameter al DTO correspondiente
+                        if (queryParameter.Category == QueryParameterCategory.Additional)
+                        {
+                            AssignControlParameter(additionalParams, columnName, queryParameter);
+                        }
+                        else if (queryParameter.Category == QueryParameterCategory.Dicom)
+                        {
+                            AssignGenericParameter(dicomParamsDto, columnName, queryParameter);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"Unrecognized parameter category for {param.Key}");
+                        }
                     }
                 }
             }
-            return (controlParamsDto, studyParamsDto);
+            dicomParamsDto.Validateparameters();
+            return new QueryRequestParameters<T>(additionalParams, dicomParamsDto);
         }
 
-        /// <summary>
-        /// Assigns the control parameter value to the corresponding property in ControlQueryParametersDto.
-        /// </summary>
-        private static void AssignControlParameter(ControlQueryParametersDto controlParamsDto, string key, string value)
+        public static bool ValidatePropertyExists(string propertyName, DicomQueryRetrieveLevel level)
         {
-            var queryParameter = CreateQueryParameter(value);
-            switch (key)
+            // Obtener el tipo del modelo MetadataDto
+            var metadataType = typeof(MetadataDto);
+
+            // Buscar propiedades cuyo nombre coincida con propertyName
+            var matchingProperty = metadataType.GetProperties()
+                .FirstOrDefault(prop =>
+                    prop.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase) &&
+                    prop.GetCustomAttributes(typeof(DicomLevelAttribute), true)
+                        .OfType<DicomLevelAttribute>()
+                        .Any(attr => attr.Level == level)
+                );
+
+            // Retorna true si encontró una propiedad que cumple las condiciones, false si no
+            return matchingProperty != null;
+        }
+
+
+
+
+        private static void AssignControlParameter(AdditionalParameters controlParamsDto, string paramKey, QueryParameter queryParameter)
+        {
+            switch (paramKey.ToLower())
             {
                 case "limit":
                     controlParamsDto.Limit = queryParameter;
@@ -435,8 +273,8 @@ namespace Api_PACsServer.Utilities
                 case "offset":
                     controlParamsDto.Offset = queryParameter;
                     break;
-                case "includefields":
-                    controlParamsDto.IncludeFields.AddRange(value.Split(',').Select(field => field.Trim()));
+                //case "includefields":
+                //    controlParamsDto.IncludeFields.Add(queryParameter.Value);
                     break;
                 case "format":
                     controlParamsDto.Format = queryParameter;
@@ -447,197 +285,135 @@ namespace Api_PACsServer.Utilities
                 case "pagesize":
                     controlParamsDto.PageSize = queryParameter;
                     break;
+                default:
+                    throw new InvalidOperationException($"Parámetro de control {paramKey} no reconocido.");
             }
         }
 
-        /// <summary>
-        /// Creates a QueryParameter instance based on the decoded value.
-        /// </summary>
-        /// <param name="decodedValue">The decoded query parameter value.</param>
-        /// <returns>A QueryParameter with the appropriate value and operator.</returns>
-        private static QueryParameter CreateQueryParameter(string decodedValue)
+        // Method to assign a study parameter to StudyQueryParametersDto
+
+        private static void AssignGenericParameter<T>(T dto, string key, QueryParameter queryParameter) where T : BaseDicomQueryParametersDto
         {
-            var queryParameter = new QueryParameter();
-            bool isRange = decodedValue.Contains("-");
-            if (isRange)
+            var property = typeof(T).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            
+            if (property != null && property.PropertyType == typeof(QueryParameter))
             {
-                queryParameter.Operator = SqlOperator.Between;
-                queryParameter.Value = decodedValue;
+                // Set the property value in the DTO of type T
+                property.SetValue(dto, queryParameter);
             }
-            else
-            {
-                var operatorKey = decodedValue.Substring(0, 1);
-                queryParameter.Operator = OperatorMappingToSqlOperator(operatorKey);
-                queryParameter.Value = decodedValue.Substring(1);
-            }
-            return queryParameter;
         }
 
-
-
-        // List of known control parameters (not part of DICOM tags)
-        internal static List<string>  controlParameters = new List<string> 
-        { 
-            "limit", 
-            "orderby", 
-            "offset", 
-            "includefields", 
-            "format", 
-            "page",
-            "pagesize" 
-        };
-
-        internal static Dictionary<string, string> DicomTagToDto = new Dictionary<string, string>
+        // Método auxiliar para determinar si el nombre de la columna es un valor numérico de un DICOM Tag
+        private static bool IsNumericTag(string columnName)
         {
-            // Study-level attributes
-            { "PatientID", "00100020" },
-            { "StudyDate", "00080020" },
-            { "AccessionNumber", "00080050" },
-            { "StudyInstanceUID", "0020000D" },
-            { "PatientName", "00100010" },
-            { "PatientAge", "00101010" },
-            { "PatientSex", "00100040" },
-            { "InstitutionName", "00080080" },
-            { "BodyPartExamined", "00180015" },
-
-            // Series-level attributes
-            { "SeriesInstanceUID", "0020000E" },
-            { "SeriesNumber", "00200011" },
-            { "Modality", "00080060" },
-            { "SeriesDateTime", "00080031" },
-            { "PatientPosition", "00185100" },
-
-            // Instance-level attributes
-            { "SOPInstanceUID", "00080018" },
-            { "SOPClassUID", "00080016" },
-            { "TransferSyntaxUID", "00020010" },
-            { "InstanceNumber", "00200013" },
-            { "ImageComments", "00204000" },
-            { "PhotometricInterpretation", "00280004" },
-            { "PixelSpacing", "00280030" },
-            { "NumberOfFrames", "00280008" },
-            { "ImagePositionPatient", "00200032" },
-            { "ImageOrientationPatient", "00200037" }
-        };
-
-        internal static SqlOperator OperatorMappingToSqlOperator(string operatorValue)
-        {
-            return operatorValue.ToLower() switch
-            {
-                "=" => SqlOperator.Equals,
-                ">" => SqlOperator.GreaterThan,
-                "<" => SqlOperator.LessThan,
-                ">=" => SqlOperator.GreaterThanOrEqual,
-                "<=" => SqlOperator.LessThanOrEqual,
-                "!" => SqlOperator.NotEqual,
-                "orderby" => SqlOperator.OrderBy,
-                "desc" => SqlOperator.Descending,
-                "asc" => SqlOperator.Ascending,
-                _ => SqlOperator.Equals
-            };
-
+            return ulong.TryParse(columnName, System.Globalization.NumberStyles.HexNumber, null, out _);
         }
 
 
         /// <summary>
-        /// Converts a list of StudyDto objects to a DICOM JSON string for QIDO-RS response.
-        /// Only essential study attributes are included: PatientName, PatientAge, PatientSex, StudyDate, Modality, BodyPartExamined, StudyInstanceUID.
+        /// Verifica si un campo existe en el modelo Study.
         /// </summary>
-        /// <param name="studyDtos">List of StudyDto containing the study metadata.</param>
-        /// <returns>A JSON string representing the combined DICOM JSON structure.</returns>
-        public static string ConvertStudiesToDicomJsonString(List<StudyDto> studyDtos)
+        /// <param name="fieldName">El nombre del campo a verificar.</param>
+        /// <returns>Verdadero si el campo existe, falso en caso contrario.</returns>
+        private static bool IsFieldValidForStudy(string fieldName)
         {
+            var studyProperties = typeof(Study).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            return studyProperties.Any(prop => prop.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Converts a list of DICOM DTOs (StudyDto, SerieDto, or InstanceDto) to a JSON+DICOM format.
+        /// </summary>
+        /// <typeparam name="T">The type of DTO being converted (StudyDto, SerieDto, or InstanceDto).</typeparam>
+        /// <param name="dicomDtos">The list of DTOs to be converted.</param>
+        /// <returns>A JSON string representing the DICOM data in JSON+DICOM format.</returns>
+        public static string ConvertDicomDtosToDicomJsonString<T>(List<T> dicomDtos)
+        {
+            if (dicomDtos == null || !dicomDtos.Any())
+                throw new ArgumentException("The input list is null or empty.");
+
             var dicomJsonArray = new JArray();
 
-            foreach (var study in studyDtos)
+            foreach (var dto in dicomDtos)
             {
                 var dicomJson = new JObject();
 
-                // Study Instance UID (Mandatory for QIDO-RS)
-                if (!string.IsNullOrEmpty(study.StudyInstanceUID))
+                // Use reflection to iterate through the properties of the DTO
+                foreach (var property in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    dicomJson["0020000D"] = new JObject
-                    {
-                        ["vr"] = "UI",
-                        ["Value"] = new JArray(study.StudyInstanceUID)
-                    };
-                }
+                    var value = property.GetValue(dto);
 
-                // Study Description
-                if (!string.IsNullOrEmpty(study.StudyDescription))
-                {
-                    dicomJson["00081030"] = new JObject
+                    if (value != null) // Check if the property has a value
                     {
-                        ["vr"] = "LO",
-                        ["Value"] = new JArray(study.StudyDescription)
-                    };
-                }
+                        // Attempt to get the corresponding DICOM Tag
+                        var dicomTag = GetDicomTagFromPropertyName(property.Name);
 
-                // Study Date
-                if (study.StudyDate != DateTime.MinValue)
-                {
-                    dicomJson["00080020"] = new JObject
-                    {
-                        ["vr"] = "DA",
-                        ["Value"] = new JArray(study.StudyDate.ToString("yyyyMMdd"))
-                    };
-                }
-
-                // Modality
-                if (!string.IsNullOrEmpty(study.Modality))
-                {
-                    dicomJson["00080060"] = new JObject
-                    {
-                        ["vr"] = "CS",
-                        ["Value"] = new JArray(study.Modality)
-                    };
-                }
-
-                // Patient's Name
-                if (!string.IsNullOrEmpty(study.PatientName))
-                {
-                    dicomJson["00100010"] = new JObject
-                    {
-                        ["vr"] = "PN",
-                        ["Value"] = new JArray(new JObject { ["Alphabetic"] = study.PatientName })
-                    };
-                }
-
-                // Patient's Sex
-                if (!string.IsNullOrEmpty(study.PatientSex))
-                {
-                    dicomJson["00100040"] = new JObject
-                    {
-                        ["vr"] = "CS",
-                        ["Value"] = new JArray(study.PatientSex)
-                    };
-                }
-
-                // Patient's Age
-                if (!string.IsNullOrEmpty(study.PatientAge))
-                {
-                    dicomJson["00101010"] = new JObject
-                    {
-                        ["vr"] = "AS",
-                        ["Value"] = new JArray(study.PatientAge)
-                    };
-                }
-
-                // Body Part Examined
-                if (!string.IsNullOrEmpty(study.BodyPartExamined))
-                {
-                    dicomJson["00180015"] = new JObject
-                    {
-                        ["vr"] = "CS",
-                        ["Value"] = new JArray(study.BodyPartExamined)
-                    };
+                        if (dicomTag != null)
+                        {
+                            // Convert the value to the appropriate DICOM JSON format
+                            var formattedValue = FormatDicomJsonValue(dicomTag, value);
+                            dicomJson[dicomTag.ToString()] = formattedValue;
+                        }
+                    }
                 }
 
                 dicomJsonArray.Add(dicomJson);
             }
 
-            // Convert the JArray to a JSON string
-            return JsonConvert.SerializeObject(dicomJsonArray);
+            return dicomJsonArray.ToString();
+        }
+
+        /// <summary>
+        /// Gets the corresponding DICOM Tag for a given property name.
+        /// </summary>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <returns>The corresponding DICOM Tag or null if not found.</returns>
+        private static DicomTag? GetDicomTagFromPropertyName(string propertyName)
+        {
+            // Buscar en el DicomDictionary.Default que contiene todos los tags DICOM estándar.
+            var entry = DicomDictionary.Default.FirstOrDefault(e =>
+                e.Keyword.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+
+            // Verifica si el tag fue encontrado y retorna el DicomTag correspondiente
+            return entry?.Tag;
+        } 
+
+        /// <summary>
+        /// Formats a property value into the appropriate DICOM JSON format.
+        /// </summary>
+        /// <param name="dicomTag">The DICOM Tag associated with the property.</param>
+        /// <param name="value">The value of the property.</param>
+        /// <returns>A JObject representing the formatted DICOM JSON entry.</returns>
+        private static JObject FormatDicomJsonValue(DicomTag dicomTag, object value)
+        {
+
+            // Obtiene las representaciones de valor (Value Representations) asociadas al DicomTag
+            var vrs = dicomTag.DictionaryEntry.ValueRepresentations;
+
+            // Usa el primer VR si hay más de uno
+            string vr = vrs.Length > 0 ? vrs[0].Code : "UN"; // "UN" representa Unknown VR como fallback
+
+            // Crear el array JSON basado en el valor proporcionado
+            JArray jsonValue;
+            if (value is IEnumerable<string> stringValues)
+            {
+                jsonValue = new JArray(stringValues);
+            }
+            else if (value is IEnumerable<object> objectValues)
+            {
+                jsonValue = new JArray(objectValues.Select(o => o.ToString()));
+            }
+            else
+            {
+                jsonValue = new JArray(value.ToString());
+            }
+
+            // Crear el objeto JSON que representa el formato DICOM JSON
+            return new JObject
+            {
+                ["vr"] = vr,
+                ["Value"] = jsonValue
+            };
         }
 
 

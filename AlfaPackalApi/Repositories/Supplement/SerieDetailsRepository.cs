@@ -1,10 +1,10 @@
-﻿using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Repositorio.IRepositorio.Cargas;
-using Api_PACsServer.Repository.DataAccess;
+﻿using Api_PACsServer.Datos;
+using Api_PACsServer.Models.Supplement;
+using Api_PACsServer.Repositories.DataAccess;
+using Api_PACsServer.Repositories.IRepository.Supplement;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api_PACsServer.Repositorio.Cargas
+namespace Api_PACsServer.Repositories.Supplement
 {
     public class SerieDetailsRepository : ReadWriteRepository<SerieDetails>, ISerieDetailsRepository
     {
@@ -15,10 +15,24 @@ namespace Api_PACsServer.Repositorio.Cargas
             _db = db;
         }
 
+        public async Task<List<SerieDetails>> ExecuteSerieDetailsQuery(List<string> serieInstanceUIDs)
+        {
+            return await _db.SerieDetails
+               .Where(d => serieInstanceUIDs.Contains(d.SeriesInstanceUID))
+               .ToListAsync();
+        }
+
+        public async Task<List<SerieDetails>> GetDetailsByUIDs(List<string> serieInstanceUIDs)
+        {
+            return await _db.SerieDetails
+                .Where(d => serieInstanceUIDs.Contains(d.SeriesInstanceUID))
+                .ToListAsync();
+        }
+
         public async Task<SerieDetails> Update(SerieDetails serieLoad)
         {
             serieLoad.UpdateDate = DateTime.Now;
-            _db.SeriesDetails.Update(serieLoad);
+            _db.SerieDetails.Update(serieLoad);
             await _db.SaveChangesAsync();
             return serieLoad;
         }

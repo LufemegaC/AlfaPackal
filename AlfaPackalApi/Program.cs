@@ -1,22 +1,21 @@
-using AlfaPackalApi;
-using AlfaPackalApi.Datos;
-using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Models.DicomList;
+using Api_PACsServer;
+using Api_PACsServer.Datos;
+using Api_PACsServer.Models.AccessControl;
+using Api_PACsServer.Models.DicomSupport;
 using Api_PACsServer.Orchestrators;
 using Api_PACsServer.Orchestrators.IOrchestrator;
+using Api_PACsServer.Repositories.Authentication;
 using Api_PACsServer.Repositories.DicomSupport;
+using Api_PACsServer.Repositories.IRepository.Authentication;
 using Api_PACsServer.Repositories.IRepository.DicomSupport;
-using Api_PACsServer.Repositorio.Cargas;
-using Api_PACsServer.Repositorio.IRepositorio.Cargas;
-using Api_PACsServer.Repositorio.IRepositorio.Pacs;
-using Api_PACsServer.Repositorio.Pacs;
-using Api_PACsServer.Repository.Authentication;
-using Api_PACsServer.Repository.DataAccess;
-using Api_PACsServer.Repository.IRepository.Authentication;
+using Api_PACsServer.Repositories.IRepository.MainEntities;
+using Api_PACsServer.Repositories.IRepository.Supplement;
+using Api_PACsServer.Repositories.MainEntities;
+using Api_PACsServer.Repositories.Supplement;
 using Api_PACsServer.Services;
 using Api_PACsServer.Services.IService;
 using Api_PACsServer.Services.IService.Dicom;
-using Api_PACsServer.Services.IService.Pacs;
+using Api_PACsServer.Services.IService.MainEntities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -110,6 +109,8 @@ builder.Services.AddScoped<ISerieService, SerieService>();
 builder.Services.AddScoped<IInstanceService, InstanceService>();
 // services
 builder.Services.AddScoped<IDicomFileService, AzureDicomFileService>();
+builder.Services.AddScoped<IQueryBuilderService, QueryBuilderService>(); //Service to build SQL query
+builder.Services.AddScoped<IDicomConvertService, DicomConvertService>(); //Service to build SQL query
 // Session 
 builder.Services.AddScoped<ISessionService, SessionService>();
 // Orchestrator

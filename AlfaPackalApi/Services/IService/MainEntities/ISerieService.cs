@@ -1,11 +1,12 @@
-﻿using AlfaPackalApi.Modelos;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Models.Dto;
-using Api_PACsServer.Models.Dto.Instances;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
 using Api_PACsServer.Models.Dto.Series;
+using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
+using Api_PACsServer.Models.Supplement;
 
-namespace Api_PACsServer.Services.IService.Pacs
+namespace Api_PACsServer.Services.IService.MainEntities
 {
     /// <summary>
     /// Service interface for handling Series-related operations in the PACS system.
@@ -58,17 +59,19 @@ namespace Api_PACsServer.Services.IService.Pacs
         /// <param name="seriesInstanceUID">The UID of the study.</param>
         /// <param name="totalSizeFile">The total size of the file in MB.</param>
         /// <returns>The task result contains the updated Series entity.</returns>
-        Task<SerieDetails> UpdateLoadForNewInstance(string seriesInstanceUID, decimal totalSizeFile);
+        Task<SerieDetails> UpdateDetailsForNewInstance(string seriesInstanceUID, decimal totalSizeFile);
 
-        ///// <summary>
-        ///// Maps the provided DICOM metadata to a SerieCreateDto object.
-        ///// </summary>
-        ///// <param name="metadata">The metadata containing the main entities and DICOM information required to create a Series.</param>
-        ///// <returns>
-        ///// A task that represents the asynchronous operation. The task result contains a SerieCreateDto object 
-        ///// mapped from the provided metadata, ready to be used for creating a new Series entity.
-        ///// </returns>
-        //Task<SerieCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
+        /// <summary>
+        /// Retrieves a list of series based on the specified query parameters  and Study UID.
+        /// </summary>
+        /// <param name="requestParameters">
+        /// An object containing the query parameters for filtering and controlling the study retrieval process.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a list of <see cref="StudyDto"/> 
+        /// objects that match the specified query criteria.
+        /// </returns>
+        Task<List<SerieDto>> GetSeriesFromStudy(QueryRequestParameters<SerieQueryParametersDto> requestParameters);
 
         /// <summary>
         /// Maps the provided DICOM metadata to an InstanceCreateDto object.

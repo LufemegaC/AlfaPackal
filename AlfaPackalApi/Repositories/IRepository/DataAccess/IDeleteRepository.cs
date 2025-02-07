@@ -1,4 +1,4 @@
-﻿namespace Api_PACsServer.Repository.IRepository.RepositoryBase
+﻿namespace Api_PACsServer.Repositories.IRepository.DataAccess
 {
     public interface IDeleteRepository
     {

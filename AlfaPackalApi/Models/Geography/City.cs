@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Api_PACsServer.Modelos.Geography
+namespace Api_PACsServer.Models.Geography
 {
     /// <remarks>
     /// This class is missing its CRUD (Create, Read, Update, Delete) operations implementation.

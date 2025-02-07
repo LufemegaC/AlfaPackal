@@ -1,13 +1,12 @@
-﻿using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.Especificaciones;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Models.Dto;
-using Api_PACsServer.Models.Dto.Instances;
-using Api_PACsServer.Models.Dto.Series;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.Dto.Base;
+using Api_PACsServer.Models.Dto.DicomWeb;
+using Api_PACsServer.Models.Dto.DicomWeb.Qido;
 using Api_PACsServer.Models.Dto.Studies;
 using Api_PACsServer.Models.OHIFVisor;
+using Api_PACsServer.Models.Supplement;
 
-namespace Api_PACsServer.Services.IService.Pacs
+namespace Api_PACsServer.Services.IService.MainEntities
 {
     /// <summary>
     /// Service interface for handling Study-related operations in the PACS system.
@@ -61,23 +60,17 @@ namespace Api_PACsServer.Services.IService.Pacs
         Task<StudyDetails> UpdateDetailsForNewInstance(string studyInstanceUID, decimal totalSizeFile);
 
         /// <summary>
-        /// Retrieves the most recent studies for a specified institution.
+        /// Retrieves a list of studies based on the specified query parameters.
         /// </summary>
-        /// <param name="parameters">The pagination parameters</param>
+        /// <param name="requestParameters">
+        /// An object containing the query parameters for filtering and controlling the study retrieval process.
+        /// </param>
         /// <returns>
-        /// A task result containing a list of StudyDto objects representing the recent studies,
-        /// paginated according to the provided parameters.
+        /// A task that represents the asynchronous operation. The task result contains a list of <see cref="StudyDto"/> 
+        /// objects that match the specified query criteria.
         /// </returns>
-        Task<List<StudyDto>> AllStudiesByControlParams (ControlQueryParametersDto parameters);
+        Task<List<StudyDto>> GetStudyData(QueryRequestParameters<StudyQueryParametersDto> requestParameters);
 
-        ///// <summary>
-        ///// Maps the provided metadata from DICOM to a StudyCreateDto object.
-        ///// </summary>
-        ///// <param name="metadata">The metadata containing the main entities required for creating a Study entity.</param>
-        ///// <returns>
-        ///// A StudyCreateDto object mapped from the provided metadata, ready to be used for creating a new Study entity.
-        ///// </returns>
-        //Task<StudyCreateDto> MapToCreateDto(MainEntitiesCreateDto metadata);
 
         /// <summary>
         /// Maps the provided DICOM metadata to an InstanceCreateDto object.

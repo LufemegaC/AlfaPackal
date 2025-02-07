@@ -1,4 +1,4 @@
-﻿namespace Api_PACsServer.Modelos.Especificaciones
+﻿namespace Api_PACsServer.Models.Specifications
 {
     public class PagedList<T> : List<T>
     {

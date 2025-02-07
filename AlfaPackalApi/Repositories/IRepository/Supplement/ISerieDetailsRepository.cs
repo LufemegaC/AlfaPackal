@@ -1,7 +1,7 @@
-﻿using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Repository.IRepository.RepositoryBase;
+﻿using Api_PACsServer.Models.Supplement;
+using Api_PACsServer.Repositories.IRepository.DataAccess;
 
-namespace Api_PACsServer.Repositorio.IRepositorio.Cargas
+namespace Api_PACsServer.Repositories.IRepository.Supplement
 {
     /// <summary>
     /// Represents a repository interface for handling SerieLoad entities.
@@ -16,6 +16,9 @@ namespace Api_PACsServer.Repositorio.IRepositorio.Cargas
         /// <returns>A task that represents the asynchronous operation. 
         /// The task result contains the updated SerieLoad entity.</returns>
         Task<SerieDetails> Update(SerieDetails serieLoad);
+
+
+        Task<List<SerieDetails>> GetDetailsByUIDs(List<string> serieInstanceUIDs);
 
     }
 }

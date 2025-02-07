@@ -19,23 +19,40 @@ namespace Api_PACsServer.Controllers.Packal
             _orchestrator = orchestrator;
         }
 
-        /// <summary>
-        /// Handles GET requests for retrieving studies based on provided query parameters.
-        /// </summary>
-        /// <param name="queryParams">Dictionary of query parameters to filter studies by.</param>
-        /// <returns>JSON response with the list of studies.</returns>
         [HttpGet("studies")]
-        public async Task<IActionResult> GetStudies([FromQuery] Dictionary<string, string> queryParams)
+        public async Task<IActionResult> GetStudies()
         {
             try
             {
-                // Dividir los parámetros en DTOs correspondientes
-                var (controlParamsDto, studyParamsDto) = DicomWebHelper.MapQueryParamsToDtos(queryParams);
+                // Leer los parámetros directamente del request
+                var queryParams = Request.Query;
 
-                var studyDtos = await _orchestrator.GetInfoStudy(studyParamsDto, controlParamsDto);
+                // Delegar la lógica al orchestrator
+                var jsonResponse = await _orchestrator.GetAllStudies(queryParams);
 
-                var jsonResponse = DicomWebHelper.ConvertStudiesToDicomJsonString(studyDtos);
+                // Devolver el resultado como JSON
+                return Content(jsonResponse, "application/dicom+json");
+            }
+            catch(Exception ex)
+            {
+                // Manejo de excepciones
+                return StatusCode(500, $"Error del servidor: {ex.Message}");
+            }
+        }
 
+        /// <summary>
+        /// Handles GET requests for retrieving series based on provided query parameters.
+        /// </summary>
+        /// <param name="studyInstanceUID">The Study Instance UID to filter series by.</param>
+        /// <returns>JSON response with the list of series.</returns>
+        [HttpGet("studies/{studyInstanceUID}/series")]
+        public async Task<IActionResult> GetSeries(string studyInstanceUID)
+        {
+            try
+            {
+                // Leer los parámetros directamente del request
+                var queryParams = Request.Query;
+                var jsonResponse = await _orchestrator.GetAllSeriesFromStudy(studyInstanceUID, queryParams);
                 return Content(jsonResponse, "application/dicom+json");
             }
             catch (Exception ex)
@@ -45,66 +62,32 @@ namespace Api_PACsServer.Controllers.Packal
             }
         }
 
-        ///// <summary>
-        ///// Handles GET requests for retrieving series based on provided query parameters.
-        ///// </summary>
-        ///// <param name="studyInstanceUID">The Study Instance UID to filter series by.</param>
-        ///// <param name="queryParams">Dictionary of query parameters to filter the data by.</param>
-        ///// <returns>JSON response with the list of series.</returns>
-        //[HttpGet("qido-rs/studies/{studyInstanceUID}/series")]
-        //public async Task<IActionResult> GetSeries(string studyInstanceUID, [FromQuery] Dictionary<string, string> queryParams)
-        //{
-        //    try
-        //    {
-        //        // Añadir StudyInstanceUID a los parámetros
-        //        queryParams["StudyInstanceUID"] = studyInstanceUID;
 
-        //        // Dividir los parámetros en DTOs correspondientes
-        //        var (controlParamsDto, seriesParamsDto) = DicomWebHelper.MapQueryParamsToDtos(queryParams);
+        /// <summary>
+        /// Handles GET requests for retrieving instances based on provided query parameters.
+        /// </summary>
+        /// <param name="studyInstanceUID">The Study Instance UID to filter instances by.</param>
+        /// <param name="seriesInstanceUID">The Series Instance UID to filter instances by.</param>
+        /// <returns>JSON response with the list of instances.</returns>
+        [HttpGet("studies/{studyInstanceUID}/series/{seriesInstanceUID}/instances")]
+        public async Task<IActionResult> GetInstances(string studyInstanceUID, string seriesInstanceUID)
+        {
+            try
+            {
+                // Leer los parámetros directamente del request
+                var queryParams = Request.Query;
 
-        //        var seriesDtos = await _orchestrator.GetInfoSeries(seriesParamsDto, controlParamsDto);
+                // Delegar la lógica al orchestrator
+                var jsonResponse = await _orchestrator.GetAllInstancesFromSeries(studyInstanceUID, seriesInstanceUID, queryParams);
 
-        //        var jsonResponse = DicomWebHelper.ConvertSeriesToDicomJsonString(seriesDtos);
-
-        //        return Content(jsonResponse, "application/dicom+json");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Manejo de excepciones
-        //        return StatusCode(500, $"Error del servidor: {ex.Message}");
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Handles GET requests for retrieving instances based on provided query parameters.
-        ///// </summary>
-        ///// <param name="studyInstanceUID">The Study Instance UID to filter instances by.</param>
-        ///// <param name="seriesInstanceUID">The Series Instance UID to filter instances by.</param>
-        ///// <param name="queryParams">Dictionary of query parameters to filter the data by.</param>
-        ///// <returns>JSON response with the list of instances.</returns>
-        //[HttpGet("qido-rs/studies/{studyInstanceUID}/series/{seriesInstanceUID}/instances")]
-        //public async Task<IActionResult> GetInstances(string studyInstanceUID, string seriesInstanceUID, [FromQuery] Dictionary<string, string> queryParams)
-        //{
-        //    try
-        //    {
-        //        // Añadir StudyInstanceUID y SeriesInstanceUID a los parámetros
-        //        queryParams["StudyInstanceUID"] = studyInstanceUID;
-        //        queryParams["SeriesInstanceUID"] = seriesInstanceUID;
-
-        //        // Dividir los parámetros en DTOs correspondientes
-        //        var (controlParamsDto, instanceParamsDto) = DicomWebHelper.MapQueryParamsToDtos(queryParams);
-
-        //        var instanceDtos = await _orchestrator.GetInfoInstance(instanceParamsDto, controlParamsDto);
-
-        //        var jsonResponse = DicomWebHelper.ConvertInstancesToDicomJsonString(instanceDtos);
-
-        //        return Content(jsonResponse, "application/dicom+json");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Manejo de excepciones
-        //        return StatusCode(500, $"Error del servidor: {ex.Message}");
-        //    }
-        //}
+                // Devolver el resultado como JSON con el MIME type adecuado
+                return Content(jsonResponse, "application/dicom+json");
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones
+                return StatusCode(500, $"Error del servidor: {ex.Message}");
+            }
+        }
     }
 }

@@ -1,20 +1,19 @@
-﻿using AlfaPackalApi.Modelos;
-using Api_PACsServer.Modelos;
-using Api_PACsServer.Modelos.AccessControl;
-using Api_PACsServer.Modelos.Geography;
-using Api_PACsServer.Modelos.Load;
-using Api_PACsServer.Models.DicomList;
+﻿using Api_PACsServer.Models;
+using Api_PACsServer.Models.AccessControl;
+using Api_PACsServer.Models.DicomSupport;
+using Api_PACsServer.Models.Geography;
+using Api_PACsServer.Models.Supplement;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AlfaPackalApi.Datos
+namespace Api_PACsServer.Datos
 {
     public class ApplicationDbContext : IdentityDbContext<SystemUser>
     {
         //DbContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        { 
-        
+        {
+
         }
         // User Control
         public DbSet<User> Users { get; set; } // Cambiarlo a users
@@ -23,17 +22,17 @@ namespace AlfaPackalApi.Datos
         public DbSet<Serie> Series { get; set; }
         public DbSet<Instance> Instances { get; set; }
         // Entidades para informacion de carga
-        public DbSet<StudyDetails> StudiesDetails { get; set; }
-        public DbSet<SerieDetails> SeriesDetails { get; set; }
-        public DbSet<InstanceDetails> InstancesDetails { get; set; }
+        public DbSet<StudyDetails> StudyDetails { get; set; }
+        public DbSet<SerieDetails> SerieDetails { get; set; }
+        public DbSet<InstanceDetails> InstanceDetails { get; set; }
         // Modalities for study
-        public DbSet<StudyModality> StudyModalities { get; set; }  
+        public DbSet<StudyModality> StudyModalities { get; set; }
         public DbSet<LocalDicomServer> LocalDicomServers { get; set; }
         // Internal control
         //public DbSet<Institution> Institutions { get; set; }
-        public DbSet<State> States{ get; set; }
+        public DbSet<State> States { get; set; }
         public DbSet<City> Cities { get; set; }
-        
+
         //// Modelo para visualizacion de datos
         //public DbSet<EstudioConPacienteDto> EstudiosConPacienteDtos { get; set; }
 

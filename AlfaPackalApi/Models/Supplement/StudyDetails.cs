@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Api_PACsServer.Modelos.IModels;
-using Api_PACsServer.Models.DicomList;
+using Api_PACsServer.Models.DicomSupport;
+using Api_PACsServer.Models;
+using Api_PACsServer.Models.IModels;
 
-namespace Api_PACsServer.Modelos.Load
+namespace Api_PACsServer.Models.Supplement
 {
     //Represents the load information related to a study, including size and number of related files and series.
     public class StudyDetails : IAuditable
+    /* Last Modified: 12/16/24 LFMG
+     Add constructors */
     {
         // StudyId - N
         // UID of the study entity
@@ -24,7 +27,6 @@ namespace Api_PACsServer.Modelos.Load
         // Accession number DICOM/Metadata
         [MaxLength(64)]
         public string? AccessionNumber { get; set; }
-        
         // Total size of the study in MB.
         public decimal TotalFileSizeMB { get; set; }
         // Date when the record was created.
